@@ -1,42 +1,46 @@
 h1 {
-	text-transform: uppercase;
-	font-weight: bold;
-	text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-align: center;
 }
 
 .data {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	margin-top: 1%;
-	margin-bottom: 1%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1%;
+  margin-bottom: 1%;
 }
 
 .address {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .orders {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	margin-top: 1%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1%;
 }
 
 .btn {
   background-color: #13aa52;
   border: 1px solid #13aa52;
   border-radius: 4px;
-  box-shadow: rgba(0, 0, 0, .1) 0 2px 4px 0;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px 0;
   box-sizing: border-box;
   color: #fff;
   cursor: pointer;
-  font-family: "Akzidenz Grotesk BQ Medium", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    "Akzidenz Grotesk BQ Medium",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   font-size: 16px;
   font-weight: bold;
   outline: none;
@@ -44,14 +48,16 @@ h1 {
   padding: 3px;
   text-align: center;
   transform: translateY(0);
-  transition: transform 150ms, box-shadow 150ms;
+  transition:
+    transform 150ms,
+    box-shadow 150ms;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
 }
 
 .btn:hover {
-  box-shadow: rgba(0, 0, 0, .15) 0 3px 9px 0;
+  box-shadow: rgba(0, 0, 0, 0.15) 0 3px 9px 0;
   transform: translateY(-2px);
 }
 
@@ -62,28 +68,28 @@ h1 {
 }
 
 span {
-	font-weight: bold;
-	text-transform: uppercase;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 table {
-    border-collapse: collapse;
-    width: 100%;
-    color: #333;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    text-align: center;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    margin: auto;
-    margin-top: 1%;
-    margin-bottom: 1%;
-    width: 80%;
+  border-collapse: collapse;
+  width: 100%;
+  color: #333;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  text-align: center;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  margin: auto;
+  margin-top: 1%;
+  margin-bottom: 1%;
+  width: 80%;
 }
 
 table th {
-  background-color: #7A0000;
+  background-color: #7a0000;
   color: #fff;
   font-weight: bold;
   padding: 10px;

@@ -1,5 +1,5 @@
 body {
-  font-family: 'Poppins', serif;
+  font-family: "Poppins", serif;
   margin: 0;
   padding: 0;
   display: flex;
@@ -14,14 +14,16 @@ body {
 
 .login-container {
   background: rgba(0, 0, 0, 0.8);
-  color: #FFFFFF;
+  color: #ffffff;
   text-align: center;
   padding: 20px;
   width: 350px;
   heigth: 92%;
   box-shadow: 0px 0px 30px rgba(255, 255, 255, 0.5);
   position: relative;
-  backdrop-filter: blur(5px); /* Aggiunta l'effetto di sfocatura al background */
+  backdrop-filter: blur(
+    5px
+  ); /* Aggiunta l'effetto di sfocatura al background */
 }
 
 .login-container input[type="email"],
@@ -35,7 +37,10 @@ body {
   border-radius: 20px;
   font-size: 16px;
   width: 230px;
-  transition: width 0.4s, transform 0.4s, background-color 0.4s;
+  transition:
+    width 0.4s,
+    transform 0.4s,
+    background-color 0.4s;
   background-color: transparent; /* Aggiunta per rendere trasparenti gli input vuoti */
 }
 
@@ -56,18 +61,18 @@ body {
 }
 
 .login-container .BorderTopBottom:before {
-  content: '';
+  content: "";
   position: absolute;
   width: 100px;
   height: 3px;
   top: -10px;
   left: -7px;
-  background: #7A0000;
+  background: #7a0000;
   transition: all 1s;
 }
 
 .login-container .BorderLeftRight:before {
-  content: '';
+  content: "";
   position: absolute;
   top: -3px;
   left: -7px;
@@ -78,13 +83,13 @@ body {
 }
 
 .login-container .BorderLeftRight:after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -3px;
   right: -7px;
   width: 3px;
   height: 75px;
-  background: #7A0000;
+  background: #7a0000;
   transition: all 1s;
 }
 
@@ -105,7 +110,7 @@ body {
   font-size: 40px;
   margin-top: 15px;
   margin-bottom: 25px;
-  color: #FF4654;
+  color: #ff4654;
   text-transform: uppercase;
 }
 
@@ -123,44 +128,46 @@ body {
 }
 
 .login-container input#submit {
-  background: #FF4654;
-  color: #FFFFFF;
+  background: #ff4654;
+  color: #ffffff;
   padding: 10px 20px;
   border: none;
   border-radius: 20px;
   font-size: 18px;
   cursor: pointer;
   margin-top: 15px;
-  transition: transform 150ms, box-shadow 150ms;
+  transition:
+    transform 150ms,
+    box-shadow 150ms;
 }
 
 .login-container input#submit:hover {
-  background: #FFFFFF;
-  color: #FF4654;
-  box-shadow: rgba(0, 0, 0, .15) 0 3px 9px 0;
+  background: #ffffff;
+  color: #ff4654;
+  box-shadow: rgba(0, 0, 0, 0.15) 0 3px 9px 0;
   transform: translateY(-2px);
 }
 
-.login-container a{
-    font-weigth: bold;
-	text-decoration: none;
-    color: #FF4654;
+.login-container a {
+  font-weigth: bold;
+  text-decoration: none;
+  color: #ff4654;
 }
 
-.login-container a:hover{	
-    color: white;
+.login-container a:hover {
+  color: white;
 }
-  
-  /* Media query per dispositivi con larghezza massima di 600px (ad es. smartphone) */
+
+/* Media query per dispositivi con larghezza massima di 600px (ad es. smartphone) */
 @media (max-width: 600px) {
-    .login-container {
-      width: 80%; /* Riduco la larghezza del container per adattarsi meglio allo schermo */
-    }
+  .login-container {
+    width: 80%; /* Riduco la larghezza del container per adattarsi meglio allo schermo */
   }
-  
-  /* Media query per dispositivi con larghezza massima di 900px (ad es. tablet) */
-  @media (max-width: 900px) {
-    .login-container {
-      width: 70%; /* Riduco la larghezza del container per adattarsi meglio allo schermo */
-    }
+}
+
+/* Media query per dispositivi con larghezza massima di 900px (ad es. tablet) */
+@media (max-width: 900px) {
+  .login-container {
+    width: 70%; /* Riduco la larghezza del container per adattarsi meglio allo schermo */
   }
+}

@@ -1,158 +1,160 @@
 :root {
-	--main-text-color: #7A0000;
+  --main-text-color: #7a0000;
 }
 
-.logo,  .search {
-	flex-basis: 20%;
+.logo,
+.search {
+  flex-basis: 20%;
 }
 
 .links {
-	flex-basis: 60%;
-	justify-content: center;
+  flex-basis: 60%;
+  justify-content: center;
 }
 
 body {
-	margin: 0;
-	font-family: 'Poppins', sans-serif;
+  margin: 0;
+  font-family: "Poppins", sans-serif;
 }
 
 .logosite {
-	width: 50%;
-	display: block;
-	margin: auto;
+  width: 50%;
+  display: block;
+  margin: auto;
 }
 
 nav {
-	padding: 20px 0px;
-	display: flex;
-	background-color: var(--main-text-color);
-	color: white;
-	z-index: 99;
+  padding: 20px 0px;
+  display: flex;
+  background-color: var(--main-text-color);
+  color: white;
+  z-index: 99;
 }
 
 nav > div {
-	display: flex;
-	align-self: center;
+  display: flex;
+  align-self: center;
 }
 
 .links > a {
-	color: white;
-	font-weight: 500;
-	font-size: 20px;
-	text-transform: uppercase;
-	text-decoration: none !important;
+  color: white;
+  font-weight: 500;
+  font-size: 20px;
+  text-transform: uppercase;
+  text-decoration: none !important;
 }
 
 .links > a:hover {
-	color: white;
-	border-bottom: 1px solid white !important;
+  color: white;
+  border-bottom: 1px solid white !important;
 }
 
 .border {
-	border: none;
-	outline: none;
-	background-color: var(--main-text-color);
-	font-size: 16px;
-	color: white;
-	text-align: center;	
+  border: none;
+  outline: none;
+  background-color: var(--main-text-color);
+  font-size: 16px;
+  color: white;
+  text-align: center;
 }
 
 .kek {
-	border: 2px solid white;
-	border-radius: 10px;
-	margin: auto;
+  border: 2px solid white;
+  border-radius: 10px;
+  margin: auto;
 }
 
 .fm {
-	display: flex;
-	padding: 5px 0px;
+  display: flex;
+  padding: 5px 0px;
 }
 
 button {
-	background-color: var(--main-text-color);
-	border: none;
-	color: white;
+  background-color: var(--main-text-color);
+  border: none;
+  color: white;
 }
 
 button:hover {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 .search-results {
-	z-index: 99;
-	margin-left: 90%;
-	background-color: light-grey;
+  z-index: 99;
+  margin-left: 90%;
+  background-color: light-grey;
 }
 
 .search-table {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .search-item {
-    cursor: pointer;
-    background-color: #f2f2f2;
+  cursor: pointer;
+  background-color: #f2f2f2;
 }
 
 .search-item:hover {
-    background-color: #ddd;
+  background-color: #ddd;
 }
 
 .search-item td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
 }
 
 .search-item:last-child td {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 /* Stile per il messaggio "Nessun risultato trovato" */
 .search-item .no-result {
-    text-align: center;
-    font-style: italic;
-    color: #666;
+  text-align: center;
+  font-style: italic;
+  color: #666;
 }
-
 
 /* RESPONSIVE */
 
 @media screen and (max-width: 768px) {
-	nav {
-		flex-direction: column;
-	}
-	
-	.logo, .links, .search {
-		flex-basis: 100%;
-	}
-	
-	.logo {
-		margin-bottom: 10px;
-	}
-	
-	.logosite {
-		width: 40%;
-	}
-	
-	.links {
-		display: flex;
-		justify-content: space-around;
-		margin-bottom: 10px;
-	}
-	
-	.links > a {
-		font-size: 16px;
-	}
-	
-	.search {
-		margin-bottom: 10px;
-	}
-	
-	.border {
-		width: 100%;
-	}
-	
-	.kek {
-		width: 80%;
-	}
+  nav {
+    flex-direction: column;
+  }
+
+  .logo,
+  .links,
+  .search {
+    flex-basis: 100%;
+  }
+
+  .logo {
+    margin-bottom: 10px;
+  }
+
+  .logosite {
+    width: 40%;
+  }
+
+  .links {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 10px;
+  }
+
+  .links > a {
+    font-size: 16px;
+  }
+
+  .search {
+    margin-bottom: 10px;
+  }
+
+  .border {
+    width: 100%;
+  }
+
+  .kek {
+    width: 80%;
+  }
 }

@@ -1,35 +1,39 @@
 .resoconto {
-	display: flex;
-	justify-content: center;
-	flex-direction: column;
-	align-items: center;
-	margin-top: 1%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1%;
 }
 
 a {
-	font-weight: bold;
-	text-decoration: none;
-	color: red;
-	transition: all .6s ease;
+  font-weight: bold;
+  text-decoration: none;
+  color: red;
+  transition: all 0.6s ease;
 }
 
 a:hover {
-	transform: scale(1.02);
+  transform: scale(1.02);
 }
 
 h1 {
-	text-align: center;
-	text-transform: uppercase;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .btn {
   background-color: black;
   border-radius: 4px;
-  box-shadow: rgba(0, 0, 0, .1) 0 2px 4px 0;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px 0;
   box-sizing: border-box;
   color: #fff;
   cursor: pointer;
-  font-family: "Akzidenz Grotesk BQ Medium", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    "Akzidenz Grotesk BQ Medium",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   font-size: 16px;
   font-weight: bold;
   outline: none;
@@ -37,39 +41,41 @@ h1 {
   padding: 8px;
   text-align: center;
   transform: translateY(0);
-  transition: transform 150ms, box-shadow 150ms;
+  transition:
+    transform 150ms,
+    box-shadow 150ms;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
 }
 
 .btn:hover {
-  box-shadow: rgba(0, 0, 0, .15) 0 3px 9px 0;
+  box-shadow: rgba(0, 0, 0, 0.15) 0 3px 9px 0;
   transform: translateY(-2px);
 }
 
 span {
-	font-weight: bold;
-	text-transform: uppercase;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 table {
-    border-collapse: collapse;
-    color: #333;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    text-align: center;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    margin: auto;
-    margin-top: 50px;
-    margin-bottom: 50px;
-    width: 60%;
+  border-collapse: collapse;
+  color: #333;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  text-align: center;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  margin: auto;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  width: 60%;
 }
 
 table th {
-  background-color: #7A0000;
+  background-color: #7a0000;
   color: #fff;
   font-weight: bold;
   padding: 10px;

@@ -1,31 +1,30 @@
 h1 {
-    text-align: center;
-    text-transform: uppercase;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 body {
-
-    font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 table {
-    border-collapse: collapse;
-    width: 100%;
-    color: #333;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    text-align: center;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    margin: auto;
-    margin-top: 50px;
-    margin-bottom: 50px;
-    width: 80%;
+  border-collapse: collapse;
+  width: 100%;
+  color: #333;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  text-align: center;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  margin: auto;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  width: 80%;
 }
 
 table th {
-  background-color: #7A0000;
+  background-color: #7a0000;
   color: #fff;
   font-weight: bold;
   padding: 10px;
@@ -51,66 +50,66 @@ table td {
 }
 
 span {
-    margin-left: 10%;
-    font-weight: bold;
+  margin-left: 10%;
+  font-weight: bold;
 }
 
 .dropdown {
-    margin-left: 10%;
-    margin-top: 1%;
+  margin-left: 10%;
+  margin-top: 1%;
 }
 
 .dropdown > label {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .add {
-    margin-left: 10%;
-    transition: all .3s ease;
-    margin-bottom: 1%;
+  margin-left: 10%;
+  transition: all 0.3s ease;
+  margin-bottom: 1%;
 }
 
 .add a {
-    text-decoration: none;
-    color: red;
-    font-weight: bold;
+  text-decoration: none;
+  color: red;
+  font-weight: bold;
 }
 
 .add:hover {
-    transform: scale(1.01);
+  transform: scale(1.01);
 }
 
 .radio {
-    margin-left: 10%;
+  margin-left: 10%;
 }
 
 .checkout {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .checkout-btn {
-    display: inline-block;
-    background-color: #7DC855;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: bold;
-    text-decoration: none;
-    padding: 12px 30px;
-    transition: all .5s;
+  display: inline-block;
+  background-color: #7dc855;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  padding: 12px 30px;
+  transition: all 0.5s;
 }
 
 .checkout-btn:hover {
-    transform: scale(1.02);
-    background-color: lightgreen;
+  transform: scale(1.02);
+  background-color: lightgreen;
 }
 
 .update {
-	display: flex;
-	justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .none {
-	display: flex;
-	flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
