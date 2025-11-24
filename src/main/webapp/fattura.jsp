@@ -167,9 +167,11 @@
                                         </div>
 
                                         <div style="text-align: center;">
+                                            <a href="fattura/download" class="btn"
+                                                style="background-color: #28a745;">Download PDF</a>
                                             <a href="javascript:window.print()" class="btn">Stampa Fattura</a>
-                                            <a href="Home.jsp" class="btn" style="background-color: #6c757d;">Torna alla
-                                                Home</a>
+                                            <a href="ProductView.jsp" class="btn"
+                                                style="background-color: #6c757d;">Torna alla Home</a>
                                         </div>
                                     </div>
 
