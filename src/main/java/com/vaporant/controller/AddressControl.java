@@ -1,0 +1,66 @@
+package com.vaporant.controller;
+
+import java.io.IOException;
+import java.sql.SQLException;
+
+import jakarta.servlet.ServletException;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import com.vaporant.model.UserBean;
+
+import com.vaporant.model.AddressBean;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.vaporant.repository.AddressDAO;
+
+
+@Controller
+public class AddressControl {
+
+
+	@Autowired
+	private AddressDAO addressDao;
+
+
+    
+	@RequestMapping(value = "/AddressControl", method = {RequestMethod.GET, RequestMethod.POST})
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+
+		AddressBean address = new AddressBean();
+		
+		UserBean user = (UserBean) request.getSession().getAttribute("user");
+		
+		if(user != null)
+		{
+			String citta = request.getParameter("citta");
+			String prov = request.getParameter("provincia");
+			String via = request.getParameter("via");
+			address.setCap(request.getParameter("cap"));
+			address.setCitta(citta);
+			address.setId_utente(user.getId());
+			address.setNumCivico(request.getParameter("numero_civico"));
+			address.setProvincia(prov);
+			address.setStato(request.getParameter("stato"));
+			address.setVia(via);
+			try {
+				addressDao.saveAddress(address);
+				return "redirect:Utente.jsp";
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return "redirect:Utente.jsp"; // Default redirect if user is null or after processing
+    }
+
+    
+
+
+}
