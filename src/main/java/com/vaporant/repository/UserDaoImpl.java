@@ -18,6 +18,17 @@ public class UserDaoImpl implements UserDAO {
 	
 	@Autowired
 	private DataSource ds;
+
+    private Connection getConnection() throws SQLException {
+        if (ds != null) {
+            return ds.getConnection();
+        }
+        DataSource staticDs = com.vaporant.util.DataSourceUtil.getDataSource();
+        if (staticDs != null) {
+            return staticDs.getConnection();
+        }
+        throw new SQLException("DataSource is null");
+    }
 	
 	@Override
 	public int saveUser(UserBean user) throws SQLException {
@@ -29,7 +40,7 @@ public class UserDaoImpl implements UserDAO {
 			" (nome, cognome, email, psw, CF, numTelefono, dataNascita, tipo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 			
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(insertSQL);
 			
 			preparedStatement.setString(1, user.getNome());
@@ -71,7 +82,7 @@ public class UserDaoImpl implements UserDAO {
 		String deleteSQL = "DELETE FROM " + TABLE + " WHERE ID = ?";
 		
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(deleteSQL);
 			preparedStatement.setInt(1, user.getId());
 			result = preparedStatement.executeUpdate();
@@ -99,7 +110,7 @@ public class UserDaoImpl implements UserDAO {
 		UserBean user = null;
 		
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(selectSQL);
 			
 			preparedStatement.setString(1, email);
@@ -146,7 +157,7 @@ public class UserDaoImpl implements UserDAO {
 		UserBean user = null;
 		
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(selectSQL);
 			preparedStatement.setInt(1, ID);
 			
@@ -188,7 +199,7 @@ public class UserDaoImpl implements UserDAO {
 		String modify = "UPDATE utente SET email = ? " + " WHERE ID = ?";
 		
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(modify);
 			preparedStatement.setString(1, email);
 			preparedStatement.setInt(2, user.getId());
@@ -213,7 +224,7 @@ public class UserDaoImpl implements UserDAO {
 		String modify = "UPDATE utente SET numTelefono = ? " + " WHERE ID = ?";
 		
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(modify);
 			preparedStatement.setString(1, cell);
 			preparedStatement.setInt(2, user.getId());
@@ -242,7 +253,7 @@ public class UserDaoImpl implements UserDAO {
 		String modify = "UPDATE utente SET psw = ? " + " WHERE ID = ? AND psw = ?";
 		
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(modify);
 			preparedStatement.setString(1, newPsw);
 			preparedStatement.setInt(2, user.getId());
@@ -271,7 +282,7 @@ public class UserDaoImpl implements UserDAO {
 		String updateSQL = "UPDATE " + TABLE + " SET indirizzoFatt = ? WHERE ID = ?";
 		
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(updateSQL);
 			preparedStatement.setString(1, address);
 			preparedStatement.setInt(2, user.getId());

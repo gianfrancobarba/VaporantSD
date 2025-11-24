@@ -17,6 +17,17 @@ public class ContenutoDaoImpl implements ContenutoDAO{
 	
 	@Autowired
 	private DataSource ds;
+
+    private Connection getConnection() throws SQLException {
+        if (ds != null) {
+            return ds.getConnection();
+        }
+        DataSource staticDs = com.vaporant.util.DataSourceUtil.getDataSource();
+        if (staticDs != null) {
+            return staticDs.getConnection();
+        }
+        throw new SQLException("DataSource is null");
+    }
 	
 
 	@Override
@@ -30,7 +41,7 @@ public class ContenutoDaoImpl implements ContenutoDAO{
                            + " VALUES (?, ?, ?, ?, ?)";
 
         try {
-        	connection = ds.getConnection();
+        	connection = getConnection();
         	preparedStatement = connection.prepareStatement(insertSQL);
 
             preparedStatement.setInt(1, contenutoOrdine.getId_ordine());
@@ -70,7 +81,7 @@ public class ContenutoDaoImpl implements ContenutoDAO{
         
         try
         {
-        	connection = ds.getConnection();
+        	connection = getConnection();
         	preparedStatement = connection.prepareStatement(selectSQL);
             
             preparedStatement.setInt(1, contenutoOrdine.getId_ordine());
@@ -101,7 +112,7 @@ public class ContenutoDaoImpl implements ContenutoDAO{
 
         try {
 
-        	connection = ds.getConnection();
+        	connection = getConnection();
         	preparedStatement = connection.prepareStatement(selectSQL);
             
             preparedStatement.setInt(1, id_ordine);
@@ -146,7 +157,7 @@ public class ContenutoDaoImpl implements ContenutoDAO{
         
         try
         {
-        	connection = ds.getConnection();
+        	connection = getConnection();
             preparedStatement = connection.prepareStatement(selectSQL);
             
             preparedStatement.setInt(1, id);

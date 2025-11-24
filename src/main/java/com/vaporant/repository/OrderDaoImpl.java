@@ -20,6 +20,17 @@ public class OrderDaoImpl implements OrderDAO {
 	
 	@Autowired
 	private DataSource ds;
+
+    private Connection getConnection() throws SQLException {
+        if (ds != null) {
+            return ds.getConnection();
+        }
+        DataSource staticDs = com.vaporant.util.DataSourceUtil.getDataSource();
+        if (staticDs != null) {
+            return staticDs.getConnection();
+        }
+        throw new SQLException("DataSource is null");
+    }
 	
 	@Override
 	public int saveOrder(OrderBean ordine) throws SQLException {
@@ -32,7 +43,7 @@ public class OrderDaoImpl implements OrderDAO {
 			" VALUES (?, ?, ?, ?, ?)";
 		
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(insertSQL);
 			
 			preparedStatement.setInt(1, ordine.getId_utente());
@@ -63,7 +74,7 @@ public class OrderDaoImpl implements OrderDAO {
 		int result;
 		
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(selectSQL);
 			preparedStatement.setInt(1, ordine.getId_ordine());
 			result = preparedStatement.executeUpdate();
@@ -90,7 +101,7 @@ public class OrderDaoImpl implements OrderDAO {
 		OrderBean ordine = null;
 		
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(selectSQL);
 			preparedStatement.setInt(1, id);
 			
@@ -127,13 +138,13 @@ public class OrderDaoImpl implements OrderDAO {
 		int id = -1;
 		
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			statement = connection.createStatement();
 			
-			ResultSet rs = statement.executeQuery("SELECT * FROM " + TABLE);
+			ResultSet rs = statement.executeQuery("SELECT MAX(ID_Ordine) as max_id FROM " + TABLE);
 			
-			if (rs.last()) {
-				id = rs.getInt("ID_Ordine");
+			if (rs.next()) {
+				id = rs.getInt("max_id");
 			}
 			
 			return id;
@@ -157,7 +168,7 @@ public class OrderDaoImpl implements OrderDAO {
 		String selectSQL = "SELECT * FROM " + TABLE + " WHERE ID_Utente = ?";
 		
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(selectSQL);
 			preparedStatement.setInt(1, id);
 			

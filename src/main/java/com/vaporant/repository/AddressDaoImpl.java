@@ -18,6 +18,18 @@ public class AddressDaoImpl implements AddressDAO {
 	
 	@Autowired
 	private DataSource ds;
+
+    private Connection getConnection() throws SQLException {
+        if (ds != null) {
+            return ds.getConnection();
+        }
+        DataSource staticDs = com.vaporant.util.DataSourceUtil.getDataSource();
+        if (staticDs != null) {
+            return staticDs.getConnection();
+        }
+        throw new SQLException("DataSource is null");
+    }
+
 	
 	@Override
 	public int saveAddress(AddressBean address) throws SQLException {
@@ -29,7 +41,7 @@ public class AddressDaoImpl implements AddressDAO {
 			" (Via, numCivico, citta, CAP, provincia) VALUES (?, ?, ?, ?, ?)";
 			
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(insertSQL);
 			
 			preparedStatement.setString(1, address.getVia());
@@ -63,7 +75,7 @@ public class AddressDaoImpl implements AddressDAO {
 		String deleteSQL = "DELETE FROM " + TABLE + " WHERE ID = ?";
 		
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(deleteSQL);
 			preparedStatement.setInt(1, address.getId());
 			result = preparedStatement.executeUpdate();
@@ -91,7 +103,7 @@ public class AddressDaoImpl implements AddressDAO {
 		AddressBean address = null;
 		
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(selectSQL);
 			
 			preparedStatement.setString(1, cap);
@@ -135,7 +147,7 @@ public class AddressDaoImpl implements AddressDAO {
 		String selectSQL = "SELECT * FROM " + TABLE + " WHERE ID = ?";
 		
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(selectSQL);
 			preparedStatement.setInt(1, id);
 			
@@ -175,7 +187,7 @@ public class AddressDaoImpl implements AddressDAO {
 		String selectSQL = "SELECT * FROM " + TABLE + " WHERE ID = ?";
 		
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(selectSQL);
 			preparedStatement.setInt(1, id);
 			
