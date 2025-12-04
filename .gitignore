@@ -39,3 +39,6 @@ Thumbs.db
 
 # Secrets (se presente)
 .env
+
+#properties
+/src/main/resources/application.properties
