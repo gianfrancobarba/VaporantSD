@@ -2,9 +2,9 @@ name: Build and Analyze
 
 on:
   push:
-    branches: [ "main", "master" ] # Aggiunto main per sicurezza
+    branches: [ "main", "master", "feature/testing-suite" ] # Branch triggers
   pull_request:
-    branches: [ "main", "master" ]
+    branches: [ "main", "master", "feature/testing-suite" ] # Branch triggers
 
 jobs:
   build:
