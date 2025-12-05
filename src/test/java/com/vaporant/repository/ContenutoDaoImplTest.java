@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -68,6 +69,26 @@ class ContenutoDaoImplTest {
         when(connection.prepareStatement(anyString())).thenThrow(new SQLException("DB Error"));
 
         ContenutoBean bean = new ContenutoBean();
+        assertThrows(SQLException.class, () -> contenutoDao.saveContenuto(bean));
+    }
+
+    @Test
+    void testSaveContenutoUpdateStorageException() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        // First call (INSERT) succeeds
+        when(connection.prepareStatement(startsWith("INSERT"))).thenReturn(preparedStatement);
+        // Second call (UPDATE) fails
+        when(connection.prepareStatement(startsWith("UPDATE"))).thenThrow(new SQLException("Update Error"));
+
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        ContenutoBean bean = new ContenutoBean();
+        bean.setId_ordine(1);
+        bean.setId_prodotto(1);
+        bean.setQuantita(2);
+        bean.setPrezzoAcquisto(10.0f);
+        bean.setIvaAcquisto(22);
+
         assertThrows(SQLException.class, () -> contenutoDao.saveContenuto(bean));
     }
 

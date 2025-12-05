@@ -99,4 +99,24 @@ class LoginControlTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("loginForm.jsp"));
     }
+
+    @Test
+    void testLoginSuccessActionNotCheckout() throws Exception {
+        UserBean user = new UserBean();
+        user.setTipo("user");
+        user.setEmail("test@test.com");
+
+        when(userDao.findByCred("test@test.com", "password")).thenReturn(user);
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("action", "other");
+        session.setAttribute("cart", new Cart());
+
+        mockMvc.perform(post("/login")
+                .session(session)
+                .param("email", "test@test.com")
+                .param("password", "password"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("ProductView.jsp"));
+    }
 }

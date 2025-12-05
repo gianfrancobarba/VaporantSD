@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -170,5 +171,35 @@ class ProductModelDMTest {
         prod.setCode(1);
 
         assertThrows(SQLException.class, () -> productModel.updateQuantityStorage(prod, 5));
+    }
+
+    @Test
+    void testDoRetrieveAllNoOrder() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+        when(resultSet.next()).thenReturn(false);
+
+        Collection<ProductBean> products = productModel.doRetrieveAll(null);
+        assertNotNull(products);
+
+        products = productModel.doRetrieveAll("");
+        assertNotNull(products);
+    }
+
+    @Test
+    void testDoRetrieveByKeyNotFound() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+        when(resultSet.next()).thenReturn(false);
+
+        ProductBean result = productModel.doRetrieveByKey(999);
+
+        // ProductModelDM returns an empty bean (not null) if not found, but fields are
+        // default.
+        assertNotNull(result);
+        assertEquals(0, result.getCode());
+        assertNull(result.getName());
     }
 }

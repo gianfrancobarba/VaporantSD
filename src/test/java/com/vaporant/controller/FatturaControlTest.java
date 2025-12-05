@@ -77,4 +77,46 @@ class FatturaControlTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("loginForm.jsp"));
     }
+
+    @Test
+    void testDownloadFatturaPDFLongProductName() throws Exception {
+        OrderBean order = new OrderBean();
+        order.setId_ordine(1);
+        order.setDataAcquisto(LocalDate.now());
+        order.setMetodoPagamento("Carta");
+
+        List<ProductBean> products = new ArrayList<>();
+        ProductBean p = new ProductBean();
+        p.setName("This is a very long product name that exceeds thirty five characters");
+        p.setPrice(10.0f);
+        p.setQuantity(1);
+        products.add(p);
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("order", order);
+        session.setAttribute("listaProd", products);
+
+        mockMvc.perform(get("/fattura/download")
+                .session(session))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/pdf"));
+    }
+
+    @Test
+    void testDownloadFatturaPDFException() throws Exception {
+        OrderBean order = new OrderBean();
+        order.setId_ordine(1);
+        order.setDataAcquisto(null); // This will cause NPE when calling toString()
+        order.setMetodoPagamento("Carta");
+
+        List<ProductBean> products = new ArrayList<>();
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("order", order);
+        session.setAttribute("listaProd", products);
+
+        mockMvc.perform(get("/fattura/download")
+                .session(session))
+                .andExpect(status().isInternalServerError());
+    }
 }
