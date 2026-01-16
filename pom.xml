@@ -142,6 +142,7 @@
                     <packagingExcludes>WEB-INF/lib/servlet-api*.jar</packagingExcludes>
                 </configuration>
             </plugin>
+            
             <!-- JaCoCo Code Coverage Plugin -->
             <plugin>
                 <groupId>org.jacoco</groupId>
