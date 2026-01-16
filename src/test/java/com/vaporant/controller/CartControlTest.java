@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.sql.SQLException;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,6 +32,7 @@ class CartControlTest {
     private ProductModel productModel;
 
     @Test
+    @DisplayName("Cart - Aggiunta prodotto al carrello - Redirect a CartView")
     void testAddProductToCart() throws Exception {
         ProductBean product = new ProductBean();
         product.setCode(1);
@@ -51,6 +53,7 @@ class CartControlTest {
     }
 
     @Test
+    @DisplayName("Cart - Rimozione prodotto dal carrello - Redirect a CartView")
     void testDeleteProductFromCart() throws Exception {
         ProductBean product = new ProductBean();
         product.setCode(1);
@@ -74,6 +77,7 @@ class CartControlTest {
     }
 
     @Test
+    @DisplayName("Cart - Aggiornamento quantità prodotto - Redirect a CartView")
     void testUpdateQuantity() throws Exception {
         ProductBean product = new ProductBean();
         product.setCode(1);
@@ -96,6 +100,7 @@ class CartControlTest {
     }
 
     @Test
+    @DisplayName("Cart - Aggiornamento quantità e checkout - Redirect diretto a checkout")
     void testUpdateQuantityAndCheckout() throws Exception {
         ProductBean product = new ProductBean();
         product.setCode(1);
@@ -118,6 +123,7 @@ class CartControlTest {
     }
 
     @Test
+    @DisplayName("Cart - Checkout diretto senza modifiche - Redirect a checkout")
     void testDirectCheckout() throws Exception {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("user", new UserBean());
@@ -130,6 +136,7 @@ class CartControlTest {
     }
 
     @Test
+    @DisplayName("Cart - Nessuna action specificata - Redirect a CartView")
     void testNoAction() throws Exception {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("user", new UserBean());
@@ -141,6 +148,7 @@ class CartControlTest {
     }
 
     @Test
+    @DisplayName("Cart - SQLException durante recupero prodotto - Gestione errore gracefully")
     void testSQLException() throws Exception {
         when(productModel.doRetrieveByKey(anyInt())).thenThrow(new SQLException("DB Error"));
 

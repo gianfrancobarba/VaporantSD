@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -33,6 +34,7 @@ class ProductControlTest {
     private ProductModel productModel;
 
     @Test
+    @DisplayName("Product - Lista prodotti per utente - Redirect a ProductView")
     void testListProductsUser() throws Exception {
         when(productModel.doRetrieveAll(anyString())).thenReturn(new ArrayList<>());
 
@@ -48,6 +50,7 @@ class ProductControlTest {
     }
 
     @Test
+    @DisplayName("Product - Lista prodotti per admin - Redirect a ProductViewAdmin")
     void testListProductsAdmin() throws Exception {
         when(productModel.doRetrieveAll(anyString())).thenReturn(new ArrayList<>());
 
@@ -61,6 +64,7 @@ class ProductControlTest {
     }
 
     @Test
+    @DisplayName("Product - Cancellazione prodotto da admin - Redirect a ProductViewAdmin")
     void testDeleteProduct() throws Exception {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("tipo", "admin");
@@ -76,6 +80,7 @@ class ProductControlTest {
     }
 
     @Test
+    @DisplayName("Product - Inserimento nuovo prodotto da admin - Redirect a ProductViewAdmin")
     void testInsertProduct() throws Exception {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("tipo", "admin");
@@ -94,6 +99,7 @@ class ProductControlTest {
     }
 
     @Test
+    @DisplayName("Product - SQLException durante retrieve - Gestione errore gracefully")
     void testSQLExceptionHandling() throws Exception {
         doThrow(new SQLException("DB Error")).when(productModel).doRetrieveAll(anyString());
 

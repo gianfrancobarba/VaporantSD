@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.sql.SQLException;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,6 +32,7 @@ class ModifyControlTest {
     private UserDAO userDao;
 
     @Test
+    @DisplayName("Modify - Modifica email utente - Restituisce JSON con nuova email")
     void testModifyEmail() throws Exception {
         UserBean user = new UserBean();
         user.setId(1);
@@ -52,6 +54,7 @@ class ModifyControlTest {
     }
 
     @Test
+    @DisplayName("Modify - Modifica telefono utente - Restituisce JSON con nuovo telefono")
     void testModifyTelefono() throws Exception {
         UserBean user = new UserBean();
         user.setId(1);
@@ -73,6 +76,7 @@ class ModifyControlTest {
     }
 
     @Test
+    @DisplayName("Modify - Modifica password con successo - Restituisce success true")
     void testModifyPasswordSuccess() throws Exception {
         UserBean user = new UserBean();
         user.setId(1);
@@ -92,6 +96,7 @@ class ModifyControlTest {
     }
 
     @Test
+    @DisplayName("Modify - Modifica password fallita - Restituisce success false")
     void testModifyPasswordFailure() throws Exception {
         UserBean user = new UserBean();
         user.setId(1);
@@ -111,6 +116,7 @@ class ModifyControlTest {
     }
 
     @Test
+    @DisplayName("Modify - Action sconosciuta - Restituisce Bad Request")
     void testDefaultAction() throws Exception {
         UserBean user = new UserBean();
         user.setId(1);
@@ -124,6 +130,7 @@ class ModifyControlTest {
     }
 
     @Test
+    @DisplayName("Modify - SQLException durante modifica email - Gestione errore gracefully")
     void testModifyEmailException() throws Exception {
         UserBean user = new UserBean();
         user.setId(1);

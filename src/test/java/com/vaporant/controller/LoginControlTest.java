@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.sql.SQLException;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -29,6 +30,7 @@ class LoginControlTest {
     private UserDAO userDao;
 
     @Test
+    @DisplayName("Login - Credenziali valide utente - Redirect a ProductView")
     void testLoginSuccessUser() throws Exception {
         UserBean user = new UserBean();
         user.setTipo("user");
@@ -44,6 +46,7 @@ class LoginControlTest {
     }
 
     @Test
+    @DisplayName("Login - Credenziali valide admin - Redirect a ProductViewAdmin")
     void testLoginSuccessAdmin() throws Exception {
         UserBean user = new UserBean();
         user.setTipo("admin");
@@ -59,6 +62,7 @@ class LoginControlTest {
     }
 
     @Test
+    @DisplayName("Login - Checkout flow attivo - Redirect diretto a checkout")
     void testLoginSuccessCheckout() throws Exception {
         UserBean user = new UserBean();
         user.setTipo("user");
@@ -79,6 +83,7 @@ class LoginControlTest {
     }
 
     @Test
+    @DisplayName("Login - Credenziali non valide - Redirect a loginForm con errore")
     void testLoginFailure() throws Exception {
         when(userDao.findByCred(anyString(), anyString())).thenReturn(null);
 
@@ -90,6 +95,7 @@ class LoginControlTest {
     }
 
     @Test
+    @DisplayName("Login - SQLException dal DAO - Gestione errore gracefully")
     void testLoginException() throws Exception {
         when(userDao.findByCred(anyString(), anyString())).thenThrow(new SQLException("DB Error"));
 
@@ -101,6 +107,7 @@ class LoginControlTest {
     }
 
     @Test
+    @DisplayName("Login - Action diversa da checkout - Redirect a ProductView")
     void testLoginSuccessActionNotCheckout() throws Exception {
         UserBean user = new UserBean();
         user.setTipo("user");

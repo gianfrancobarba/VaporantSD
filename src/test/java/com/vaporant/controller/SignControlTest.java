@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.sql.SQLException;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -27,6 +28,7 @@ class SignControlTest {
     private UserDAO userDao;
 
     @Test
+    @DisplayName("Sign - Registrazione con successo - Redirect a loginForm")
     void testSignSuccess() throws Exception {
         when(userDao.saveUser(any(UserBean.class))).thenReturn(1);
 
@@ -44,6 +46,7 @@ class SignControlTest {
     }
 
     @Test
+    @DisplayName("Sign - Registrazione fallita - Redirect a SignForm")
     void testSignFailure() throws Exception {
         when(userDao.saveUser(any(UserBean.class))).thenReturn(0);
 
@@ -61,6 +64,7 @@ class SignControlTest {
     }
 
     @Test
+    @DisplayName("Sign - SQLException durante registrazione - Gestione errore gracefully")
     void testSignException() throws Exception {
         when(userDao.saveUser(any(UserBean.class))).thenThrow(new SQLException("DB Error"));
 

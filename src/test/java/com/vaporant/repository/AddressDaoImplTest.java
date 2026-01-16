@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,6 +44,7 @@ class AddressDaoImplTest {
     private AddressDaoImpl addressDao;
 
     @Test
+    @DisplayName("saveAddress - Dati validi - Inserimento con successo")
     void testSaveAddressSuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -62,6 +64,7 @@ class AddressDaoImplTest {
     }
 
     @Test
+    @DisplayName("saveAddress - SQLException dal DataSource - Propaga eccezione")
     void testSaveAddressException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenThrow(new SQLException("DB Error"));
@@ -71,6 +74,7 @@ class AddressDaoImplTest {
     }
 
     @Test
+    @DisplayName("deleteAddress - Indirizzo esistente - Cancellazione con successo")
     void testDeleteAddressSuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -86,6 +90,7 @@ class AddressDaoImplTest {
     }
 
     @Test
+    @DisplayName("deleteAddress - SQLException dal DataSource - Propaga eccezione")
     void testDeleteAddressException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenThrow(new SQLException("DB Error"));
@@ -95,6 +100,7 @@ class AddressDaoImplTest {
     }
 
     @Test
+    @DisplayName("findByCred - Credenziali esistenti - Restituisce AddressBean popolato")
     void testFindByCredSuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -113,6 +119,7 @@ class AddressDaoImplTest {
     }
 
     @Test
+    @DisplayName("findByCred - Credenziali inesistenti - Restituisce null")
     void testFindByCredNotFound() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -125,6 +132,7 @@ class AddressDaoImplTest {
     }
 
     @Test
+    @DisplayName("findByCred - SQLException dal DataSource - Propaga eccezione")
     void testFindByCredException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenThrow(new SQLException("DB Error"));
@@ -133,6 +141,7 @@ class AddressDaoImplTest {
     }
 
     @Test
+    @DisplayName("findByID - ID utente con indirizzi - Restituisce ArrayList di AddressBean")
     void testFindByIDSuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -149,6 +158,7 @@ class AddressDaoImplTest {
     }
 
     @Test
+    @DisplayName("findByID - SQLException dal DataSource - Propaga eccezione")
     void testFindByIDException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenThrow(new SQLException("DB Error"));
@@ -157,6 +167,7 @@ class AddressDaoImplTest {
     }
 
     @Test
+    @DisplayName("findAddressByID - ID esistente - Restituisce AddressBean popolato")
     void testFindAddressByIDSuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -173,6 +184,7 @@ class AddressDaoImplTest {
     }
 
     @Test
+    @DisplayName("findAddressByID - ID inesistente - Restituisce null")
     void testFindAddressByIDNotFound() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -185,6 +197,7 @@ class AddressDaoImplTest {
     }
 
     @Test
+    @DisplayName("findAddressByID - SQLException dal DataSource - Propaga eccezione")
     void testFindAddressByIDException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenThrow(new SQLException("DB Error"));

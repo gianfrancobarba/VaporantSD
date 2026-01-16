@@ -19,6 +19,7 @@ import java.util.Collection;
 
 import javax.sql.DataSource;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -49,6 +50,7 @@ class ProductModelDMTest {
     private ProductModelDM productModel;
 
     @Test
+    @DisplayName("doRetrieveAll - Ordine specificato - Restituisce lista prodotti ordinata")
     void testDoRetrieveAll() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -70,6 +72,7 @@ class ProductModelDMTest {
     }
 
     @Test
+    @DisplayName("doSave - Prodotto valido - Inserimento con successo")
     void testDoSave() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -88,6 +91,7 @@ class ProductModelDMTest {
     }
 
     @Test
+    @DisplayName("doDelete - ID esistente - Cancellazione con successo")
     void testDoDelete() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -102,6 +106,7 @@ class ProductModelDMTest {
     }
 
     @Test
+    @DisplayName("doDelete - ID non esistente - Restituisce false")
     void testDoDeleteFailure() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -114,6 +119,7 @@ class ProductModelDMTest {
     }
 
     @Test
+    @DisplayName("doDelete - SQLException dal DataSource - Propaga eccezione")
     void testDoDeleteException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenThrow(new SQLException("DB Error"));
@@ -122,6 +128,7 @@ class ProductModelDMTest {
     }
 
     @Test
+    @DisplayName("doRetrieveByKey - ID esistente - Restituisce ProductBean popolato")
     void testDoRetrieveByKeySuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -139,6 +146,7 @@ class ProductModelDMTest {
     }
 
     @Test
+    @DisplayName("doRetrieveByKey - SQLException dal DataSource - Propaga eccezione")
     void testDoRetrieveByKeyException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenThrow(new SQLException("DB Error"));
@@ -147,6 +155,7 @@ class ProductModelDMTest {
     }
 
     @Test
+    @DisplayName("updateQuantityStorage - Quantità valida - Aggiorna con successo")
     void testUpdateQuantityStorageSuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -163,6 +172,7 @@ class ProductModelDMTest {
     }
 
     @Test
+    @DisplayName("updateQuantityStorage - SQLException dal DataSource - Propaga eccezione")
     void testUpdateQuantityStorageException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenThrow(new SQLException("DB Error"));
@@ -174,6 +184,7 @@ class ProductModelDMTest {
     }
 
     @Test
+    @DisplayName("doRetrieveAll - Nessun ordine specificato - Restituisce lista prodotti")
     void testDoRetrieveAllNoOrder() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -188,6 +199,7 @@ class ProductModelDMTest {
     }
 
     @Test
+    @DisplayName("doRetrieveByKey - ID non esistente - Restituisce bean vuoto")
     void testDoRetrieveByKeyNotFound() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);

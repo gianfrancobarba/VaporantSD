@@ -17,6 +17,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -44,6 +45,7 @@ class ContenutoDaoImplTest {
     private ContenutoDaoImpl contenutoDao;
 
     @Test
+    @DisplayName("saveContenuto - Dati validi - Inserimento e update storage con successo")
     void testSaveContenutoSuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -64,6 +66,7 @@ class ContenutoDaoImplTest {
     }
 
     @Test
+    @DisplayName("saveContenuto - SQLException dal DataSource - Propaga eccezione")
     void testSaveContenutoException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenThrow(new SQLException("DB Error"));
@@ -73,6 +76,7 @@ class ContenutoDaoImplTest {
     }
 
     @Test
+    @DisplayName("saveContenuto - SQLException durante update storage - Propaga eccezione")
     void testSaveContenutoUpdateStorageException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         // First call (INSERT) succeeds
@@ -93,6 +97,7 @@ class ContenutoDaoImplTest {
     }
 
     @Test
+    @DisplayName("deleteContenuto - Contenuto esistente - Cancellazione con successo")
     void testDeleteContenutoSuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -108,6 +113,7 @@ class ContenutoDaoImplTest {
     }
 
     @Test
+    @DisplayName("deleteContenuto - SQLException dal DataSource - Propaga eccezione")
     void testDeleteContenutoException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenThrow(new SQLException("DB Error"));
@@ -117,6 +123,7 @@ class ContenutoDaoImplTest {
     }
 
     @Test
+    @DisplayName("findByKey - Chiave esistente - Restituisce ContenutoBean popolato")
     void testFindByKeySuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -135,6 +142,7 @@ class ContenutoDaoImplTest {
     }
 
     @Test
+    @DisplayName("findByKey - Chiave inesistente - Restituisce null")
     void testFindByKeyNotFound() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -147,6 +155,7 @@ class ContenutoDaoImplTest {
     }
 
     @Test
+    @DisplayName("findByKey - SQLException dal DataSource - Propaga eccezione")
     void testFindByKeyException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenThrow(new SQLException("DB Error"));

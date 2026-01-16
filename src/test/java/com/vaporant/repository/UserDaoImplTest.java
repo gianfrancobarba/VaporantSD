@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import javax.sql.DataSource;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -51,6 +52,7 @@ class UserDaoImplTest {
     }
 
     @Test
+    @DisplayName("findByCred - Credenziali esistenti - Restituisce UserBean popolato")
     void testFindByCredSuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -81,6 +83,7 @@ class UserDaoImplTest {
     }
 
     @Test
+    @DisplayName("findByCred - Credenziali inesistenti - Restituisce null")
     void testFindByCredNotFound() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -94,6 +97,7 @@ class UserDaoImplTest {
     }
 
     @Test
+    @DisplayName("saveUser - Dati validi - Inserimento con successo")
     void testSaveUser() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -117,6 +121,7 @@ class UserDaoImplTest {
     }
 
     @Test
+    @DisplayName("saveUser - SQLException dal DataSource - Propaga eccezione")
     void testSQLException() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException("DB Error"));
 
@@ -126,6 +131,7 @@ class UserDaoImplTest {
     }
 
     @Test
+    @DisplayName("saveUser - Tipo null - Default a 'user'")
     void testSaveUserWithNullType() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -148,6 +154,7 @@ class UserDaoImplTest {
     }
 
     @Test
+    @DisplayName("findById - ID esistente - Restituisce UserBean popolato")
     void testFindByIdSuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -173,6 +180,7 @@ class UserDaoImplTest {
     }
 
     @Test
+    @DisplayName("findById - ID inesistente - Restituisce null")
     void testFindByIdNotFound() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -186,6 +194,7 @@ class UserDaoImplTest {
     }
 
     @Test
+    @DisplayName("modifyMail - Email nuova - Aggiorna con successo")
     void testModifyMail() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -202,6 +211,7 @@ class UserDaoImplTest {
     }
 
     @Test
+    @DisplayName("modifyTelefono - Telefono nuovo - Aggiorna con successo")
     void testModifyTelefono() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -218,6 +228,7 @@ class UserDaoImplTest {
     }
 
     @Test
+    @DisplayName("modifyPsw - Password vecchia corretta - Aggiorna con successo")
     void testModifyPswSuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -236,6 +247,7 @@ class UserDaoImplTest {
     }
 
     @Test
+    @DisplayName("modifyPsw - Password vecchia errata - Restituisce 0 senza query DB")
     void testModifyPswWrongOld() throws SQLException {
         UserBean user = new UserBean();
         user.setId(1);
@@ -249,6 +261,7 @@ class UserDaoImplTest {
     }
 
     @Test
+    @DisplayName("updateAddress - Indirizzo nuovo - Aggiorna UserBean")
     void testUpdateAddress() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -272,6 +285,7 @@ class UserDaoImplTest {
     }
 
     @Test
+    @DisplayName("modifyMail - SQLException dal DataSource - Propaga eccezione")
     void testModifyMailException() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException("DB Error"));
         UserBean user = new UserBean();
@@ -280,6 +294,7 @@ class UserDaoImplTest {
     }
 
     @Test
+    @DisplayName("modifyTelefono - SQLException dal DataSource - Propaga eccezione")
     void testModifyTelefonoException() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException("DB Error"));
         UserBean user = new UserBean();
@@ -288,6 +303,7 @@ class UserDaoImplTest {
     }
 
     @Test
+    @DisplayName("updateAddress - SQLException dal DataSource - Propaga eccezione")
     void testUpdateAddressException() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException("DB Error"));
         UserBean user = new UserBean();

@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.sql.SQLException;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -49,6 +50,7 @@ class OrderControlTest {
     private ProductModel productDao;
 
     @Test
+    @DisplayName("Order - Creazione ordine con successo - Salva ordine e contenuti")
     void testOrderCreationSuccess() throws Exception {
         UserBean user = new UserBean();
         user.setId(1);
@@ -88,6 +90,7 @@ class OrderControlTest {
     }
 
     @Test
+    @DisplayName("Order - SQLException durante creazione ordine - Gestione errore gracefully")
     void testOrderCreationExceptions() throws Exception {
         UserBean user = new UserBean();
         user.setId(1);

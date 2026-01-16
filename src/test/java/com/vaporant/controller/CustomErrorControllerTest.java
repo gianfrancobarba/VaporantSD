@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,6 +21,7 @@ class CustomErrorControllerTest {
     private CustomErrorController controller;
 
     @Test
+    @DisplayName("Error - HTTP 404 - Mostra pagina errore 'Pagina non trovata'")
     void testHandleError404() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)).thenReturn(404);
@@ -32,6 +34,7 @@ class CustomErrorControllerTest {
     }
 
     @Test
+    @DisplayName("Error - HTTP 500 - Mostra pagina errore 'Errore interno del server'")
     void testHandleError500() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)).thenReturn(500);
@@ -44,6 +47,7 @@ class CustomErrorControllerTest {
     }
 
     @Test
+    @DisplayName("Error - HTTP 403 - Mostra pagina errore generico")
     void testHandleErrorOther() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)).thenReturn(403);
@@ -56,6 +60,7 @@ class CustomErrorControllerTest {
     }
 
     @Test
+    @DisplayName("Error - Status code null - Mostra error view senza attributi")
     void testHandleErrorNullStatus() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)).thenReturn(null);

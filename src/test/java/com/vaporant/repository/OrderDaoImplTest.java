@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -49,6 +50,7 @@ class OrderDaoImplTest {
     private OrderDaoImpl orderDao;
 
     @Test
+    @DisplayName("saveOrder - Dati validi - Inserimento con successo")
     void testSaveOrderSuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -68,6 +70,7 @@ class OrderDaoImplTest {
     }
 
     @Test
+    @DisplayName("saveOrder - SQLException dal DataSource - Propaga eccezione")
     void testSaveOrderException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenThrow(new SQLException("DB Error"));
@@ -78,6 +81,7 @@ class OrderDaoImplTest {
     }
 
     @Test
+    @DisplayName("deleteOrder - Ordine esistente - Cancellazione con successo")
     void testDeleteOrderSuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -93,6 +97,7 @@ class OrderDaoImplTest {
     }
 
     @Test
+    @DisplayName("deleteOrder - SQLException dal DataSource - Propaga eccezione")
     void testDeleteOrderException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenThrow(new SQLException("DB Error"));
@@ -102,6 +107,7 @@ class OrderDaoImplTest {
     }
 
     @Test
+    @DisplayName("findByKey - ID esistente - Restituisce OrderBean popolato")
     void testFindByKeySuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -119,6 +125,7 @@ class OrderDaoImplTest {
     }
 
     @Test
+    @DisplayName("findByKey - ID inesistente - Restituisce null")
     void testFindByKeyNotFound() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -131,6 +138,7 @@ class OrderDaoImplTest {
     }
 
     @Test
+    @DisplayName("findByKey - SQLException dal DataSource - Propaga eccezione")
     void testFindByKeyException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenThrow(new SQLException("DB Error"));
@@ -139,6 +147,7 @@ class OrderDaoImplTest {
     }
 
     @Test
+    @DisplayName("getIdfromDB - Database con ordini - Restituisce max ID")
     void testGetIdfromDBSuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.createStatement()).thenReturn(statement);
@@ -153,6 +162,7 @@ class OrderDaoImplTest {
     }
 
     @Test
+    @DisplayName("getIdfromDB - Database vuoto - Restituisce -1")
     void testGetIdfromDBEmpty() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.createStatement()).thenReturn(statement);
@@ -166,6 +176,7 @@ class OrderDaoImplTest {
     }
 
     @Test
+    @DisplayName("getIdfromDB - SQLException dal DataSource - Propaga eccezione")
     void testGetIdfromDBException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.createStatement()).thenThrow(new SQLException("DB Error"));
@@ -174,6 +185,7 @@ class OrderDaoImplTest {
     }
 
     @Test
+    @DisplayName("findByIdUtente - Utente con ordini - Restituisce ArrayList di OrderBean")
     void testFindByIdUtenteSuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -191,6 +203,7 @@ class OrderDaoImplTest {
     }
 
     @Test
+    @DisplayName("findByIdUtente - Utente senza ordini - Restituisce null")
     void testFindByIdUtenteNotFound() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -203,6 +216,7 @@ class OrderDaoImplTest {
     }
 
     @Test
+    @DisplayName("findByIdUtente - SQLException dal DataSource - Propaga eccezione")
     void testFindByIdUtenteException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenThrow(new SQLException("DB Error"));

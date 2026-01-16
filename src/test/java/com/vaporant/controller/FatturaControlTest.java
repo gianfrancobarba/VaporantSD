@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -28,6 +29,7 @@ class FatturaControlTest {
     private MockMvc mockMvc;
 
     @Test
+    @DisplayName("Fattura - Visualizzazione fattura con successo - Mostra view fattura")
     void testShowFatturaSuccess() throws Exception {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("order", new OrderBean());
@@ -40,6 +42,7 @@ class FatturaControlTest {
     }
 
     @Test
+    @DisplayName("Fattura - Utente non loggato - Redirect a loginForm")
     void testShowFatturaRedirect() throws Exception {
         mockMvc.perform(get("/fattura"))
                 .andExpect(status().is3xxRedirection())
@@ -47,6 +50,7 @@ class FatturaControlTest {
     }
 
     @Test
+    @DisplayName("Fattura - Download PDF con successo - Genera PDF con header corretti")
     void testDownloadFatturaPDFSuccess() throws Exception {
         OrderBean order = new OrderBean();
         order.setId_ordine(1);
@@ -72,6 +76,7 @@ class FatturaControlTest {
     }
 
     @Test
+    @DisplayName("Fattura - Download PDF senza login - Redirect a loginForm")
     void testDownloadFatturaPDFRedirect() throws Exception {
         mockMvc.perform(get("/fattura/download"))
                 .andExpect(status().is3xxRedirection())
@@ -79,6 +84,7 @@ class FatturaControlTest {
     }
 
     @Test
+    @DisplayName("Fattura - Download PDF con nome prodotto lungo - Gestione truncate correttamente")
     void testDownloadFatturaPDFLongProductName() throws Exception {
         OrderBean order = new OrderBean();
         order.setId_ordine(1);
@@ -103,6 +109,7 @@ class FatturaControlTest {
     }
 
     @Test
+    @DisplayName("Fattura - Download PDF con eccezione - Restituisce 500 Internal Server Error")
     void testDownloadFatturaPDFException() throws Exception {
         OrderBean order = new OrderBean();
         order.setId_ordine(1);

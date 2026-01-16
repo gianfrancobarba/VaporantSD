@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.sql.SQLException;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -30,6 +31,7 @@ class AddressControlTest {
     private AddressDAO addressDao;
 
     @Test
+    @DisplayName("Address - Salvataggio indirizzo con successo - Redirect a Utente.jsp")
     void testSaveAddressSuccess() throws Exception {
         UserBean user = new UserBean();
         user.setId(1);
@@ -53,6 +55,7 @@ class AddressControlTest {
     }
 
     @Test
+    @DisplayName("Address - Utente null in sessione - Redirect a Utente.jsp senza salvataggio")
     void testSaveAddressUserNull() throws Exception {
         mockMvc.perform(post("/AddressControl"))
                 .andExpect(status().is3xxRedirection())
@@ -60,6 +63,7 @@ class AddressControlTest {
     }
 
     @Test
+    @DisplayName("Address - SQLException durante salvataggio - Gestione errore gracefully")
     void testSaveAddressException() throws Exception {
         UserBean user = new UserBean();
         user.setId(1);
