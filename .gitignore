@@ -46,3 +46,6 @@ DOCKER_GUIDE.md
 
 #properties
 /src/main/resources/application.properties
+
+#docs
+/docs
