@@ -2,9 +2,9 @@ name: Build and Analyze
 
 on:
   push:
-    branches: ["main", "master", "feature/testing-suite"] # Branch triggers
+    branches: ["main", "feature/testing-suite"]
   pull_request:
-    branches: ["main", "master", "feature/testing-suite"] # Branch triggers
+    branches: ["main", "feature/testing-suite"]
 
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Importante per Sonar e analisi corrette
+          fetch-depth: 0 
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
