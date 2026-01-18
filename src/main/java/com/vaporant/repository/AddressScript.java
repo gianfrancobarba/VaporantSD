@@ -1,16 +1,15 @@
 package com.vaporant.repository;
+
 import com.vaporant.model.*;
 
 public class AddressScript {
-	
+
 	private int id;
 	private String indirizzo;
-	
+
 	public AddressScript(AddressBean address) {
-		
 		id = address.getId();
 		indirizzo = address.toStringScript();
-		
 	}
 
 	public int getId() {
@@ -28,10 +27,8 @@ public class AddressScript {
 	public void setIndirizzo(String indirizzo) {
 		this.indirizzo = indirizzo;
 	}
-	
+
 	public String toString() {
-		
 		return id + " " + indirizzo;
-		
 	}
 }
