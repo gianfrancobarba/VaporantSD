@@ -223,4 +223,21 @@ class OrderDaoImplTest {
 
         assertThrows(SQLException.class, () -> orderDao.findByIdUtente(1));
     }
+
+    @Test
+    @DisplayName("Resource Management - SQLException chiude correttamente Connection e PreparedStatement")
+    void findByKey_sqlException_closesResources() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenThrow(new SQLException("Test database error"));
+
+        // Act & Assert
+        assertThrows(SQLException.class, () -> orderDao.findByKey(1),
+                "SQLException dovrebbe essere propagata");
+
+        // Verify resource cleanup (try-with-resources)
+        verify(preparedStatement).close();
+        verify(connection).close();
+    }
 }

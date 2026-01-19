@@ -208,10 +208,27 @@ class ProductModelDMTest {
 
         ProductBean result = productModel.doRetrieveByKey(999);
 
-        // ProductModelDM returns an empty bean (not null) if not found, but fields are
+        // ProductModelDM returns an empty bean (not null)if not found, but fields are
         // default.
         assertNotNull(result);
         assertEquals(0, result.getCode());
         assertNull(result.getName());
+    }
+
+    @Test
+    @DisplayName("Resource Management - SQLException chiude correttamente Connection e PreparedStatement")
+    void doRetrieveByKey_sqlException_closesResources() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenThrow(new SQLException("Test database error"));
+
+        // Act & Assert
+        assertThrows(SQLException.class, () -> productModel.doRetrieveByKey(1),
+                "SQLException dovrebbe essere propagata");
+
+        // Verify resource cleanup (try-with-resources)
+        verify(preparedStatement).close();
+        verify(connection).close();
     }
 }
