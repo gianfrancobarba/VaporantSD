@@ -3,7 +3,9 @@ package com.vaporant.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -50,43 +52,42 @@ class OrderControlTest {
     private ProductModel productDao;
 
     @Test
-    @DisplayName("Order - Creazione ordine con successo - Salva ordine e contenuti")
+    @DisplayName("Order - Flow checkout completo salva ordine e contenuti")
     void testOrderCreationSuccess() throws Exception {
-        UserBean user = new UserBean();
-        user.setId(1);
+        // Arrange
+        UserBean user = createTestUser();
+        Cart cart = createTestCart();
 
-        Cart cart = new Cart();
-        ProductBean product = new ProductBean();
-        product.setCode(1);
-        product.setPrice(10.0f);
-        product.setQuantity(1);
-        product.setQuantityStorage(10);
-        product.setName("Product 1");
-        product.setDescription("Desc");
-        cart.addProduct(product);
+        AddressBean addressMock = org.mockito.Mockito.mock(AddressBean.class);
+        when(addressMock.toStringScript()).thenReturn("Via Roma, 10");
 
-        AddressBean address = org.mockito.Mockito.mock(AddressBean.class);
-        when(address.toStringScript()).thenReturn("Via Roma, 10");
-
-        when(addressDao.findAddressByID(anyInt())).thenReturn(address);
+        when(addressDao.findAddressByID(anyInt())).thenReturn(addressMock);
         when(orderDao.getIdfromDB()).thenReturn(1);
 
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("user", user);
         session.setAttribute("cart", cart);
 
+        // Act & Assert
         mockMvc.perform(post("/Ordine")
                 .session(session)
-                .param("payment", "Carta")
-                .param("addressDropdown", "1")
-                .param("addressDropdown2", "1"))
+                .param("payment", "PayPal")
+                .param("addressDropdown", "4")
+                .param("addressDropdown2", "5"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("ordine.jsp"));
 
+        // Verify flow completo
         verify(userDao).updateAddress(anyString(), eq(user));
-        verify(orderDao).saveOrder(any(OrderBean.class));
-        verify(contDao).saveContenuto(any(ContenutoBean.class));
-        verify(productDao).updateQuantityStorage(any(ProductBean.class), anyInt());
+
+        verify(orderDao).saveOrder(argThat(order -> order.getId_utente() == user.getId() &&
+                order.getMetodoPagamento().equals("PayPal") &&
+                order.getId_indirizzo() == 4 &&
+                Math.abs(order.getPrezzoTot() - cart.getPrezzoTotale()) < 0.01));
+
+        verify(orderDao).getIdfromDB();
+        verify(contDao, times(cart.getProducts().size())).saveContenuto(any(ContenutoBean.class));
+        verify(productDao, times(cart.getProducts().size())).updateQuantityStorage(any(ProductBean.class), anyInt());
     }
 
     @Test
@@ -109,5 +110,41 @@ class OrderControlTest {
                 .param("addressDropdown2", "1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("ordine.jsp"));
+    }
+
+    // Helper methods
+    private Cart createTestCart() {
+        Cart cart = new Cart();
+
+        // Product 1
+        ProductBean p1 = new ProductBean();
+        p1.setCode(1);
+        p1.setName("Product 1");
+        p1.setPrice(10.0f);
+        p1.setQuantity(2);
+        p1.setQuantityStorage(100);
+        p1.setDescription("Desc 1");
+        cart.addProduct(p1);
+
+        // Product 2
+        ProductBean p2 = new ProductBean();
+        p2.setCode(2);
+        p2.setName("Product 2");
+        p2.setPrice(15.0f);
+        p2.setQuantity(1);
+        p2.setQuantityStorage(50);
+        p2.setDescription("Desc 2");
+        cart.addProduct(p2);
+
+        return cart; // Total: 2*10 + 1*15 = 35.0
+    }
+
+    private UserBean createTestUser() {
+        UserBean user = new UserBean();
+        user.setId(1);
+        user.setNome("Test");
+        user.setCognome("User");
+        user.setEmail("test@test.com");
+        return user;
     }
 }
