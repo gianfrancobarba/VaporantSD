@@ -119,4 +119,37 @@ class LoginControlTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("ProductView.jsp"));
     }
+
+    @Test
+    @DisplayName("Login - Parametri email null - Gestione gracefully")
+    void testLoginWithNullEmail() throws Exception {
+        // Act & Assert - email null dovrebbe causare findByCred(null, password)
+        when(userDao.findByCred(null, "password")).thenReturn(null);
+
+        mockMvc.perform(post("/login")
+                .param("password", "password")) // NO email param
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("loginForm.jsp"));
+    }
+
+    @Test
+    @DisplayName("Login - Action null in session - Redirect a ProductView default")
+    void testLoginWithActionNull() throws Exception {
+        UserBean user = new UserBean();
+        user.setTipo("user");
+        user.setEmail("test@test.com");
+
+        when(userDao.findByCred("test@test.com", "password")).thenReturn(user);
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("action", null); // ✅ Action null
+        session.setAttribute("cart", new Cart());
+
+        mockMvc.perform(post("/login")
+                .session(session)
+                .param("email", "test@test.com")
+                .param("password", "password"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("ProductView.jsp"));
+    }
 }

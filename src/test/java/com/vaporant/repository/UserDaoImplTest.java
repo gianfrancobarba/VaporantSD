@@ -118,8 +118,15 @@ class UserDaoImplTest {
         int result = userDao.saveUser(user);
 
         assertEquals(1, result, "saveUser dovrebbe ritornare 1 per inserimento riuscito");
+        // ✅ Verify TUTTI i setters (kill VoidMethodCallMutator)
         verify(preparedStatement).setString(1, "Test");
+        verify(preparedStatement).setString(2, "User");
         verify(preparedStatement).setString(3, "test@test.com");
+        verify(preparedStatement).setString(4, "password");
+        verify(preparedStatement).setString(5, "CF123");
+        verify(preparedStatement).setString(6, "123456");
+        verify(preparedStatement).setString(7, user.getDataNascita().toString());
+        verify(preparedStatement).setString(8, "user");
     }
 
     @Test
@@ -314,13 +321,97 @@ class UserDaoImplTest {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
         when(preparedStatement.executeQuery()).thenThrow(new SQLException("Test database error"));
-
         // Act & Assert
         assertThrows(SQLException.class, () -> userDao.findByCred("test@test.com", "password"),
                 "SQLException dovrebbe essere propagata");
 
-        // Verify resource cleanup (try-with-resources)
+        // Verify resources closed anche in caso di exception
         verify(preparedStatement).close();
         verify(connection).close();
+    }
+
+    @Test
+    @DisplayName("deleteUser - Verifica setInt parametro ID")
+    void testDeleteUserParametersSet() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        UserBean user = new UserBean();
+        user.setId(42);
+
+        // Act
+        int result = userDao.deleteUser(user);
+
+        // Assert
+        assertEquals(1, result);
+        // ✅ Verify setter parameter (kill VoidMethodCallMutator)
+        verify(preparedStatement).setInt(1, 42);
+    }
+
+    @Test
+    @DisplayName("modifyMail - Verifica tutti parametri setString e setInt")
+    void testModifyMailParametersSet() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        UserBean user = new UserBean();
+        user.setId(10);
+        String newEmail = "new@email.com";
+
+        // Act
+        userDao.modifyMail(user, newEmail);
+
+        // Assert
+        // ✅ Verify entrambi i parametri (kill VoidMethodCallMutator)
+        verify(preparedStatement).setString(1, "new@email.com");
+        verify(preparedStatement).setInt(2, 10);
+    }
+
+    @Test
+    @DisplayName("modifyTelefono - Verifica tutti parametri setString e setInt")
+    void testModifyTelefonoParametersSet() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        UserBean user = new UserBean();
+        user.setId(15);
+        String newCell = "9876543210";
+
+        // Act
+        userDao.modifyTelefono(user, newCell);
+
+        // Assert
+        // ✅ Verify entrambi parametri
+        verify(preparedStatement).setString(1, "9876543210");
+        verify(preparedStatement).setInt(2, 15);
+    }
+
+    @Test
+    @DisplayName("modifyPsw - Success - Verifica tutti i 3 parametri")
+    void testModifyPswAllParametersSet() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        UserBean user = new UserBean();
+        user.setId(20);
+        user.setPassword("oldPassword");
+
+        // Act
+        int result = userDao.modifyPsw("newPassword", "oldPassword", user);
+
+        // Assert
+        assertEquals(1, result);
+        // ✅ Verify tutti i 3 setters (kill VoidMethodCallMutator)
+        verify(preparedStatement).setString(1, "newPassword");
+        verify(preparedStatement).setInt(2, 20);
+        verify(preparedStatement).setString(3, "oldPassword");
     }
 }

@@ -60,7 +60,12 @@ class AddressDaoImplTest {
         int result = addressDao.saveAddress(address);
 
         assertEquals(1, result, "saveAddress dovrebbe ritornare 1 per inserimento riuscito");
-        verify(preparedStatement).setString(1, "Via Roma");
+        // ✅ Verify TUTTI i 5 setters (kill VoidMethodCallMutator)
+        verify(preparedStatement).setString(1, "Via Roma"); // Via
+        verify(preparedStatement).setString(2, "10"); // numCivico
+        verify(preparedStatement).setString(3, "Milano"); // citta
+        verify(preparedStatement).setString(4, "20100"); // CAP
+        verify(preparedStatement).setString(5, "MI"); // provincia
     }
 
     @Test

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -66,7 +67,12 @@ class OrderDaoImplTest {
         int result = orderDao.saveOrder(order);
 
         assertEquals(1, result, "saveOrder dovrebbe ritornare 1 per inserimento riuscito");
-        verify(preparedStatement).setInt(1, 1);
+        // ✅ Verify TUTTI i 5 setters (kill VoidMethodCallMutator)
+        verify(preparedStatement).setInt(1, 1); // ID_Utente
+        verify(preparedStatement).setInt(2, 1); // ID_Indirizzo
+        verify(preparedStatement).setDouble(3, 100.0); // prezzoTot
+        verify(preparedStatement).setString(4, order.getDataAcquisto().toString()); // dataAcquisto
+        verify(preparedStatement).setString(5, "Carta"); // metodoPagamento
     }
 
     @Test
@@ -239,5 +245,70 @@ class OrderDaoImplTest {
         // Verify resource cleanup (try-with-resources)
         verify(preparedStatement).close();
         verify(connection).close();
+    }
+
+    @Test
+    @DisplayName("findByKey - Verifica setInt parametro ID")
+    void testFindByKeyAllParametersSet() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+        when(resultSet.isBeforeFirst()).thenReturn(false); // Not found
+
+        // Act
+        OrderBean result = orderDao.findByKey(999);
+
+        // Assert
+        assertNull(result, "findByKey dovrebbe ritornare null se non trovato");
+        // ✅ Verify setter parameter (kill VoidMethodCallMutator)
+        verify(preparedStatement).setInt(1, 999);
+    }
+
+    @Test
+    @DisplayName("findByIdUtente - Verifica setInt parametro ID utente")
+    void testFindByIdUtenteParameterSet() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+        when(resultSet.isBeforeFirst()).thenReturn(false); // No orders
+
+        // Act
+        ArrayList<OrderBean> result = orderDao.findByIdUtente(456);
+
+        // Assert
+        assertNull(result, "findByIdUtente dovrebbe ritornare null se non trovato");
+        // ✅ Verify setter parameter
+        verify(preparedStatement).setInt(1, 456);
+    }
+
+    @Test
+    @DisplayName("findByIdUtente - Multiple orders - Verifica loop while rs.next()")
+    void testFindByIdUtenteMultipleOrders() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+        when(resultSet.isBeforeFirst()).thenReturn(true); // Has results
+
+        // Simulate 3 orders: next() returns true 3 times, then false
+        when(resultSet.next()).thenReturn(true, true, true, false);
+        when(resultSet.getInt("ID_Ordine")).thenReturn(1, 2, 3);
+        when(resultSet.getInt("ID_Utente")).thenReturn(10);
+        when(resultSet.getInt("ID_Indirizzo")).thenReturn(5);
+        when(resultSet.getDouble("prezzoTot")).thenReturn(100.0, 200.0, 300.0);
+        when(resultSet.getDate("dataAcquisto")).thenReturn(java.sql.Date.valueOf(LocalDate.now()));
+        when(resultSet.getString("metodoPagamento")).thenReturn("PayPal", "Carta", "Contrassegno");
+
+        // Act
+        ArrayList<OrderBean> result = orderDao.findByIdUtente(10);
+
+        // Assert
+        assertNotNull(result, "findByIdUtente dovrebbe ritornare ArrayList");
+        assertEquals(3, result.size(), "Dovrebbe ritornare 3 ordini");
+
+        // ✅ Verify loop iterations (kill NegateConditionalsMutator su while)
+        verify(resultSet, times(4)).next(); // 3 true + 1 false
     }
 }

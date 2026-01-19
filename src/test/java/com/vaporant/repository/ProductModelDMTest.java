@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 import java.util.Collection;
 
 import javax.sql.DataSource;
@@ -86,7 +87,11 @@ class ProductModelDMTest {
 
         productModel.doSave(p);
 
-        verify(preparedStatement).setString(1, "New Product");
+        // ✅ Verify TUTTI i 4 setters (kill VoidMethodCallMutator)
+        verify(preparedStatement).setString(1, "New Product"); // Nome
+        verify(preparedStatement).setString(2, "Desc"); // Description
+        verify(preparedStatement).setInt(3, 10); // QuantityStorage
+        verify(preparedStatement).setFloat(4, 100); // Price
         verify(preparedStatement).executeUpdate();
     }
 
@@ -230,5 +235,23 @@ class ProductModelDMTest {
         // Verify resource cleanup (try-with-resources)
         verify(preparedStatement).close();
         verify(connection).close();
+    }
+
+    @Test
+    @DisplayName("doDelete - Verifica setInt parametro code")
+    void testDoDeleteParameterSet() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+        when(connection.createStatement()).thenReturn(statement);
+
+        // Act
+        boolean result = productModel.doDelete(999);
+
+        // Assert
+        assertTrue(result, "doDelete dovrebbe ritornare true per delete riuscito");
+        // ✅ Verify setter parameter (kill VoidMethodCallMutator)
+        verify(preparedStatement).setInt(1, 999);
     }
 }

@@ -1,9 +1,11 @@
 package com.vaporant.controller;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -147,5 +149,22 @@ class ProductControlTest {
         // Assert: SQLException caught, doRetrieveAll ancora chiamato
         verify(productModel).doDelete(1);
         verify(productModel).doRetrieveAll(null);
+    }
+
+    @Test
+    @DisplayName("Product - Action parameter null/missing - No operations executed")
+    void testExecuteWithNoAction() throws Exception {
+        // Arrange
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("tipo", "admin");
+
+        // Act & Assert - NO action param
+        mockMvc.perform(post("/product")
+                .session(session))
+                .andExpect(status().is3xxRedirection());
+
+        // ✅ Verify NO delete/insert (kill conditional mutations su action check)
+        verify(productModel, never()).doDelete(anyInt());
+        verify(productModel, never()).doSave(any());
     }
 }
