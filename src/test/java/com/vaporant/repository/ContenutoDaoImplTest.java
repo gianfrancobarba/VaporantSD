@@ -109,7 +109,7 @@ class ContenutoDaoImplTest {
 
         int result = contenutoDao.deleteContenuto(bean);
 
-        assertEquals(1, result);
+        assertEquals(1, result, "deleteContenuto dovrebbe ritornare 1 per cancellazione riuscita");
     }
 
     @Test
@@ -136,9 +136,9 @@ class ContenutoDaoImplTest {
 
         ContenutoBean result = contenutoDao.findByKey(1, 1);
 
-        assertNotNull(result);
-        assertEquals(1, result.getId_ordine());
-        assertEquals(1, result.getId_prodotto());
+        assertNotNull(result, "findByKey dovrebbe ritornare ContenutoBean per chiave esistente");
+        assertEquals(1, result.getId_ordine(), "ID ordine dovrebbe essere 1");
+        assertEquals(1, result.getId_prodotto(), "ID prodotto dovrebbe essere 1");
     }
 
     @Test
@@ -151,7 +151,7 @@ class ContenutoDaoImplTest {
 
         ContenutoBean result = contenutoDao.findByKey(1, 1);
 
-        assertNull(result);
+        assertNull(result, "findByKey dovrebbe ritornare null per chiave inesistente");
     }
 
     @Test

@@ -59,7 +59,7 @@ class AddressDaoImplTest {
 
         int result = addressDao.saveAddress(address);
 
-        assertEquals(1, result);
+        assertEquals(1, result, "saveAddress dovrebbe ritornare 1 per inserimento riuscito");
         verify(preparedStatement).setString(1, "Via Roma");
     }
 
@@ -85,7 +85,7 @@ class AddressDaoImplTest {
 
         int result = addressDao.deleteAddress(address);
 
-        assertEquals(1, result);
+        assertEquals(1, result, "deleteAddress dovrebbe ritornare 1 per cancellazione riuscita");
         verify(preparedStatement).setInt(1, 1);
     }
 
@@ -113,9 +113,9 @@ class AddressDaoImplTest {
 
         AddressBean result = addressDao.findByCred("20100", "Via Roma", "10");
 
-        assertNotNull(result);
-        assertEquals(1, result.getId());
-        assertEquals("Via Roma", result.getVia());
+        assertNotNull(result, "findByCred dovrebbe ritornare AddressBean per credenziali esistenti");
+        assertEquals(1, result.getId(), "ID indirizzo dovrebbe essere 1");
+        assertEquals("Via Roma", result.getVia(), "Via dovrebbe essere 'Via Roma'");
     }
 
     @Test
@@ -128,7 +128,7 @@ class AddressDaoImplTest {
 
         AddressBean result = addressDao.findByCred("20100", "Via Roma", "10");
 
-        assertNull(result);
+        assertNull(result, "findByCred dovrebbe ritornare null per credenziali inesistenti");
     }
 
     @Test
@@ -152,9 +152,9 @@ class AddressDaoImplTest {
 
         ArrayList<AddressBean> results = addressDao.findByID(1);
 
-        assertNotNull(results);
-        assertEquals(1, results.size());
-        assertEquals(1, results.get(0).getId());
+        assertNotNull(results, "findByID dovrebbe ritornare ArrayList per utente con indirizzi");
+        assertEquals(1, results.size(), "ArrayList dovrebbe contenere 1 indirizzo");
+        assertEquals(1, results.get(0).getId(), "ID primo indirizzo dovrebbe essere 1");
     }
 
     @Test
@@ -179,8 +179,8 @@ class AddressDaoImplTest {
 
         AddressBean result = addressDao.findAddressByID(1);
 
-        assertNotNull(result);
-        assertEquals(1, result.getId());
+        assertNotNull(result, "findAddressByID dovrebbe ritornare AddressBean per ID esistente");
+        assertEquals(1, result.getId(), "ID indirizzo dovrebbe essere 1");
     }
 
     @Test
@@ -193,7 +193,7 @@ class AddressDaoImplTest {
 
         AddressBean result = addressDao.findAddressByID(1);
 
-        assertNull(result);
+        assertNull(result, "findAddressByID dovrebbe ritornare null per ID inesistente");
     }
 
     @Test

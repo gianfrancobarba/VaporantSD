@@ -65,10 +65,10 @@ class ProductModelDMTest {
 
         Collection<ProductBean> products = productModel.doRetrieveAll("nome");
 
-        assertNotNull(products);
-        assertEquals(1, products.size());
+        assertNotNull(products, "doRetrieveAll dovrebbe ritornare Collection di prodotti");
+        assertEquals(1, products.size(), "Collection dovrebbe contenere 1 prodotto");
         ProductBean p = products.iterator().next();
-        assertEquals("Product 1", p.getName());
+        assertEquals("Product 1", p.getName(), "Nome prodotto dovrebbe essere 'Product 1'");
     }
 
     @Test
@@ -100,7 +100,7 @@ class ProductModelDMTest {
 
         boolean result = productModel.doDelete(1);
 
-        assertTrue(result);
+        assertTrue(result, "doDelete dovrebbe ritornare true per ID esistente");
         verify(preparedStatement).setInt(1, 1);
         verify(statement).executeUpdate(anyString());
     }
@@ -115,7 +115,7 @@ class ProductModelDMTest {
 
         boolean result = productModel.doDelete(999);
 
-        assertFalse(result);
+        assertFalse(result, "doDelete dovrebbe ritornare false per ID non esistente");
     }
 
     @Test
@@ -140,9 +140,9 @@ class ProductModelDMTest {
 
         ProductBean result = productModel.doRetrieveByKey(1);
 
-        assertNotNull(result);
-        assertEquals(1, result.getCode());
-        assertEquals("Product 1", result.getName());
+        assertNotNull(result, "doRetrieveByKey dovrebbe ritornare ProductBean per ID esistente");
+        assertEquals(1, result.getCode(), "Code dovrebbe essere 1");
+        assertEquals("Product 1", result.getName(), "Nome dovrebbe essere 'Product 1'");
     }
 
     @Test
@@ -192,10 +192,10 @@ class ProductModelDMTest {
         when(resultSet.next()).thenReturn(false);
 
         Collection<ProductBean> products = productModel.doRetrieveAll(null);
-        assertNotNull(products);
+        assertNotNull(products, "doRetrieveAll dovrebbe ritornare Collection anche senza ordine");
 
         products = productModel.doRetrieveAll("");
-        assertNotNull(products);
+        assertNotNull(products, "doRetrieveAll dovrebbe ritornare Collection per ordine vuoto");
     }
 
     @Test
@@ -210,9 +210,9 @@ class ProductModelDMTest {
 
         // ProductModelDM returns an empty bean (not null)if not found, but fields are
         // default.
-        assertNotNull(result);
-        assertEquals(0, result.getCode());
-        assertNull(result.getName());
+        assertNotNull(result, "doRetrieveByKey dovrebbe ritornare bean vuoto per ID non esistente");
+        assertEquals(0, result.getCode(), "Code dovrebbe essere 0 per bean vuoto");
+        assertNull(result.getName(), "Nome dovrebbe essere null per bean vuoto");
     }
 
     @Test

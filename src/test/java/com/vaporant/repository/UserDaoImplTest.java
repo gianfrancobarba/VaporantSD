@@ -75,9 +75,9 @@ class UserDaoImplTest {
 
         UserBean user = userDao.findByCred("test@test.com", "password");
 
-        assertNotNull(user);
-        assertEquals("test@test.com", user.getEmail());
-        assertEquals("user", user.getTipo());
+        assertNotNull(user, "findByCred dovrebbe ritornare UserBean per credenziali valide");
+        assertEquals("test@test.com", user.getEmail(), "Email dovrebbe corrispondere a quella fornita");
+        assertEquals("user", user.getTipo(), "Tipo dovrebbe essere 'user'");
 
         verify(connection).prepareStatement(anyString());
         verify(preparedStatement).setString(1, "test@test.com");
@@ -95,7 +95,7 @@ class UserDaoImplTest {
 
         UserBean user = userDao.findByCred("wrong", "wrong");
 
-        assertNull(user);
+        assertNull(user, "findByCred dovrebbe ritornare null per credenziali inesistenti");
     }
 
     @Test
@@ -117,7 +117,7 @@ class UserDaoImplTest {
 
         int result = userDao.saveUser(user);
 
-        assertEquals(1, result);
+        assertEquals(1, result, "saveUser dovrebbe ritornare 1 per inserimento riuscito");
         verify(preparedStatement).setString(1, "Test");
         verify(preparedStatement).setString(3, "test@test.com");
     }
@@ -151,7 +151,7 @@ class UserDaoImplTest {
 
         int result = userDao.saveUser(user);
 
-        assertEquals(1, result);
+        assertEquals(1, result, "saveUser dovrebbe ritornare 1 anche con tipo null (default 'user')");
         verify(preparedStatement).setString(8, "user"); // Should default to "user"
     }
 
@@ -177,8 +177,8 @@ class UserDaoImplTest {
 
         UserBean user = userDao.findById(1);
 
-        assertNotNull(user);
-        assertEquals(1, user.getId());
+        assertNotNull(user, "findById dovrebbe ritornare UserBean per ID esistente");
+        assertEquals(1, user.getId(), "ID dovrebbe essere 1");
     }
 
     @Test
@@ -192,7 +192,7 @@ class UserDaoImplTest {
 
         UserBean user = userDao.findById(999);
 
-        assertNull(user);
+        assertNull(user, "findById dovrebbe ritornare null per ID inesistente");
     }
 
     @ParameterizedTest(name = "modify{0} aggiorna campo con valore {1}")
@@ -236,7 +236,7 @@ class UserDaoImplTest {
 
         int result = userDao.modifyPsw("newPass", "oldPass", user);
 
-        assertEquals(1, result);
+        assertEquals(1, result, "modifyPsw dovrebbe ritornare 1 per password corretta");
         verify(preparedStatement).setString(1, "newPass");
         verify(preparedStatement).setInt(2, 1);
         verify(preparedStatement).setString(3, "oldPass");
@@ -251,7 +251,7 @@ class UserDaoImplTest {
 
         int result = userDao.modifyPsw("newPass", "wrongPass", user);
 
-        assertEquals(0, result);
+        assertEquals(0, result, "modifyPsw dovrebbe ritornare 0 per password vecchia errata");
         // Should not interact with DB
         verify(dataSource, times(0)).getConnection();
     }
@@ -277,7 +277,7 @@ class UserDaoImplTest {
         verify(preparedStatement).setString(1, "New Address");
         verify(preparedStatement).setInt(2, 1);
         // verify(preparedStatement).executeUpdate(); // Commented out in source
-        assertEquals("New Address", user.getIndirizzoFatt());
+        assertEquals("New Address", user.getIndirizzoFatt(), "Indirizzo fatturazione dovrebbe essere aggiornato");
     }
 
     @Test

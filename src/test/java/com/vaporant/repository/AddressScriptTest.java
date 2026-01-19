@@ -80,7 +80,7 @@ class AddressScriptTest {
         int result = script.getId();
 
         // Assert
-        assertEquals(1, result, "getId should return the ID set in constructor");
+        assertEquals(1, result, "getId dovrebbe ritornare l'ID impostato nel constructor");
     }
 
     @Test
@@ -93,7 +93,7 @@ class AddressScriptTest {
         script.setId(99);
 
         // Assert
-        assertEquals(99, script.getId(), "setId should update the ID");
+        assertEquals(99, script.getId(), "setId dovrebbe aggiornare l'ID");
     }
 
     @Test
@@ -196,7 +196,7 @@ class AddressScriptTest {
         script.setIndirizzo("");
 
         // Assert
-        assertEquals("", script.getIndirizzo(), "Should accept empty string");
+        assertEquals("", script.getIndirizzo(), "setIndirizzo dovrebbe accettare stringa vuota");
     }
 
     @Test
@@ -209,7 +209,7 @@ class AddressScriptTest {
         script.setIndirizzo(null);
 
         // Assert
-        assertNull(script.getIndirizzo(), "Should accept null value");
+        assertNull(script.getIndirizzo(), "setIndirizzo dovrebbe accettare valore null");
     }
 
     @Test

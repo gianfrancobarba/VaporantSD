@@ -65,7 +65,7 @@ class OrderDaoImplTest {
 
         int result = orderDao.saveOrder(order);
 
-        assertEquals(1, result);
+        assertEquals(1, result, "saveOrder dovrebbe ritornare 1 per inserimento riuscito");
         verify(preparedStatement).setInt(1, 1);
     }
 
@@ -92,7 +92,7 @@ class OrderDaoImplTest {
 
         int result = orderDao.deleteOrder(order);
 
-        assertEquals(1, result);
+        assertEquals(1, result, "deleteOrder dovrebbe ritornare 1 per cancellazione riuscita");
         verify(preparedStatement).setInt(1, 1);
     }
 
@@ -120,8 +120,8 @@ class OrderDaoImplTest {
 
         OrderBean result = orderDao.findByKey(1);
 
-        assertNotNull(result);
-        assertEquals(1, result.getId_ordine());
+        assertNotNull(result, "findByKey dovrebbe ritornare OrderBean per ID esistente");
+        assertEquals(1, result.getId_ordine(), "ID ordine dovrebbe essere 1");
     }
 
     @Test
@@ -134,7 +134,7 @@ class OrderDaoImplTest {
 
         OrderBean result = orderDao.findByKey(1);
 
-        assertNull(result);
+        assertNull(result, "findByKey dovrebbe ritornare null per ID inesistente");
     }
 
     @Test
@@ -158,7 +158,7 @@ class OrderDaoImplTest {
 
         int id = orderDao.getIdfromDB();
 
-        assertEquals(10, id);
+        assertEquals(10, id, "getIdfromDB dovrebbe ritornare max ID 10");
     }
 
     @Test
@@ -172,7 +172,7 @@ class OrderDaoImplTest {
 
         int id = orderDao.getIdfromDB();
 
-        assertEquals(-1, id);
+        assertEquals(-1, id, "getIdfromDB dovrebbe ritornare -1 per database vuoto");
     }
 
     @Test
@@ -198,8 +198,8 @@ class OrderDaoImplTest {
 
         ArrayList<OrderBean> results = orderDao.findByIdUtente(1);
 
-        assertNotNull(results);
-        assertEquals(1, results.size());
+        assertNotNull(results, "findByIdUtente dovrebbe ritornare ArrayList per utente con ordini");
+        assertEquals(1, results.size(), "ArrayList dovrebbe contenere 1 ordine");
     }
 
     @Test
@@ -212,7 +212,7 @@ class OrderDaoImplTest {
 
         ArrayList<OrderBean> results = orderDao.findByIdUtente(1);
 
-        assertNull(results);
+        assertNull(results, "findByIdUtente dovrebbe ritornare null per utente senza ordini");
     }
 
     @Test
