@@ -166,8 +166,20 @@
                         </goals>
                         <configuration>
                             <excludes>
-                                <exclude>com/vaporant/model/**</exclude>
+                                <!-- Bean puri (solo getter/setter, nessuna logica) -->
+                                <exclude>com/vaporant/model/AddressBean.class</exclude>
+                                <exclude>com/vaporant/model/ContenutoBean.class</exclude>
+                                <exclude>com/vaporant/model/OrderBean.class</exclude>
+                                <exclude>com/vaporant/model/ProductBean.class</exclude>
+                                <exclude>com/vaporant/model/UserBean.class</exclude>
+                                
+                                <!-- Utility class senza logica -->
+                                <exclude>com/vaporant/model/AddressList.class</exclude>
+                                
+                                <!-- Application entry point -->
                                 <exclude>com/vaporant/VaporantApplication.class</exclude>
+                                
+                                <!-- NOTA: Cart.java NON escluso - ha logica business -->
                             </excludes>
                         </configuration>
                     </execution>
@@ -181,7 +193,13 @@
                         </goals>
                         <configuration>
                             <excludes>
-                                <exclude>com/vaporant/model/**</exclude>
+                                <!-- IDENTICO a report execution per consistency -->
+                                <exclude>com/vaporant/model/AddressBean.class</exclude>
+                                <exclude>com/vaporant/model/ContenutoBean.class</exclude>
+                                <exclude>com/vaporant/model/OrderBean.class</exclude>
+                                <exclude>com/vaporant/model/ProductBean.class</exclude>
+                                <exclude>com/vaporant/model/UserBean.class</exclude>
+                                <exclude>com/vaporant/model/AddressList.class</exclude>
                                 <exclude>com/vaporant/VaporantApplication.class</exclude>
                             </excludes>
                             <rules>
@@ -240,7 +258,13 @@
                     
                     <!-- Excluded Classes (aligned with JaCoCo) -->
                     <excludedClasses>
-                        <param>com.vaporant.model.*Bean</param>
+                        <!-- ALLINEATO con JaCoCo - esclusioni esplicite -->
+                        <param>com.vaporant.model.AddressBean</param>
+                        <param>com.vaporant.model.ContenutoBean</param>
+                        <param>com.vaporant.model.OrderBean</param>
+                        <param>com.vaporant.model.ProductBean</param>
+                        <param>com.vaporant.model.UserBean</param>
+                        <param>com.vaporant.model.AddressList</param>
                         <param>com.vaporant.VaporantApplication</param>
                     </excludedClasses>
                     
