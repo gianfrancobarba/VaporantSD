@@ -25,7 +25,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.vaporant.model.AddressBean;
 import com.vaporant.model.Cart;
 import com.vaporant.model.ContenutoBean;
-import com.vaporant.model.OrderBean;
 import com.vaporant.model.ProductBean;
 import com.vaporant.model.UserBean;
 import com.vaporant.repository.AddressDAO;
