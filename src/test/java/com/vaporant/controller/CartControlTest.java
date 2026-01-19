@@ -1,5 +1,6 @@
 package com.vaporant.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -11,6 +12,8 @@ import java.sql.SQLException;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -161,5 +164,29 @@ class CartControlTest {
                 .param("id", "1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("CartView.jsp"));
+    }
+
+    @ParameterizedTest(name = "Cart con {0} prodotti calcola totale correttamente")
+    @ValueSource(ints = { 1, 5, 10, 20 })
+    @DisplayName("Cart - Calcolo prezzo totale con diverse quantità prodotti")
+    void testCartTotalWithMultipleProducts(int productCount) {
+        // Arrange
+        Cart cart = new Cart();
+        double expectedTotal = 0;
+
+        for (int i = 0; i < productCount; i++) {
+            ProductBean p = new ProductBean();
+            p.setCode(i);
+            p.setName("Product" + i);
+            p.setPrice(10.0f);
+            p.setQuantity(1);
+            cart.addProduct(p);
+            expectedTotal += 10.0;
+        }
+
+        // Assert
+        assertEquals(expectedTotal, cart.getPrezzoTotale(), 0.01,
+                "Totale deve essere somma di tutti i prodotti: " + productCount + " prodotti x 10.00 = "
+                        + expectedTotal);
     }
 }

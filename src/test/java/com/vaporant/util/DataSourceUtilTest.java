@@ -71,7 +71,6 @@ class DataSourceUtilTest {
         // Arrange
         // Reset static context by creating new instance without setting context
         // Note: This test assumes ApplicationContext starts as null
-        DataSourceUtil util = new DataSourceUtil();
 
         // Act
         DataSource result = DataSourceUtil.getDataSource();

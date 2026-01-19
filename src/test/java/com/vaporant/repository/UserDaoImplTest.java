@@ -21,6 +21,8 @@ import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -193,9 +195,14 @@ class UserDaoImplTest {
         assertNull(user);
     }
 
-    @Test
-    @DisplayName("modifyMail - Email nuova - Aggiorna con successo")
-    void testModifyMail() throws SQLException {
+    @ParameterizedTest(name = "modify{0} aggiorna campo con valore {1}")
+    @CsvSource({
+            "Mail, new@test.com",
+            "Telefono, 987654321"
+    })
+    @DisplayName("UserDao - Metodi modify aggiornano campi singoli")
+    void testModifyMethods(String field, String newValue) throws SQLException {
+        // Arrange
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
         when(preparedStatement.executeUpdate()).thenReturn(1);
@@ -203,26 +210,15 @@ class UserDaoImplTest {
         UserBean user = new UserBean();
         user.setId(1);
 
-        userDao.modifyMail(user, "new@test.com");
+        // Act
+        if ("Mail".equals(field)) {
+            userDao.modifyMail(user, newValue);
+        } else if ("Telefono".equals(field)) {
+            userDao.modifyTelefono(user, newValue);
+        }
 
-        verify(preparedStatement).setString(1, "new@test.com");
-        verify(preparedStatement).setInt(2, 1);
-        verify(preparedStatement).executeUpdate();
-    }
-
-    @Test
-    @DisplayName("modifyTelefono - Telefono nuovo - Aggiorna con successo")
-    void testModifyTelefono() throws SQLException {
-        when(dataSource.getConnection()).thenReturn(connection);
-        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
-        when(preparedStatement.executeUpdate()).thenReturn(1);
-
-        UserBean user = new UserBean();
-        user.setId(1);
-
-        userDao.modifyTelefono(user, "987654321");
-
-        verify(preparedStatement).setString(1, "987654321");
+        // Assert
+        verify(preparedStatement).setString(1, newValue);
         verify(preparedStatement).setInt(2, 1);
         verify(preparedStatement).executeUpdate();
     }
