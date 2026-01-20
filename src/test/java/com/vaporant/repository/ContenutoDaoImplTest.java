@@ -66,6 +66,34 @@ class ContenutoDaoImplTest {
     }
 
     @Test
+    @DisplayName("saveContenuto - Verify TUTTI i 5 setters PreparedStatement")
+    void testSaveContenuto_AllFieldsSet() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        ContenutoBean bean = new ContenutoBean();
+        bean.setId_ordine(10);
+        bean.setId_prodotto(20);
+        bean.setQuantita(3);
+        bean.setPrezzoAcquisto(15.5f);
+        bean.setIvaAcquisto(22);
+
+        // Act
+        int result = contenutoDao.saveContenuto(bean);
+
+        // Assert - ✅ whiTee pattern: verify OGNI singolo setter
+        assertEquals(1, result);
+        verify(preparedStatement).setInt(1, 10); // ID_Ordine
+        verify(preparedStatement).setInt(2, 20); // ID_Prodotto
+        verify(preparedStatement).setInt(3, 3); // quantita
+        verify(preparedStatement).setFloat(4, 15.5f); // prezzoAcquisto
+        verify(preparedStatement).setInt(5, 22); // ivaAcquisto
+        verify(preparedStatement, times(2)).executeUpdate(); // INSERT + updateStorage
+    }
+
+    @Test
     @DisplayName("saveContenuto - SQLException dal DataSource - Propaga eccezione")
     void testSaveContenutoException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
@@ -123,6 +151,26 @@ class ContenutoDaoImplTest {
     }
 
     @Test
+    @DisplayName("deleteContenuto - Verify entrambi setInt WHERE clause (ID_Ordine, ID_Prodotto)")
+    void testDeleteContenuto_AllParametersSet() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        ContenutoBean bean = new ContenutoBean();
+        bean.setId_ordine(100);
+        bean.setId_prodotto(200);
+
+        int result = contenutoDao.deleteContenuto(bean);
+
+        assertEquals(1, result);
+        // ✅ whiTee: verify WHERE clause parameters
+        verify(preparedStatement).setInt(1, 100); // WHERE ID_Ordine = ?
+        verify(preparedStatement).setInt(2, 200); // AND ID_Prodotto = ?
+        verify(preparedStatement).executeUpdate();
+    }
+
+    @Test
     @DisplayName("findByKey - Chiave esistente - Restituisce ContenutoBean popolato")
     void testFindByKeySuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
@@ -139,6 +187,37 @@ class ContenutoDaoImplTest {
         assertNotNull(result, "findByKey dovrebbe ritornare ContenutoBean per chiave esistente");
         assertEquals(1, result.getId_ordine(), "ID ordine dovrebbe essere 1");
         assertEquals(1, result.getId_prodotto(), "ID prodotto dovrebbe essere 1");
+    }
+
+    @Test
+    @DisplayName("findByKey - Verify mapping completo ResultSet → ContenutoBean (TUTTI 5 campi)")
+    void testFindByKey_AllFieldsMapped() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+
+        // Mock ResultSet con TUTTI i 5 campi
+        when(resultSet.isBeforeFirst()).thenReturn(true);
+        when(resultSet.next()).thenReturn(true).thenReturn(false);
+        when(resultSet.getInt("ID_Ordine")).thenReturn(50);
+        when(resultSet.getInt("ID_Prodotto")).thenReturn(60);
+        when(resultSet.getInt("quantita")).thenReturn(5);
+        when(resultSet.getFloat("prezzoAcquisto")).thenReturn(25.99f);
+        when(resultSet.getInt("ivaAcquisto")).thenReturn(22);
+
+        ContenutoBean result = contenutoDao.findByKey(50, 60);
+
+        // ✅ whiTee: assert TUTTI i 5 campi bean
+        assertNotNull(result);
+        assertEquals(50, result.getId_ordine());
+        assertEquals(60, result.getId_prodotto());
+        assertEquals(5, result.getQuantita());
+        assertEquals(25.99f, result.getPrezzoAcquisto(), 0.0001f);
+        assertEquals(22, result.getIvaAcquisto());
+
+        verify(preparedStatement).setInt(1, 50);
+        verify(preparedStatement).setInt(2, 60);
+        verify(preparedStatement).executeQuery();
     }
 
     @Test

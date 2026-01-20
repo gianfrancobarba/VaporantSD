@@ -311,4 +311,53 @@ class OrderDaoImplTest {
         // ✅ Verify loop iterations (kill NegateConditionalsMutator su while)
         verify(resultSet, times(4)).next(); // 3 true + 1 false
     }
+
+    @Test
+    @DisplayName("findByIdUtente - Multiple orders - Verify 2+ ordini mappati con TUTTI 6 campi")
+    void testFindByIdUtente_MultipleOrders_AllFieldsMapped() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+
+        // ✅ whiTee: Simula 2 ordini per stesso utente
+        when(resultSet.isBeforeFirst()).thenReturn(true);
+        when(resultSet.next()).thenReturn(true, true, false);
+
+        // Mock TUTTI i 6 campi OrderBean per 2 ordini
+        when(resultSet.getInt("ID_Ordine")).thenReturn(1, 2);
+        when(resultSet.getInt("ID_Utente")).thenReturn(100, 100);
+        when(resultSet.getInt("ID_Indirizzo")).thenReturn(5, 6);
+        when(resultSet.getDouble("prezzoTot")).thenReturn(50.0, 75.5);
+        when(resultSet.getDate("dataAcquisto")).thenReturn(
+                java.sql.Date.valueOf("2024-01-15"),
+                java.sql.Date.valueOf("2024-01-20"));
+        when(resultSet.getString("metodoPagamento")).thenReturn("Carta", "PayPal");
+
+        // Act
+        ArrayList<OrderBean> results = orderDao.findByIdUtente(100);
+
+        // Assert collection size
+        assertNotNull(results, "findByIdUtente dovrebbe ritornare ArrayList");
+        assertEquals(2, results.size(), "Dovrebbe ritornare 2 ordini");
+
+        // ✅ whiTee: Verify PRIMO ordine con TUTTI 6 campi
+        OrderBean first = results.get(0);
+        assertEquals(1, first.getId_ordine(), "ID ordine 1 dovrebbe essere 1");
+        assertEquals(100, first.getId_utente(), "ID utente dovrebbe essere 100");
+        assertEquals(5, first.getId_indirizzo(), "ID indirizzo dovrebbe essere 5");
+        assertEquals(50.0, first.getPrezzoTot(), 0.0001, "Prezzo totale dovrebbe essere 50.0");
+        assertEquals(LocalDate.parse("2024-01-15"), first.getDataAcquisto(),
+                "Data acquisto dovrebbe essere 2024-01-15");
+        assertEquals("Carta", first.getMetodoPagamento(), "Metodo pagamento dovrebbe essere Carta");
+
+        // ✅ whiTee: Verify SECONDO ordine (almeno id + prezzo)
+        OrderBean second = results.get(1);
+        assertEquals(2, second.getId_ordine(), "ID ordine 2 dovrebbe essere 2");
+        assertEquals(100, second.getId_utente(), "ID utente dovrebbe essere 100");
+        assertEquals(75.5, second.getPrezzoTot(), 0.0001, "Prezzo totale dovrebbe essere 75.5");
+
+        verify(preparedStatement).setInt(1, 100);
+        verify(preparedStatement).executeQuery();
+    }
 }

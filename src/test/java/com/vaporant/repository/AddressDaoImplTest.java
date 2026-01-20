@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -105,7 +106,7 @@ class AddressDaoImplTest {
     }
 
     @Test
-    @DisplayName("findByCred - Credenziali esistenti - Restituisce AddressBean popolato")
+    @DisplayName("findByCred - Credenziali esistenti - Restituisce AddressBean con TUTTI 6 campi")
     void testFindByCredSuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -115,12 +116,21 @@ class AddressDaoImplTest {
         when(resultSet.next()).thenReturn(true).thenReturn(false);
         when(resultSet.getInt("ID")).thenReturn(1);
         when(resultSet.getString("Via")).thenReturn("Via Roma");
+        when(resultSet.getString("numCivico")).thenReturn("10");
+        when(resultSet.getString("citta")).thenReturn("Milano");
+        when(resultSet.getString("CAP")).thenReturn("20100");
+        when(resultSet.getString("provincia")).thenReturn("MI");
 
         AddressBean result = addressDao.findByCred("20100", "Via Roma", "10");
 
+        // ✅ whiTee: assert TUTTI i 6 campi (prima era solo 2)
         assertNotNull(result, "findByCred dovrebbe ritornare AddressBean per credenziali esistenti");
         assertEquals(1, result.getId(), "ID indirizzo dovrebbe essere 1");
         assertEquals("Via Roma", result.getVia(), "Via dovrebbe essere 'Via Roma'");
+        assertEquals("10", result.getNumCivico(), "Numero civico dovrebbe essere '10'");
+        assertEquals("Milano", result.getCitta(), "Città dovrebbe essere 'Milano'");
+        assertEquals("20100", result.getCap(), "CAP dovrebbe essere '20100'");
+        assertEquals("MI", result.getProvincia(), "Provincia dovrebbe essere 'MI'");
     }
 
     @Test
@@ -146,20 +156,51 @@ class AddressDaoImplTest {
     }
 
     @Test
-    @DisplayName("findByID - ID utente con indirizzi - Restituisce ArrayList di AddressBean")
+    @DisplayName("findByID - ID utente con indirizzi - Restituisce ArrayList con elementi mappati")
     void testFindByIDSuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
 
-        when(resultSet.next()).thenReturn(true).thenReturn(false);
-        when(resultSet.getInt("ID")).thenReturn(1);
+        // ✅ whiTee: Simula 2 indirizzi
+        when(resultSet.next()).thenReturn(true, true, false);
+        when(resultSet.getInt("ID")).thenReturn(1, 2);
+        when(resultSet.getString("Via")).thenReturn("Via Roma", "Via Milano");
+        when(resultSet.getString("numCivico")).thenReturn("10", "20");
+        when(resultSet.getString("citta")).thenReturn("Milano", "Milano");
+        when(resultSet.getString("CAP")).thenReturn("20100", "20121");
+        when(resultSet.getString("provincia")).thenReturn("MI", "MI");
 
-        ArrayList<AddressBean> results = addressDao.findByID(1);
+        ArrayList<AddressBean> results = addressDao.findByID(100);
 
         assertNotNull(results, "findByID dovrebbe ritornare ArrayList per utente con indirizzi");
-        assertEquals(1, results.size(), "ArrayList dovrebbe contenere 1 indirizzo");
-        assertEquals(1, results.get(0).getId(), "ID primo indirizzo dovrebbe essere 1");
+        assertEquals(2, results.size(), "ArrayList dovrebbe contenere 2 indirizzi");
+
+        // ✅ whiTee: verify almeno primi 2 elementi mappati correttamente
+        assertEquals(1, results.get(0).getId());
+        assertEquals("Via Roma", results.get(0).getVia());
+        assertEquals("10", results.get(0).getNumCivico());
+        assertEquals("20100", results.get(0).getCap());
+
+        assertEquals(2, results.get(1).getId());
+        assertEquals("Via Milano", results.get(1).getVia());
+        assertEquals("20", results.get(1).getNumCivico());
+        assertEquals("20121", results.get(1).getCap());
+    }
+
+    @Test
+    @DisplayName("findByID - User senza indirizzi - Restituisce ArrayList vuota")
+    void testFindByID_EmptyList() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+        when(resultSet.next()).thenReturn(false);
+
+        ArrayList<AddressBean> results = addressDao.findByID(999);
+
+        // ✅ whiTee pattern: empty collection SEMPRE testato
+        assertNotNull(results);
+        assertTrue(results.isEmpty());
     }
 
     @Test
@@ -186,6 +227,37 @@ class AddressDaoImplTest {
 
         assertNotNull(result, "findAddressByID dovrebbe ritornare AddressBean per ID esistente");
         assertEquals(1, result.getId(), "ID indirizzo dovrebbe essere 1");
+    }
+
+    @Test
+    @DisplayName("findAddressByID - ID esistente - TUTTI 6 campi mappati correttamente")
+    void testFindAddressByID_AllFieldsMapped() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+
+        when(resultSet.isBeforeFirst()).thenReturn(true);
+        when(resultSet.next()).thenReturn(true).thenReturn(false);
+        when(resultSet.getInt("ID")).thenReturn(5);
+        when(resultSet.getString("Via")).thenReturn("Via Test");
+        when(resultSet.getString("numCivico")).thenReturn("100");
+        when(resultSet.getString("citta")).thenReturn("Roma");
+        when(resultSet.getString("CAP")).thenReturn("00100");
+        when(resultSet.getString("provincia")).thenReturn("RM");
+
+        AddressBean result = addressDao.findAddressByID(5);
+
+        // ✅ whiTee: assert TUTTI i 6 campi
+        assertNotNull(result, "findAddressByID dovrebbe ritornare AddressBean per ID esistente");
+        assertEquals(5, result.getId());
+        assertEquals("Via Test", result.getVia());
+        assertEquals("100", result.getNumCivico());
+        assertEquals("Roma", result.getCitta());
+        assertEquals("00100", result.getCap());
+        assertEquals("RM", result.getProvincia());
+
+        verify(preparedStatement).setInt(1, 5);
+        verify(preparedStatement).executeQuery();
     }
 
     @Test

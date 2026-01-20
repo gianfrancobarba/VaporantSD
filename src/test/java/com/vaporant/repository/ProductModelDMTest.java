@@ -254,4 +254,89 @@ class ProductModelDMTest {
         // ✅ Verify setter parameter (kill VoidMethodCallMutator)
         verify(preparedStatement).setInt(1, 999);
     }
+
+    @Test
+    @DisplayName("doRetrieveByKey - Verify mapping TUTTI 5 campi ProductBean")
+    void testDoRetrieveByKey_AllFieldsMapped() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+
+        // ProductModelDM.doRetrieveByKey NON usa isBeforeFirst, solo next()
+        when(resultSet.next()).thenReturn(true).thenReturn(false);
+        when(resultSet.getInt("ID")).thenReturn(1); // ✅ Corretto: ProductModelDM usa "ID" non "codice"
+        when(resultSet.getString("nome")).thenReturn("Prodotto Test");
+        when(resultSet.getString("descrizione")).thenReturn("Descrizione completa");
+        when(resultSet.getFloat("prezzoAttuale")).thenReturn(19.99f);
+        when(resultSet.getInt("quantita")).thenReturn(50);
+
+        ProductBean result = productModel.doRetrieveByKey(1);
+
+        // ✅ whiTee: assert TUTTI i 5 campi
+        assertNotNull(result, "doRetrieveByKey dovrebbe ritornare ProductBean");
+        assertEquals(1, result.getCode(), "Codice dovrebbe essere 1");
+        assertEquals("Prodotto Test", result.getName(), "Nome dovrebbe essere 'Prodotto Test'");
+        assertEquals("Descrizione completa", result.getDescription(), "Descrizione dovrebbe essere completa");
+        assertEquals(19.99f, result.getPrice(), 0.0001f, "Prezzo dovrebbe essere 19.99");
+        assertEquals(50, result.getQuantityStorage(), "Quantità dovrebbe essere 50");
+
+        verify(preparedStatement).setInt(1, 1);
+    }
+
+    @Test
+    @DisplayName("doRetrieveAll - Database vuoto - Restituisce Collection vuota")
+    void testDoRetrieveAll_EmptyDatabase_ReturnsEmptyList() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+        when(resultSet.next()).thenReturn(false);
+
+        Collection<ProductBean> results = productModel.doRetrieveAll(null);
+
+        assertNotNull(results, "doRetrieveAll dovrebbe ritornare Collection non null");
+        assertTrue(results.isEmpty(), "doRetrieveAll dovrebbe ritornare Collection vuota");
+    }
+
+    @Test
+    @DisplayName("doRetrieveAll - Multiple products - Verify 2+ prodotti mappati")
+    void testDoRetrieveAll_MultipleProducts_AllMapped() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+
+        // Simula 2 prodotti
+        when(resultSet.next()).thenReturn(true, true, false);
+        when(resultSet.getInt("ID")).thenReturn(1, 2); // ✅ Corretto: usa "ID"
+        when(resultSet.getString("nome")).thenReturn("Prodotto A", "Prodotto B");
+        when(resultSet.getString("descrizione")).thenReturn("Desc A", "Desc B");
+        when(resultSet.getFloat("prezzoAttuale")).thenReturn(10.0f, 20.0f);
+        when(resultSet.getInt("quantita")).thenReturn(100, 200);
+
+        Collection<ProductBean> results = productModel.doRetrieveAll(null);
+
+        assertTrue(results.size() >= 2, "Dovrebbe avere almeno 2 prodotti");
+
+        ProductBean[] products = results.toArray(new ProductBean[0]);
+        assertEquals(1, products[0].getCode(), "Primo prodotto code=1");
+        assertEquals("Prodotto A", products[0].getName(), "Primo prodotto nome='Prodotto A'");
+        assertEquals(10.0f, products[0].getPrice(), 0.0001f, "Primo prodotto price=10.0");
+
+        assertEquals(2, products[1].getCode(), "Secondo prodotto code=2");
+        assertEquals("Prodotto B", products[1].getName(), "Secondo prodotto nome='Prodotto B'");
+        assertEquals(20.0f, products[1].getPrice(), 0.0001f, "Secondo prodotto price=20.0");
+    }
+
+    @Test
+    @DisplayName("doDelete - Prodotto non esistente - Restituisce false")
+    void testDoDelete_NotFound_ReturnsFalse() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(0); // 0 rows affected
+        when(connection.createStatement()).thenReturn(statement);
+
+        boolean result = productModel.doDelete(999);
+
+        assertFalse(result, "doDelete dovrebbe ritornare false per prodotto non esistente");
+        verify(preparedStatement).setInt(1, 999);
+    }
 }
