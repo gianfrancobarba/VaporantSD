@@ -20,8 +20,6 @@ services:
     volumes:
       # Persistenza dati database
       - mysql-data:/var/lib/mysql
-      # Script di inizializzazione (eseguito solo al primo avvio)
-      - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
     
     networks:
       - vaporant-network
