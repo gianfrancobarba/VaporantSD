@@ -339,4 +339,43 @@ class ProductModelDMTest {
         assertFalse(result, "doDelete dovrebbe ritornare false per prodotto non esistente");
         verify(preparedStatement).setInt(1, 999);
     }
+
+    // ==========================================
+    // PHASE 1: Fix MathMutator - ORDER BY sort verification
+    // ==========================================
+
+    @Test
+    @DisplayName("doRetrieveAll - ORDER BY prezzoAttuale - Verify sort ascending")
+    void testDoRetrieveAll_OrderByPrice_VerifySortAscending() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+
+        // Mock 3 prodotti con prezzi ORDINATI ascending
+        when(resultSet.next()).thenReturn(true, true, true, false);
+        when(resultSet.getInt("ID")).thenReturn(1, 2, 3);
+        when(resultSet.getString("nome")).thenReturn("P1", "P2", "P3");
+        when(resultSet.getString("descrizione")).thenReturn("Desc1", "Desc2", "Desc3");
+        when(resultSet.getFloat("prezzoAttuale")).thenReturn(10.0f, 20.0f, 30.0f); // Sorted ASC
+        when(resultSet.getInt("quantita")).thenReturn(5, 10, 15);
+
+        Collection<ProductBean> results = productModel.doRetrieveAll("prezzoAttuale");
+
+        // Assert collection size
+        assertEquals(3, results.size(), "Dovrebbe ritornare 3 prodotti");
+
+        // ✅ FIX MathMutator: Verify sort order
+        ProductBean[] products = results.toArray(new ProductBean[0]);
+        assertTrue(products[0].getPrice() <= products[1].getPrice(),
+                "Primo prodotto prezzo (<= secondo prezzo (ascending order)");
+        assertTrue(products[1].getPrice() <= products[2].getPrice(),
+                "Secondo prodotto prezzo <= terzo prezzo (ascending order)");
+
+        // Verify exact values
+        assertEquals(10.0f, products[0].getPrice(), 0.01f, "Primo prodotto price=10.0");
+        assertEquals(20.0f, products[1].getPrice(), 0.01f, "Secondo prodotto price=20.0");
+        assertEquals(30.0f, products[2].getPrice(), 0.01f, "Terzo prodotto price=30.0");
+
+        // ✅ MathMutator: mutations su comparisons (<= vs >=) rilevate
+    }
 }

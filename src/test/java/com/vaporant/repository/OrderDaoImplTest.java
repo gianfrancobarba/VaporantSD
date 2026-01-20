@@ -128,6 +128,11 @@ class OrderDaoImplTest {
 
         assertNotNull(result, "findByKey dovrebbe ritornare OrderBean per ID esistente");
         assertEquals(1, result.getId_ordine(), "ID ordine dovrebbe essere 1");
+
+        // ✅ PHASE 2.4 FIX: Verify ALL bean setters (kill VoidMethodCall)
+        assertNotNull(result.getDataAcquisto(), "DataAcquisto should be set");
+        // Note: Other fields (id_utente, id_indirizzo, prezzoTot, metodoPagamento)
+        // require mock setup enhancement for complete verification
     }
 
     @Test

@@ -79,6 +79,20 @@ class UserDaoImplTest {
         assertEquals("test@test.com", user.getEmail(), "Email dovrebbe corrispondere a quella fornita");
         assertEquals("user", user.getTipo(), "Tipo dovrebbe essere 'user'");
 
+        // ✅ PHASE 2.1 FIX: Verify ALL bean setters called (kill VoidMethodCall)
+        assertNotNull(user.getNome(), "Nome should be set");
+        assertEquals("Test", user.getNome());
+        assertNotNull(user.getCognome(), "Cognome should be set");
+        assertEquals("User", user.getCognome());
+        assertNotNull(user.getCodF(), "CF should be set");
+        assertEquals("CF123", user.getCodF());
+        assertNotNull(user.getNumTelefono(), "Telefono should be set");
+        assertEquals("123456", user.getNumTelefono());
+        assertNotNull(user.getDataNascita(), "DataNascita should be set"); // ← Kills L126 mutation
+        assertNotNull(user.getPassword(), "Password should be set");
+        assertEquals("password", user.getPassword());
+        assertEquals(1, user.getId(), "ID should be set");
+
         verify(connection).prepareStatement(anyString());
         verify(preparedStatement).setString(1, "test@test.com");
         verify(preparedStatement).setString(2, "password");
@@ -186,6 +200,16 @@ class UserDaoImplTest {
 
         assertNotNull(user, "findById dovrebbe ritornare UserBean per ID esistente");
         assertEquals(1, user.getId(), "ID dovrebbe essere 1");
+
+        // ✅ PHASE 2.1 FIX: Verify ALL bean setters (kill VoidMethodCall L178)
+        assertNotNull(user.getNome(), "Nome should be set");
+        assertNotNull(user.getCognome(), "Cognome should be set");
+        assertNotNull(user.getEmail(), "Email should be set");
+        assertNotNull(user.getCodF(), "CF should be set");
+        assertNotNull(user.getNumTelefono(), "Telefono should be set");
+        assertNotNull(user.getDataNascita(), "DataNascita should be set"); // ← Kills L178
+        assertNotNull(user.getPassword(), "Password should be set");
+        assertNotNull(user.getTipo(), "Tipo should be set");
     }
 
     @Test
