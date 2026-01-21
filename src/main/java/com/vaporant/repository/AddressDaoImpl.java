@@ -13,108 +13,110 @@ import java.util.ArrayList;
 
 @Repository
 public class AddressDaoImpl implements AddressDAO {
-	
+
 	private static final String TABLE = "indirizzo";
-	
+
 	@Autowired
 	private DataSource ds;
 
-    private Connection getConnection() throws SQLException {
-        if (ds != null) {
-            return ds.getConnection();
-        }
-        DataSource staticDs = com.vaporant.util.DataSourceUtil.getDataSource();
-        if (staticDs != null) {
-            return staticDs.getConnection();
-        }
-        throw new SQLException("DataSource is null");
-    }
+	private Connection getConnection() throws SQLException {
+		if (ds != null) {
+			return ds.getConnection();
+		}
+		DataSource staticDs = com.vaporant.util.DataSourceUtil.getDataSource();
+		if (staticDs != null) {
+			return staticDs.getConnection();
+		}
+		throw new SQLException("DataSource is null");
+	}
 
-	
 	@Override
 	public int saveAddress(AddressBean address) throws SQLException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		int result = 0;
-		
-		String insertSQL = "INSERT INTO " + TABLE + 
-			" (Via, numCivico, citta, CAP, provincia) VALUES (?, ?, ?, ?, ?)";
-			
+
+		String insertSQL = "INSERT INTO " + TABLE +
+				" (ID_Utente, stato, Via, numCivico, citta, CAP, provincia) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
 		try {
 			connection = getConnection();
 			preparedStatement = connection.prepareStatement(insertSQL);
-			
-			preparedStatement.setString(1, address.getVia());
-			preparedStatement.setString(2, address.getNumCivico());
-			preparedStatement.setString(3, address.getCitta());
-			preparedStatement.setString(4, address.getCap());
-			preparedStatement.setString(5, address.getProvincia());
-			
+
+			preparedStatement.setInt(1, address.getId_utente());
+			preparedStatement.setString(2, address.getStato());
+			preparedStatement.setString(3, address.getVia());
+			preparedStatement.setString(4, address.getNumCivico());
+			preparedStatement.setString(5, address.getCitta());
+			preparedStatement.setString(6, address.getCap());
+			preparedStatement.setString(7, address.getProvincia());
+
 			result = preparedStatement.executeUpdate();
-			
+
 		} finally {
 			try {
 				if (preparedStatement != null)
 					preparedStatement.close();
 			} finally {
-				if(connection != null) {
+				if (connection != null) {
 					connection.close();
 				}
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	@Override
 	public int deleteAddress(AddressBean address) throws SQLException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		int result = 0;
-		
+
 		String deleteSQL = "DELETE FROM " + TABLE + " WHERE ID = ?";
-		
+
 		try {
 			connection = getConnection();
 			preparedStatement = connection.prepareStatement(deleteSQL);
 			preparedStatement.setInt(1, address.getId());
 			result = preparedStatement.executeUpdate();
-			
+
 		} finally {
 			try {
 				if (preparedStatement != null)
 					preparedStatement.close();
 			} finally {
-				if(connection != null) {
+				if (connection != null) {
 					connection.close();
 				}
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	@Override
 	public AddressBean findByCred(String cap, String via, String numCivico) throws SQLException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
-		
+
 		String selectSQL = "SELECT * FROM " + TABLE + " WHERE CAP = ? AND Via = ? AND numCivico = ?";
 		AddressBean address = null;
-		
+
 		try {
 			connection = getConnection();
 			preparedStatement = connection.prepareStatement(selectSQL);
-			
+
 			preparedStatement.setString(1, cap);
 			preparedStatement.setString(2, via);
 			preparedStatement.setString(3, numCivico);
-			
+
 			ResultSet rs = preparedStatement.executeQuery();
-			if(!rs.isBeforeFirst()) return null;
-			
+			if (!rs.isBeforeFirst())
+				return null;
+
 			address = new AddressBean();
-			
+
 			while (rs.next()) {
 				address.setId(rs.getInt("ID"));
 				address.setVia(rs.getString("Via"));
@@ -122,37 +124,39 @@ public class AddressDaoImpl implements AddressDAO {
 				address.setCitta(rs.getString("citta"));
 				address.setCap(rs.getString("CAP"));
 				address.setProvincia(rs.getString("provincia"));
+				address.setId_utente(rs.getInt("ID_Utente"));
+				address.setStato(rs.getString("stato"));
 			}
-			
+
 		} finally {
 			try {
 				if (preparedStatement != null)
 					preparedStatement.close();
 			} finally {
-				if(connection != null) {
+				if (connection != null) {
 					connection.close();
 				}
 			}
 		}
-		
+
 		return address;
 	}
-	
+
 	@Override
 	public ArrayList<AddressBean> findByID(int id) throws SQLException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ArrayList<AddressBean> addresses = new ArrayList<AddressBean>();
-		
+
 		String selectSQL = "SELECT * FROM " + TABLE + " WHERE ID = ?";
-		
+
 		try {
 			connection = getConnection();
 			preparedStatement = connection.prepareStatement(selectSQL);
 			preparedStatement.setInt(1, id);
-			
+
 			ResultSet rs = preparedStatement.executeQuery();
-			
+
 			while (rs.next()) {
 				AddressBean address = new AddressBean();
 				address.setId(rs.getInt("ID"));
@@ -161,41 +165,44 @@ public class AddressDaoImpl implements AddressDAO {
 				address.setCitta(rs.getString("citta"));
 				address.setCap(rs.getString("CAP"));
 				address.setProvincia(rs.getString("provincia"));
+				address.setId_utente(rs.getInt("ID_Utente"));
+				address.setStato(rs.getString("stato"));
 				addresses.add(address);
 			}
-			
+
 		} finally {
 			try {
 				if (preparedStatement != null)
 					preparedStatement.close();
 			} finally {
-				if(connection != null) {
+				if (connection != null) {
 					connection.close();
 				}
 			}
 		}
-		
+
 		return addresses;
 	}
-	
+
 	@Override
 	public AddressBean findAddressByID(int id) throws SQLException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		AddressBean address = null;
-		
+
 		String selectSQL = "SELECT * FROM " + TABLE + " WHERE ID = ?";
-		
+
 		try {
 			connection = getConnection();
 			preparedStatement = connection.prepareStatement(selectSQL);
 			preparedStatement.setInt(1, id);
-			
+
 			ResultSet rs = preparedStatement.executeQuery();
-			if(!rs.isBeforeFirst()) return null;
-			
+			if (!rs.isBeforeFirst())
+				return null;
+
 			address = new AddressBean();
-			
+
 			while (rs.next()) {
 				address.setId(rs.getInt("ID"));
 				address.setVia(rs.getString("Via"));
@@ -203,19 +210,21 @@ public class AddressDaoImpl implements AddressDAO {
 				address.setCitta(rs.getString("citta"));
 				address.setCap(rs.getString("CAP"));
 				address.setProvincia(rs.getString("provincia"));
+				address.setId_utente(rs.getInt("ID_Utente"));
+				address.setStato(rs.getString("stato"));
 			}
-			
+
 		} finally {
 			try {
 				if (preparedStatement != null)
 					preparedStatement.close();
 			} finally {
-				if(connection != null) {
+				if (connection != null) {
 					connection.close();
 				}
 			}
 		}
-		
+
 		return address;
 	}
 }
