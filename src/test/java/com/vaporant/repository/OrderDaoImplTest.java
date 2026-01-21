@@ -365,4 +365,92 @@ class OrderDaoImplTest {
         verify(preparedStatement).setInt(1, 100);
         verify(preparedStatement).executeQuery();
     }
+
+    // ============================================================
+    // PHASE 2: Resource Cleanup Verification Tests
+    // ============================================================
+
+    @Test
+    @DisplayName("saveOrder - Verifica chiusura PreparedStatement e Connection")
+    void testSaveOrder_ClosesResources() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        OrderBean order = new OrderBean();
+        order.setId_utente(1);
+        order.setId_indirizzo(1);
+        order.setPrezzoTot(100.0);
+        order.setDataAcquisto(LocalDate.now());
+        order.setMetodoPagamento("Carta");
+
+        orderDao.saveOrder(order);
+
+        verify(preparedStatement, times(1)).close();
+        verify(connection, times(1)).close();
+    }
+
+    @Test
+    @DisplayName("deleteOrder - Verifica chiusura PreparedStatement e Connection")
+    void testDeleteOrder_ClosesResources() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        OrderBean order = new OrderBean();
+        order.setId_ordine(1);
+
+        orderDao.deleteOrder(order);
+
+        verify(preparedStatement, times(1)).close();
+        verify(connection, times(1)).close();
+    }
+
+    @Test
+    @DisplayName("findByIdUtente - Verifica chiusura PreparedStatement e Connection")
+    void testFindByIdUtente_ClosesResources() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+
+        when(resultSet.isBeforeFirst()).thenReturn(true);
+        when(resultSet.next()).thenReturn(true, false);
+        when(resultSet.getInt("ID_Ordine")).thenReturn(1);
+        when(resultSet.getDate("dataAcquisto")).thenReturn(Date.valueOf(LocalDate.now()));
+
+        orderDao.findByIdUtente(1);
+
+        verify(preparedStatement, times(1)).close();
+        verify(connection, times(1)).close();
+    }
+
+    @Test
+    @DisplayName("getIdfromDB - Verifica chiusura Statement e Connection")
+    void testGetIdfromDB_ClosesResources() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.createStatement()).thenReturn(statement);
+        when(statement.executeQuery(anyString())).thenReturn(resultSet);
+
+        when(resultSet.next()).thenReturn(true);
+        when(resultSet.getInt("max_id")).thenReturn(10);
+
+        orderDao.getIdfromDB();
+
+        // NOTE: getIdfromDB uses Statement, not PreparedStatement
+        verify(statement, times(1)).close();
+        verify(connection, times(1)).close();
+    }
+
+    @Test
+    @DisplayName("getIdfromDB - SQLException chiude correttamente risorse")
+    void testGetIdfromDB_SQLException_ClosesResources() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.createStatement()).thenReturn(statement);
+        when(statement.executeQuery(anyString())).thenThrow(new SQLException("DB error"));
+
+        assertThrows(SQLException.class, () -> orderDao.getIdfromDB());
+
+        verify(statement).close();
+        verify(connection).close();
+    }
 }

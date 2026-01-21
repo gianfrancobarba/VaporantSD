@@ -294,4 +294,65 @@ class ContenutoDaoImplTest {
         // usa parametri (non possiamo mockare PreparedStatement separato facilmente)
         // Ma verify times(2) rileva che UPDATE viene eseguito
     }
+
+    // ============================================================
+    // PHASE 2: Resource Cleanup Verification Tests
+    // ============================================================
+
+    @Test
+    @DisplayName("saveContenuto - Verifica chiusura PreparedStatement e Connection")
+    void testSaveContenuto_ClosesResources() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        ContenutoBean bean = new ContenutoBean();
+        bean.setId_ordine(1);
+        bean.setId_prodotto(1);
+        bean.setQuantita(2);
+        bean.setPrezzoAcquisto(10.0f);
+        bean.setIvaAcquisto(22);
+
+        contenutoDao.saveContenuto(bean);
+
+        // NOTE: saveContenuto calls updateStorage, which creates new connection
+        // So we have 2 separate finally blocks → 2x close() calls
+        verify(preparedStatement, times(2)).close();
+        verify(connection, times(2)).close();
+    }
+
+    @Test
+    @DisplayName("deleteContenuto - Verifica chiusura PreparedStatement e Connection")
+    void testDeleteContenuto_ClosesResources() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        ContenutoBean bean = new ContenutoBean();
+        bean.setId_ordine(1);
+        bean.setId_prodotto(1);
+
+        contenutoDao.deleteContenuto(bean);
+
+        verify(preparedStatement, times(1)).close();
+        verify(connection, times(1)).close();
+    }
+
+    @Test
+    @DisplayName("findByKey - Verifica chiusura PreparedStatement e Connection")
+    void testFindByKey_ClosesResources() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+
+        when(resultSet.isBeforeFirst()).thenReturn(true);
+        when(resultSet.next()).thenReturn(true, false);
+        when(resultSet.getInt("ID_Ordine")).thenReturn(1);
+        when(resultSet.getInt("ID_Prodotto")).thenReturn(1);
+
+        contenutoDao.findByKey(1, 1);
+
+        verify(preparedStatement, times(1)).close();
+        verify(connection, times(1)).close();
+    }
 }

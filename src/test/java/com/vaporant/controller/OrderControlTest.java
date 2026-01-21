@@ -86,7 +86,19 @@ class OrderControlTest {
 
         verify(orderDao).getIdfromDB();
         verify(contDao, times(cart.getProducts().size())).saveContenuto(any(ContenutoBean.class));
-        verify(productDao, times(cart.getProducts().size())).updateQuantityStorage(any(ProductBean.class), anyInt());
+
+        // === CRITICAL: Verify EXACT quantity calculations ===
+        // Product 1: storage=100, ordered=2 → remaining = 100 - 2 = 98
+        verify(productDao).updateQuantityStorage(
+                argThat(p -> p.getCode() == 1),
+                eq(98) // EXACT VALUE: 100 - 2 = 98
+        );
+
+        // Product 2: storage=50, ordered=1 → remaining = 50 - 1 = 49
+        verify(productDao).updateQuantityStorage(
+                argThat(p -> p.getCode() == 2),
+                eq(49) // EXACT VALUE: 50 - 1 = 49
+        );
     }
 
     @Test

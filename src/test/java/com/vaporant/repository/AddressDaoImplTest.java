@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -295,6 +296,120 @@ class AddressDaoImplTest {
                 "SQLException dovrebbe essere propagata");
 
         // Verify resource cleanup (try-with-resources)
+        verify(preparedStatement).close();
+        verify(connection).close();
+    }
+
+    // ============================================================
+    // PHASE 2: Resource Cleanup Verification Tests
+    // ============================================================
+
+    @Test
+    @DisplayName("saveAddress - Verifica chiusura PreparedStatement e Connection")
+    void testSaveAddress_ClosesResources() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        AddressBean address = new AddressBean();
+        address.setVia("Via Roma");
+        address.setNumCivico("10");
+        address.setCitta("Milano");
+        address.setCap("20100");
+        address.setProvincia("MI");
+
+        addressDao.saveAddress(address);
+
+        verify(preparedStatement, times(1)).close();
+        verify(connection, times(1)).close();
+    }
+
+    @Test
+    @DisplayName("deleteAddress - Verifica chiusura PreparedStatement e Connection")
+    void testDeleteAddress_ClosesResources() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        AddressBean address = new AddressBean();
+        address.setId(1);
+
+        addressDao.deleteAddress(address);
+
+        verify(preparedStatement, times(1)).close();
+        verify(connection, times(1)).close();
+    }
+
+    @Test
+    @DisplayName("findByCred - Verifica chiusura PreparedStatement e Connection")
+    void testFindByCred_ClosesResources() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+
+        when(resultSet.isBeforeFirst()).thenReturn(true);
+        when(resultSet.next()).thenReturn(true, false);
+        when(resultSet.getInt("ID")).thenReturn(1);
+        when(resultSet.getString("Via")).thenReturn("Via Roma");
+        when(resultSet.getString("numCivico")).thenReturn("10");
+        when(resultSet.getString("citta")).thenReturn("Milano");
+        when(resultSet.getString("CAP")).thenReturn("20100");
+        when(resultSet.getString("provincia")).thenReturn("MI");
+
+        addressDao.findByCred("20100", "Via Roma", "10");
+
+        // ResultSet created inline, not explicitly closed
+        verify(preparedStatement, times(1)).close();
+        verify(connection, times(1)).close();
+    }
+
+    @Test
+    @DisplayName("findByID - Verifica chiusura PreparedStatement e Connection")
+    void testFindByID_ClosesResources() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+
+        when(resultSet.next()).thenReturn(true, false);
+        when(resultSet.getInt("ID")).thenReturn(1);
+        when(resultSet.getString("Via")).thenReturn("Via Roma");
+        when(resultSet.getString("numCivico")).thenReturn("10");
+        when(resultSet.getString("citta")).thenReturn("Milano");
+        when(resultSet.getString("CAP")).thenReturn("20100");
+        when(resultSet.getString("provincia")).thenReturn("MI");
+
+        addressDao.findByID(1);
+
+        verify(preparedStatement, times(1)).close();
+        verify(connection, times(1)).close();
+    }
+
+    @Test
+    @DisplayName("findAddressByID - Verifica chiusura PreparedStatement e Connection")
+    void testFindAddressByID_ClosesResources() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+
+        when(resultSet.isBeforeFirst()).thenReturn(true);
+        when(resultSet.next()).thenReturn(true, false);
+        when(resultSet.getInt("ID")).thenReturn(1);
+
+        addressDao.findAddressByID(1);
+
+        verify(preparedStatement, times(1)).close();
+        verify(connection, times(1)).close();
+    }
+
+    @Test
+    @DisplayName("findByID - SQLException chiude correttamente risorse")
+    void testFindByID_SQLException_ClosesResources() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenThrow(new SQLException("DB error"));
+
+        assertThrows(SQLException.class, () -> addressDao.findByID(1));
+
         verify(preparedStatement).close();
         verify(connection).close();
     }

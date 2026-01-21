@@ -438,4 +438,157 @@ class UserDaoImplTest {
         verify(preparedStatement).setInt(2, 20);
         verify(preparedStatement).setString(3, "oldPassword");
     }
+
+    // ============================================================
+    // PHASE 2: Resource Cleanup Verification Tests
+    // ============================================================
+
+    @Test
+    @DisplayName("saveUser - Verifica chiusura PreparedStatement e Connection")
+    void testSaveUser_ClosesResources() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        UserBean user = new UserBean();
+        user.setNome("Test");
+        user.setCognome("User");
+        user.setEmail("test@test.com");
+        user.setPassword("password");
+        user.setCodF("CF123");
+        user.setNumTelefono("123456");
+        user.setDataNascita(LocalDate.now());
+        user.setTipo("user");
+
+        // Act
+        userDao.saveUser(user);
+
+        // Assert - Verify resource cleanup
+        verify(preparedStatement, times(1)).close();
+        verify(connection, times(1)).close();
+    }
+
+    @Test
+    @DisplayName("deleteUser - Verifica chiusura PreparedStatement e Connection")
+    void testDeleteUser_ClosesResources() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        UserBean user = new UserBean();
+        user.setId(1);
+
+        // Act
+        userDao.deleteUser(user);
+
+        // Assert - Verify resource cleanup
+        verify(preparedStatement, times(1)).close();
+        verify(connection, times(1)).close();
+    }
+
+    @Test
+    @DisplayName("findById - Verifica chiusura PreparedStatement, ResultSet e Connection")
+    void testFindById_ClosesResources() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+
+        when(resultSet.isBeforeFirst()).thenReturn(true);
+        when(resultSet.next()).thenReturn(true, false);
+        when(resultSet.getString("email")).thenReturn("test@test.com");
+        when(resultSet.getString("CF")).thenReturn("CF123");
+        when(resultSet.getString("nome")).thenReturn("Test");
+        when(resultSet.getString("cognome")).thenReturn("User");
+        when(resultSet.getString("numTelefono")).thenReturn("123456");
+        when(resultSet.getInt("ID")).thenReturn(1);
+        when(resultSet.getString("psw")).thenReturn("password");
+        when(resultSet.getString("tipo")).thenReturn("user");
+        when(resultSet.getDate("dataNascita")).thenReturn(Date.valueOf(LocalDate.now()));
+
+        // Act
+        userDao.findById(1);
+
+        // Assert - Verify PreparedStatement and Connection closed
+        // NOTE: ResultSet is created inline, not explicitly closed in UserDaoImpl
+        verify(preparedStatement, times(1)).close();
+        verify(connection, times(1)).close();
+    }
+
+    @Test
+    @DisplayName("findById - SQLException chiude correttamente tutte le risorse")
+    void testFindById_SQLException_ClosesResources() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenThrow(new SQLException("Test DB error"));
+
+        // Act & Assert
+        assertThrows(SQLException.class, () -> userDao.findById(1),
+                "SQLException dovrebbe essere propagata");
+
+        // CRITICAL: Verify resources closed EVEN on exception
+        verify(preparedStatement).close();
+        verify(connection).close();
+    }
+
+    @Test
+    @DisplayName("modifyMail - Verifica chiusura PreparedStatement e Connection")
+    void testModifyMail_ClosesResources() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        UserBean user = new UserBean();
+        user.setId(10);
+
+        // Act
+        userDao.modifyMail(user, "new@email.com");
+
+        // Assert - Verify resource cleanup
+        verify(preparedStatement, times(1)).close();
+        verify(connection, times(1)).close();
+    }
+
+    @Test
+    @DisplayName("modifyTelefono - Verifica chiusura PreparedStatement e Connection")
+    void testModifyTelefono_ClosesResources() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        UserBean user = new UserBean();
+        user.setId(15);
+
+        // Act
+        userDao.modifyTelefono(user, "9876543210");
+
+        // Assert - Verify resource cleanup
+        verify(preparedStatement, times(1)).close();
+        verify(connection, times(1)).close();
+    }
+
+    @Test
+    @DisplayName("modifyPsw - Verifica chiusura PreparedStatement e Connection")
+    void testModifyPsw_ClosesResources() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        UserBean user = new UserBean();
+        user.setId(20);
+        user.setPassword("oldPassword");
+
+        // Act
+        userDao.modifyPsw("newPassword", "oldPassword", user);
+
+        // Assert - Verify resource cleanup
+        verify(preparedStatement, times(1)).close();
+        verify(connection, times(1)).close();
+    }
 }
