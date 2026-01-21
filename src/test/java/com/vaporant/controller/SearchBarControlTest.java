@@ -14,6 +14,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -42,6 +43,7 @@ class SearchBarControlTest {
     private ResultSetMetaData metaData;
 
     @Test
+    @DisplayName("SearchBar - Ricerca prodotto con successo - Restituisce JSON con risultati")
     void testSearchSuccess() throws Exception {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -63,6 +65,7 @@ class SearchBarControlTest {
     }
 
     @Test
+    @DisplayName("SearchBar - SQLException durante ricerca - Gestione errore gracefully")
     void testSearchException() throws Exception {
         when(dataSource.getConnection()).thenThrow(new SQLException("DB Error"));
 

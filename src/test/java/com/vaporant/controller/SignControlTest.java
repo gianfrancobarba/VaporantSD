@@ -1,6 +1,8 @@
 package com.vaporant.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -8,7 +10,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.sql.SQLException;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,6 +32,7 @@ class SignControlTest {
     private UserDAO userDao;
 
     @Test
+    @DisplayName("Sign - Registrazione con successo - Redirect a loginForm")
     void testSignSuccess() throws Exception {
         when(userDao.saveUser(any(UserBean.class))).thenReturn(1);
 
@@ -44,6 +50,7 @@ class SignControlTest {
     }
 
     @Test
+    @DisplayName("Sign - Registrazione fallita - Redirect a SignForm")
     void testSignFailure() throws Exception {
         when(userDao.saveUser(any(UserBean.class))).thenReturn(0);
 
@@ -61,6 +68,7 @@ class SignControlTest {
     }
 
     @Test
+    @DisplayName("Sign - SQLException durante registrazione - Gestione errore gracefully")
     void testSignException() throws Exception {
         when(userDao.saveUser(any(UserBean.class))).thenThrow(new SQLException("DB Error"));
 
@@ -75,5 +83,33 @@ class SignControlTest {
                 .param("indirizzoFatt", "Via Roma"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("SignForm.jsp"));
+    }
+
+    @ParameterizedTest(name = "Email invalida rejected: [{0}]")
+    @ValueSource(strings = {
+            "",
+            " ",
+            "notanemail",
+            "@nodomain.com",
+            "no@domain",
+            "missing@.com"
+    })
+    @DisplayName("SignControl - Email invalide rigettate")
+    void testInvalidEmailRejected(String invalidEmail) throws Exception {
+        // Act & Assert - invalid email should be rejected
+        mockMvc.perform(post("/SignControl")
+                .param("nome", "Test")
+                .param("cognome", "User")
+                .param("data_nascita", "2000-01-01")
+                .param("codice_fiscale", "CF123")
+                .param("telefono", "123456")
+                .param("email", invalidEmail)
+                .param("password", "validPass123")
+                .param("indirizzoFatt", "Via Roma"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("SignForm.jsp"));
+
+        // Verify no DAO call - invalid email should not save user
+        verify(userDao, never()).saveUser(any(UserBean.class));
     }
 }

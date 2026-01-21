@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -16,6 +17,7 @@ class LogoutControlTest {
     private MockMvc mockMvc;
 
     @Test
+    @DisplayName("Logout - Logout con successo - Redirect a ProductView")
     void testLogout() throws Exception {
         mockMvc.perform(get("/logout"))
                 .andExpect(status().is3xxRedirection())
