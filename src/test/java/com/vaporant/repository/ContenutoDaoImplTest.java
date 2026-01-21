@@ -17,6 +17,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -44,6 +45,7 @@ class ContenutoDaoImplTest {
     private ContenutoDaoImpl contenutoDao;
 
     @Test
+    @DisplayName("saveContenuto - Dati validi - Inserimento e update storage con successo")
     void testSaveContenutoSuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -64,6 +66,35 @@ class ContenutoDaoImplTest {
     }
 
     @Test
+    @DisplayName("saveContenuto - Verify TUTTI i 5 setters PreparedStatement")
+    void testSaveContenuto_AllFieldsSet() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        ContenutoBean bean = new ContenutoBean();
+        bean.setId_ordine(10);
+        bean.setId_prodotto(20);
+        bean.setQuantita(3);
+        bean.setPrezzoAcquisto(15.5f);
+        bean.setIvaAcquisto(22);
+
+        // Act
+        int result = contenutoDao.saveContenuto(bean);
+
+        // Assert
+        assertEquals(1, result);
+        verify(preparedStatement).setInt(1, 10); // ID_Ordine
+        verify(preparedStatement).setInt(2, 20); // ID_Prodotto
+        verify(preparedStatement).setInt(3, 3); // quantita
+        verify(preparedStatement).setFloat(4, 15.5f); // prezzoAcquisto
+        verify(preparedStatement).setInt(5, 22); // ivaAcquisto
+        verify(preparedStatement, times(2)).executeUpdate(); // INSERT + updateStorage
+    }
+
+    @Test
+    @DisplayName("saveContenuto - SQLException dal DataSource - Propaga eccezione")
     void testSaveContenutoException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenThrow(new SQLException("DB Error"));
@@ -73,6 +104,7 @@ class ContenutoDaoImplTest {
     }
 
     @Test
+    @DisplayName("saveContenuto - SQLException durante update storage - Propaga eccezione")
     void testSaveContenutoUpdateStorageException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         // First call (INSERT) succeeds
@@ -93,6 +125,7 @@ class ContenutoDaoImplTest {
     }
 
     @Test
+    @DisplayName("deleteContenuto - Contenuto esistente - Cancellazione con successo")
     void testDeleteContenutoSuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -104,10 +137,11 @@ class ContenutoDaoImplTest {
 
         int result = contenutoDao.deleteContenuto(bean);
 
-        assertEquals(1, result);
+        assertEquals(1, result, "deleteContenuto dovrebbe ritornare 1 per cancellazione riuscita");
     }
 
     @Test
+    @DisplayName("deleteContenuto - SQLException dal DataSource - Propaga eccezione")
     void testDeleteContenutoException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenThrow(new SQLException("DB Error"));
@@ -117,6 +151,27 @@ class ContenutoDaoImplTest {
     }
 
     @Test
+    @DisplayName("deleteContenuto - Verify entrambi setInt WHERE clause (ID_Ordine, ID_Prodotto)")
+    void testDeleteContenuto_AllParametersSet() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        ContenutoBean bean = new ContenutoBean();
+        bean.setId_ordine(100);
+        bean.setId_prodotto(200);
+
+        int result = contenutoDao.deleteContenuto(bean);
+
+        assertEquals(1, result);
+        // Verify all parameters set
+        verify(preparedStatement).setInt(1, 100); // WHERE ID_Ordine = ?
+        verify(preparedStatement).setInt(2, 200); // AND ID_Prodotto = ?
+        verify(preparedStatement).executeUpdate();
+    }
+
+    @Test
+    @DisplayName("findByKey - Chiave esistente - Restituisce ContenutoBean popolato")
     void testFindByKeySuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -129,12 +184,44 @@ class ContenutoDaoImplTest {
 
         ContenutoBean result = contenutoDao.findByKey(1, 1);
 
-        assertNotNull(result);
-        assertEquals(1, result.getId_ordine());
-        assertEquals(1, result.getId_prodotto());
+        assertNotNull(result, "findByKey dovrebbe ritornare ContenutoBean per chiave esistente");
+        assertEquals(1, result.getId_ordine(), "ID ordine dovrebbe essere 1");
+        assertEquals(1, result.getId_prodotto(), "ID prodotto dovrebbe essere 1");
     }
 
     @Test
+    @DisplayName("findByKey - Verify mapping completo ResultSet → ContenutoBean (TUTTI 5 campi)")
+    void testFindByKey_AllFieldsMapped() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+
+        // Mock ResultSet
+        when(resultSet.isBeforeFirst()).thenReturn(true);
+        when(resultSet.next()).thenReturn(true).thenReturn(false);
+        when(resultSet.getInt("ID_Ordine")).thenReturn(50);
+        when(resultSet.getInt("ID_Prodotto")).thenReturn(60);
+        when(resultSet.getInt("quantita")).thenReturn(5);
+        when(resultSet.getFloat("prezzoAcquisto")).thenReturn(25.99f);
+        when(resultSet.getInt("ivaAcquisto")).thenReturn(22);
+
+        ContenutoBean result = contenutoDao.findByKey(50, 60);
+
+        // ✅ whiTee: assert TUTTI i 5 campi bean
+        assertNotNull(result);
+        assertEquals(50, result.getId_ordine());
+        assertEquals(60, result.getId_prodotto());
+        assertEquals(5, result.getQuantita());
+        assertEquals(25.99f, result.getPrezzoAcquisto(), 0.0001f);
+        assertEquals(22, result.getIvaAcquisto());
+
+        verify(preparedStatement).setInt(1, 50);
+        verify(preparedStatement).setInt(2, 60);
+        verify(preparedStatement).executeQuery();
+    }
+
+    @Test
+    @DisplayName("findByKey - Chiave inesistente - Restituisce null")
     void testFindByKeyNotFound() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -143,14 +230,116 @@ class ContenutoDaoImplTest {
 
         ContenutoBean result = contenutoDao.findByKey(1, 1);
 
-        assertNull(result);
+        assertNull(result, "findByKey dovrebbe ritornare null per chiave inesistente");
     }
 
     @Test
+    @DisplayName("findByKey - SQLException dal DataSource - Propaga eccezione")
     void testFindByKeyException() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenThrow(new SQLException("DB Error"));
 
         assertThrows(SQLException.class, () -> contenutoDao.findByKey(1, 1));
+    }
+
+    @Test
+    @DisplayName("Resource Management - SQLException chiude correttamente Connection e PreparedStatement")
+    void findByKey_sqlException_closesResources() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenThrow(new SQLException("Test database error"));
+
+        // Act & Assert
+        assertThrows(SQLException.class, () -> contenutoDao.findByKey(1, 1),
+                "SQLException dovrebbe essere propagata");
+
+        // Verify resource cleanup (try-with-resources)
+        verify(preparedStatement).close();
+        verify(connection).close();
+    }
+
+    @Test
+    @DisplayName("saveContenuto - Verify updateStorage side-effect execution")
+    void testSaveContenuto_UpdateStorageCalculation() throws SQLException {
+        // Arrange
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        ContenutoBean contenuto = new ContenutoBean();
+        contenuto.setId_ordine(10);
+        contenuto.setId_prodotto(20);
+        contenuto.setQuantita(15); // Ordine 15 unità
+        contenuto.setPrezzoAcquisto(25.0f);
+        contenuto.setIvaAcquisto(22);
+
+        // Act
+        int result = contenutoDao.saveContenuto(contenuto);
+
+        // Assert
+        assertEquals(1, result, "saveContenuto dovrebbe ritornare 1");
+        verify(preparedStatement, times(2)).executeUpdate();
+    }
+
+    // ============================================================
+    // Resource Cleanup Verification Tests
+    // ============================================================
+
+    @Test
+    @DisplayName("saveContenuto - Verifica chiusura PreparedStatement e Connection")
+    void testSaveContenuto_ClosesResources() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        ContenutoBean bean = new ContenutoBean();
+        bean.setId_ordine(1);
+        bean.setId_prodotto(1);
+        bean.setQuantita(2);
+        bean.setPrezzoAcquisto(10.0f);
+        bean.setIvaAcquisto(22);
+
+        contenutoDao.saveContenuto(bean);
+
+        // saveContenuto calls updateStorage, which creates new connection
+        // So we have 2 separate finally blocks → 2x close() calls
+        verify(preparedStatement, times(2)).close();
+        verify(connection, times(2)).close();
+    }
+
+    @Test
+    @DisplayName("deleteContenuto - Verifica chiusura PreparedStatement e Connection")
+    void testDeleteContenuto_ClosesResources() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        ContenutoBean bean = new ContenutoBean();
+        bean.setId_ordine(1);
+        bean.setId_prodotto(1);
+
+        contenutoDao.deleteContenuto(bean);
+
+        verify(preparedStatement, times(1)).close();
+        verify(connection, times(1)).close();
+    }
+
+    @Test
+    @DisplayName("findByKey - Verifica chiusura PreparedStatement e Connection")
+    void testFindByKey_ClosesResources() throws SQLException {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+
+        when(resultSet.isBeforeFirst()).thenReturn(true);
+        when(resultSet.next()).thenReturn(true, false);
+        when(resultSet.getInt("ID_Ordine")).thenReturn(1);
+        when(resultSet.getInt("ID_Prodotto")).thenReturn(1);
+
+        contenutoDao.findByKey(1, 1);
+
+        verify(preparedStatement, times(1)).close();
+        verify(connection, times(1)).close();
     }
 }

@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.sql.SQLException;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -28,6 +29,7 @@ class DetailsControlTest {
     private ProductModel productModel;
 
     @Test
+    @DisplayName("Details - Lettura dettagli prodotto - Redirect a DetailsView")
     void testReadDetails() throws Exception {
         ProductBean product = new ProductBean();
         product.setCode(1);
@@ -43,6 +45,7 @@ class DetailsControlTest {
     }
 
     @Test
+    @DisplayName("Details - Nessuna action specificata - Redirect a DetailsView")
     void testNoAction() throws Exception {
         mockMvc.perform(get("/details"))
                 .andExpect(status().is3xxRedirection())
@@ -50,6 +53,7 @@ class DetailsControlTest {
     }
 
     @Test
+    @DisplayName("Details - SQLException durante lettura dettagli - Gestione errore gracefully")
     void testSQLException() throws Exception {
         when(productModel.doRetrieveByKey(anyInt())).thenThrow(new SQLException("DB Error"));
 

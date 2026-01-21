@@ -37,6 +37,10 @@ Thumbs.db
 *.swp
 *~ 
 
+# Maven debug files
+effective-pom
+dependency-tree.txt 
+
 # Secrets (se presente)
 .env
 
@@ -49,3 +53,5 @@ DOCKER_GUIDE.md
 
 #docs
 /docs
+
+target/
