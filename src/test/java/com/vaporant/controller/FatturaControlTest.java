@@ -126,7 +126,7 @@ class FatturaControlTest {
         void testDownloadFatturaPDFException() throws Exception {
                 OrderBean order = new OrderBean();
                 order.setId_ordine(1);
-                order.setDataAcquisto(null); // This will cause NPE when calling toString()
+                order.setDataAcquisto(null);
                 order.setMetodoPagamento("Carta");
 
                 List<ProductBean> products = new ArrayList<>();
@@ -205,19 +205,15 @@ class FatturaControlTest {
 
                         assertTrue(width > 0 && height > 0,
                                         "Rendered image should have positive dimensions");
-
-                        // Verify image contains actual content (not blank white page)
-                        // If mutation puts text OFF-PAGE (X<0, Y>height), page will be blank!
                         boolean hasContent = false;
-                        int samplePoints = 50; // Sample 50 random pixels
-                        Random random = new Random(42); // Fixed seed for reproducibility
+                        int samplePoints = 50;
+                        Random random = new Random(42);
 
                         for (int i = 0; i < samplePoints; i++) {
                                 int x = random.nextInt(width);
                                 int y = random.nextInt(height);
                                 int rgb = image.getRGB(x, y);
 
-                                // Check if pixel is NOT white (0xFFFFFFFF or -1)
                                 if (rgb != 0xFFFFFFFF && rgb != -1) {
                                         hasContent = true;
                                         break;
@@ -228,8 +224,6 @@ class FatturaControlTest {
                                         "PDF should contain visible content (not blank page). " +
                                                         "If coordinates are mutated, text may be off-page!");
 
-                        // === LAYER 1B: PDF File Size Validation ===
-                        // If layout is severely broken, PDF size might be anomalous
                         assertTrue(pdfBytes.length > 1000,
                                         "PDF should be at least 1KB (indicates proper content)");
                         assertTrue(pdfBytes.length < 100000,
@@ -240,8 +234,6 @@ class FatturaControlTest {
                         String pdfText = stripper.getText(document);
 
                         // === LAYER 2A: Verify element order (TOP to BOTTOM) ===
-                        // This kills Y-coordinate mutations (lines 55, 64, 72, 78, 84, 108, 112, 114,
-                        // 148, 151, 155, 157)
                         int indexFattura = pdfText.indexOf("FATTURA VAPORANT");
                         int indexNumero = pdfText.indexOf("Numero Fattura:");
                         int indexData = pdfText.indexOf("Data:");
@@ -265,7 +257,6 @@ class FatturaControlTest {
                                         "Metodo should appear before table headers");
 
                         // === LAYER 2: Verify header order LEFT-to-RIGHT ===
-                        // This kills X-coordinate mutations (lines 94, 99, 104)
                         assertTrue(indexProdottoHeader < indexQuantitaHeader,
                                         "Prodotto header should appear before Quantita");
                         assertTrue(indexQuantitaHeader < indexPrezzoHeader,
@@ -282,7 +273,6 @@ class FatturaControlTest {
                                         "Products should appear before TOTALE label");
 
                         // === LAYER 3: Extract and verify EXACT total value ===
-                        // This kills accumulator mutation (line 122)
                         Pattern totalPattern = Pattern.compile("TOTALE:\\s*([0-9]+[.,][0-9]{2})\\s*EUR");
                         Matcher totalMatcher = totalPattern.matcher(pdfText);
 
@@ -291,12 +281,12 @@ class FatturaControlTest {
                         String totalValueStr = totalMatcher.group(1).replace(",", ".");
                         double actualTotal = Double.parseDouble(totalValueStr);
 
-                        // EXACT value verification (kills accumulator mutation on line 122)
+                        // EXACT value verification
                         assertEquals(39.99, actualTotal, 0.01,
                                         "Total should be EXACTLY 39.99 EUR (31.00 + 8.99)");
 
                         // === LAYER 4: Verify product data presence ===
-                        // This kills X-coordinate table mutations (lines 134, 139, 144)
+                        // This kills X-coordinate table mutations
 
                         // Verify header
                         assertTrue(pdfText.contains("FATTURA VAPORANT"), "PDF should contain header");

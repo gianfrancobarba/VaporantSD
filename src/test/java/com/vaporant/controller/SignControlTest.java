@@ -96,7 +96,7 @@ class SignControlTest {
     })
     @DisplayName("SignControl - Email invalide rigettate")
     void testInvalidEmailRejected(String invalidEmail) throws Exception {
-        // Act & Assert - email invalida dovrebbe essere rigettata
+        // Act & Assert - invalid email should be rejected
         mockMvc.perform(post("/SignControl")
                 .param("nome", "Test")
                 .param("cognome", "User")
@@ -109,7 +109,7 @@ class SignControlTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("SignForm.jsp"));
 
-        // Verify no DAO call - email invalida non deve salvare utente
+        // Verify no DAO call - invalid email should not save user
         verify(userDao, never()).saveUser(any(UserBean.class));
     }
 }

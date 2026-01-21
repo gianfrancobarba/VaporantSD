@@ -251,7 +251,7 @@ class ProductModelDMTest {
 
         // Assert
         assertTrue(result, "doDelete dovrebbe ritornare true per delete riuscito");
-        // ✅ Verify setter parameter (kill VoidMethodCallMutator)
+        // Verify setter parameter (kill VoidMethodCallMutator)
         verify(preparedStatement).setInt(1, 999);
     }
 
@@ -261,18 +261,14 @@ class ProductModelDMTest {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
-
-        // ProductModelDM.doRetrieveByKey NON usa isBeforeFirst, solo next()
         when(resultSet.next()).thenReturn(true).thenReturn(false);
-        when(resultSet.getInt("ID")).thenReturn(1); // ✅ Corretto: ProductModelDM usa "ID" non "codice"
+        when(resultSet.getInt("ID")).thenReturn(1);
         when(resultSet.getString("nome")).thenReturn("Prodotto Test");
         when(resultSet.getString("descrizione")).thenReturn("Descrizione completa");
         when(resultSet.getFloat("prezzoAttuale")).thenReturn(19.99f);
         when(resultSet.getInt("quantita")).thenReturn(50);
 
         ProductBean result = productModel.doRetrieveByKey(1);
-
-        // ✅ whiTee: assert TUTTI i 5 campi
         assertNotNull(result, "doRetrieveByKey dovrebbe ritornare ProductBean");
         assertEquals(1, result.getCode(), "Codice dovrebbe essere 1");
         assertEquals("Prodotto Test", result.getName(), "Nome dovrebbe essere 'Prodotto Test'");
@@ -303,10 +299,8 @@ class ProductModelDMTest {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
-
-        // Simula 2 prodotti
         when(resultSet.next()).thenReturn(true, true, false);
-        when(resultSet.getInt("ID")).thenReturn(1, 2); // ✅ Corretto: usa "ID"
+        when(resultSet.getInt("ID")).thenReturn(1, 2);
         when(resultSet.getString("nome")).thenReturn("Prodotto A", "Prodotto B");
         when(resultSet.getString("descrizione")).thenReturn("Desc A", "Desc B");
         when(resultSet.getFloat("prezzoAttuale")).thenReturn(10.0f, 20.0f);
@@ -340,18 +334,12 @@ class ProductModelDMTest {
         verify(preparedStatement).setInt(1, 999);
     }
 
-    // ==========================================
-    // PHASE 1: Fix MathMutator - ORDER BY sort verification
-    // ==========================================
-
     @Test
     @DisplayName("doRetrieveAll - ORDER BY prezzoAttuale - Verify sort ascending")
     void testDoRetrieveAll_OrderByPrice_VerifySortAscending() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
-
-        // Mock 3 prodotti con prezzi ORDINATI ascending
         when(resultSet.next()).thenReturn(true, true, true, false);
         when(resultSet.getInt("ID")).thenReturn(1, 2, 3);
         when(resultSet.getString("nome")).thenReturn("P1", "P2", "P3");
@@ -364,7 +352,7 @@ class ProductModelDMTest {
         // Assert collection size
         assertEquals(3, results.size(), "Dovrebbe ritornare 3 prodotti");
 
-        // ✅ FIX MathMutator: Verify sort order
+        // Verify sort order
         ProductBean[] products = results.toArray(new ProductBean[0]);
         assertTrue(products[0].getPrice() <= products[1].getPrice(),
                 "Primo prodotto prezzo (<= secondo prezzo (ascending order)");
@@ -375,7 +363,5 @@ class ProductModelDMTest {
         assertEquals(10.0f, products[0].getPrice(), 0.01f, "Primo prodotto price=10.0");
         assertEquals(20.0f, products[1].getPrice(), 0.01f, "Secondo prodotto price=20.0");
         assertEquals(30.0f, products[2].getPrice(), 0.01f, "Terzo prodotto price=30.0");
-
-        // ✅ MathMutator: mutations su comparisons (<= vs >=) rilevate
     }
 }

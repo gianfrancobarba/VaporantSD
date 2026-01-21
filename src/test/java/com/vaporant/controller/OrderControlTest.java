@@ -87,7 +87,7 @@ class OrderControlTest {
         verify(orderDao).getIdfromDB();
         verify(contDao, times(cart.getProducts().size())).saveContenuto(any(ContenutoBean.class));
 
-        // === CRITICAL: Verify EXACT quantity calculations ===
+        // === Verify EXACT quantity calculations ===
         // Product 1: storage=100, ordered=2 → remaining = 100 - 2 = 98
         verify(productDao).updateQuantityStorage(
                 argThat(p -> p.getCode() == 1),

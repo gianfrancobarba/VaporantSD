@@ -22,11 +22,11 @@ class AddressScriptTest {
         testAddress = new AddressBean();
         testAddress.setId(1);
         testAddress.setVia("Via Roma");
-        testAddress.setNumCivico("42"); // Correct: setNumCivico
+        testAddress.setNumCivico("42");
         testAddress.setCap("00100");
         testAddress.setCitta("Roma");
         testAddress.setProvincia("RM");
-        testAddress.setId_utente(123); // Correct: setId_utente(int)
+        testAddress.setId_utente(123);
         testAddress.setStato("Italia");
     }
 

@@ -79,7 +79,7 @@ class UserDaoImplTest {
         assertEquals("test@test.com", user.getEmail(), "Email dovrebbe corrispondere a quella fornita");
         assertEquals("user", user.getTipo(), "Tipo dovrebbe essere 'user'");
 
-        // ✅ PHASE 2.1 FIX: Verify ALL bean setters called (kill VoidMethodCall)
+        // Verify ALL bean setters called (kill VoidMethodCall)
         assertNotNull(user.getNome(), "Nome should be set");
         assertEquals("Test", user.getNome());
         assertNotNull(user.getCognome(), "Cognome should be set");
@@ -88,7 +88,7 @@ class UserDaoImplTest {
         assertEquals("CF123", user.getCodF());
         assertNotNull(user.getNumTelefono(), "Telefono should be set");
         assertEquals("123456", user.getNumTelefono());
-        assertNotNull(user.getDataNascita(), "DataNascita should be set"); // ← Kills L126 mutation
+        assertNotNull(user.getDataNascita(), "DataNascita should be set");
         assertNotNull(user.getPassword(), "Password should be set");
         assertEquals("password", user.getPassword());
         assertEquals(1, user.getId(), "ID should be set");
@@ -132,7 +132,7 @@ class UserDaoImplTest {
         int result = userDao.saveUser(user);
 
         assertEquals(1, result, "saveUser dovrebbe ritornare 1 per inserimento riuscito");
-        // ✅ Verify TUTTI i setters (kill VoidMethodCallMutator)
+        // Verify all setters (kill VoidMethodCallMutator)
         verify(preparedStatement).setString(1, "Test");
         verify(preparedStatement).setString(2, "User");
         verify(preparedStatement).setString(3, "test@test.com");
@@ -201,13 +201,13 @@ class UserDaoImplTest {
         assertNotNull(user, "findById dovrebbe ritornare UserBean per ID esistente");
         assertEquals(1, user.getId(), "ID dovrebbe essere 1");
 
-        // ✅ PHASE 2.1 FIX: Verify ALL bean setters (kill VoidMethodCall L178)
+        // Verify ALL bean setters (kill VoidMethodCall)
         assertNotNull(user.getNome(), "Nome should be set");
         assertNotNull(user.getCognome(), "Cognome should be set");
         assertNotNull(user.getEmail(), "Email should be set");
         assertNotNull(user.getCodF(), "CF should be set");
         assertNotNull(user.getNumTelefono(), "Telefono should be set");
-        assertNotNull(user.getDataNascita(), "DataNascita should be set"); // ← Kills L178
+        assertNotNull(user.getDataNascita(), "DataNascita should be set");
         assertNotNull(user.getPassword(), "Password should be set");
         assertNotNull(user.getTipo(), "Tipo should be set");
     }
@@ -292,22 +292,14 @@ class UserDaoImplTest {
     void testUpdateAddress() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
-        // Note: updateAddress in UserDaoImpl has commented out executeUpdate() line
-        // 289.
-        // If it is commented out, we should not verify executeUpdate.
-        // But the user asked to cover branches. The code has:
-        // preparedStatement.setString(1, address);
-        // preparedStatement.setInt(2, user.getId());
-        // // preparedStatement.executeUpdate();
 
         UserBean user = new UserBean();
         user.setId(1);
-
         userDao.updateAddress("New Address", user);
 
         verify(preparedStatement).setString(1, "New Address");
         verify(preparedStatement).setInt(2, 1);
-        // verify(preparedStatement).executeUpdate(); // Commented out in source
+
         assertEquals("New Address", user.getIndirizzoFatt(), "Indirizzo fatturazione dovrebbe essere aggiornato");
     }
 
@@ -370,7 +362,7 @@ class UserDaoImplTest {
 
         // Assert
         assertEquals(1, result);
-        // ✅ Verify setter parameter (kill VoidMethodCallMutator)
+        // Verify setter parameter (kill VoidMethodCallMutator)
         verify(preparedStatement).setInt(1, 42);
     }
 
@@ -390,7 +382,7 @@ class UserDaoImplTest {
         userDao.modifyMail(user, newEmail);
 
         // Assert
-        // ✅ Verify entrambi i parametri (kill VoidMethodCallMutator)
+        // Verify parameters
         verify(preparedStatement).setString(1, "new@email.com");
         verify(preparedStatement).setInt(2, 10);
     }
@@ -411,7 +403,7 @@ class UserDaoImplTest {
         userDao.modifyTelefono(user, newCell);
 
         // Assert
-        // ✅ Verify entrambi parametri
+        // Verify parameters
         verify(preparedStatement).setString(1, "9876543210");
         verify(preparedStatement).setInt(2, 15);
     }
@@ -433,14 +425,14 @@ class UserDaoImplTest {
 
         // Assert
         assertEquals(1, result);
-        // ✅ Verify tutti i 3 setters (kill VoidMethodCallMutator)
+        // Verify parameters
         verify(preparedStatement).setString(1, "newPassword");
         verify(preparedStatement).setInt(2, 20);
         verify(preparedStatement).setString(3, "oldPassword");
     }
 
     // ============================================================
-    // PHASE 2: Resource Cleanup Verification Tests
+    // Resource Cleanup Verification Tests
     // ============================================================
 
     @Test
@@ -483,7 +475,7 @@ class UserDaoImplTest {
         // Act
         userDao.deleteUser(user);
 
-        // Assert - Verify resource cleanup
+        // Assert - Verify resources closed
         verify(preparedStatement, times(1)).close();
         verify(connection, times(1)).close();
     }
@@ -512,7 +504,7 @@ class UserDaoImplTest {
         userDao.findById(1);
 
         // Assert - Verify PreparedStatement and Connection closed
-        // NOTE: ResultSet is created inline, not explicitly closed in UserDaoImpl
+        // ResultSet is created inline, not explicitly closed in UserDaoImpl
         verify(preparedStatement, times(1)).close();
         verify(connection, times(1)).close();
     }
@@ -529,7 +521,7 @@ class UserDaoImplTest {
         assertThrows(SQLException.class, () -> userDao.findById(1),
                 "SQLException dovrebbe essere propagata");
 
-        // CRITICAL: Verify resources closed EVEN on exception
+        // Verify resources closed EVEN on exception
         verify(preparedStatement).close();
         verify(connection).close();
     }
@@ -548,7 +540,7 @@ class UserDaoImplTest {
         // Act
         userDao.modifyMail(user, "new@email.com");
 
-        // Assert - Verify resource cleanup
+        // Assert - Verify resources closed
         verify(preparedStatement, times(1)).close();
         verify(connection, times(1)).close();
     }
@@ -567,7 +559,7 @@ class UserDaoImplTest {
         // Act
         userDao.modifyTelefono(user, "9876543210");
 
-        // Assert - Verify resource cleanup
+        // Assert - Verify resources closed
         verify(preparedStatement, times(1)).close();
         verify(connection, times(1)).close();
     }
@@ -587,7 +579,7 @@ class UserDaoImplTest {
         // Act
         userDao.modifyPsw("newPassword", "oldPassword", user);
 
-        // Assert - Verify resource cleanup
+        // Assert - Verify resources closed
         verify(preparedStatement, times(1)).close();
         verify(connection, times(1)).close();
     }

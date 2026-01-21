@@ -83,7 +83,7 @@ class ContenutoDaoImplTest {
         // Act
         int result = contenutoDao.saveContenuto(bean);
 
-        // Assert - ✅ whiTee pattern: verify OGNI singolo setter
+        // Assert
         assertEquals(1, result);
         verify(preparedStatement).setInt(1, 10); // ID_Ordine
         verify(preparedStatement).setInt(2, 20); // ID_Prodotto
@@ -164,7 +164,7 @@ class ContenutoDaoImplTest {
         int result = contenutoDao.deleteContenuto(bean);
 
         assertEquals(1, result);
-        // ✅ whiTee: verify WHERE clause parameters
+        // Verify all parameters set
         verify(preparedStatement).setInt(1, 100); // WHERE ID_Ordine = ?
         verify(preparedStatement).setInt(2, 200); // AND ID_Prodotto = ?
         verify(preparedStatement).executeUpdate();
@@ -196,7 +196,7 @@ class ContenutoDaoImplTest {
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
 
-        // Mock ResultSet con TUTTI i 5 campi
+        // Mock ResultSet
         when(resultSet.isBeforeFirst()).thenReturn(true);
         when(resultSet.next()).thenReturn(true).thenReturn(false);
         when(resultSet.getInt("ID_Ordine")).thenReturn(50);
@@ -259,10 +259,6 @@ class ContenutoDaoImplTest {
         verify(connection).close();
     }
 
-    // ==========================================
-    // PHASE 1: Fix MathMutator - updateStorage calculation
-    // ==========================================
-
     @Test
     @DisplayName("saveContenuto - Verify updateStorage side-effect execution")
     void testSaveContenuto_UpdateStorageCalculation() throws SQLException {
@@ -283,20 +279,11 @@ class ContenutoDaoImplTest {
 
         // Assert
         assertEquals(1, result, "saveContenuto dovrebbe ritornare 1");
-
-        // ✅ FIX MathMutator: Verify updateStorage side-effect chiamato
-        // saveContenuto chiama updateStorage che fa UPDATE quantita = quantita - ?
-        // Verify executeUpdate chiamato 2 volte: INSERT + UPDATE
         verify(preparedStatement, times(2)).executeUpdate();
-
-        // ✅ MathMutator: mutation su - operator in updateStorage rilevato
-        // Note: Non possiamo verificare il valore esatto 85 perché updateStorage
-        // usa parametri (non possiamo mockare PreparedStatement separato facilmente)
-        // Ma verify times(2) rileva che UPDATE viene eseguito
     }
 
     // ============================================================
-    // PHASE 2: Resource Cleanup Verification Tests
+    // Resource Cleanup Verification Tests
     // ============================================================
 
     @Test
@@ -315,7 +302,7 @@ class ContenutoDaoImplTest {
 
         contenutoDao.saveContenuto(bean);
 
-        // NOTE: saveContenuto calls updateStorage, which creates new connection
+        // saveContenuto calls updateStorage, which creates new connection
         // So we have 2 separate finally blocks → 2x close() calls
         verify(preparedStatement, times(2)).close();
         verify(connection, times(2)).close();

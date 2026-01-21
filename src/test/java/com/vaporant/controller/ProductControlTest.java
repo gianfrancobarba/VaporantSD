@@ -162,8 +162,7 @@ class ProductControlTest {
         mockMvc.perform(post("/product")
                 .session(session))
                 .andExpect(status().is3xxRedirection());
-
-        // ✅ Verify NO delete/insert (kill conditional mutations su action check)
+        // Kill conditional mutations su action check
         verify(productModel, never()).doDelete(anyInt());
         verify(productModel, never()).doSave(any());
     }

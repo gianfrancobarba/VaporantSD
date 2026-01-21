@@ -62,7 +62,7 @@ class AddressDaoImplTest {
         int result = addressDao.saveAddress(address);
 
         assertEquals(1, result, "saveAddress dovrebbe ritornare 1 per inserimento riuscito");
-        // ✅ Verify TUTTI i 5 setters (kill VoidMethodCallMutator)
+        // Verify all 5 setters (kill VoidMethodCallMutator)
         verify(preparedStatement).setString(1, "Via Roma"); // Via
         verify(preparedStatement).setString(2, "10"); // numCivico
         verify(preparedStatement).setString(3, "Milano"); // citta
@@ -124,7 +124,6 @@ class AddressDaoImplTest {
 
         AddressBean result = addressDao.findByCred("20100", "Via Roma", "10");
 
-        // ✅ whiTee: assert TUTTI i 6 campi (prima era solo 2)
         assertNotNull(result, "findByCred dovrebbe ritornare AddressBean per credenziali esistenti");
         assertEquals(1, result.getId(), "ID indirizzo dovrebbe essere 1");
         assertEquals("Via Roma", result.getVia(), "Via dovrebbe essere 'Via Roma'");
@@ -163,7 +162,6 @@ class AddressDaoImplTest {
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
 
-        // ✅ whiTee: Simula 2 indirizzi
         when(resultSet.next()).thenReturn(true, true, false);
         when(resultSet.getInt("ID")).thenReturn(1, 2);
         when(resultSet.getString("Via")).thenReturn("Via Roma", "Via Milano");
@@ -177,7 +175,6 @@ class AddressDaoImplTest {
         assertNotNull(results, "findByID dovrebbe ritornare ArrayList per utente con indirizzi");
         assertEquals(2, results.size(), "ArrayList dovrebbe contenere 2 indirizzi");
 
-        // ✅ whiTee: verify almeno primi 2 elementi mappati correttamente
         assertEquals(1, results.get(0).getId());
         assertEquals("Via Roma", results.get(0).getVia());
         assertEquals("10", results.get(0).getNumCivico());
@@ -199,7 +196,6 @@ class AddressDaoImplTest {
 
         ArrayList<AddressBean> results = addressDao.findByID(999);
 
-        // ✅ whiTee pattern: empty collection SEMPRE testato
         assertNotNull(results);
         assertTrue(results.isEmpty());
     }
@@ -248,7 +244,6 @@ class AddressDaoImplTest {
 
         AddressBean result = addressDao.findAddressByID(5);
 
-        // ✅ whiTee: assert TUTTI i 6 campi
         assertNotNull(result, "findAddressByID dovrebbe ritornare AddressBean per ID esistente");
         assertEquals(5, result.getId());
         assertEquals("Via Test", result.getVia());
@@ -301,7 +296,7 @@ class AddressDaoImplTest {
     }
 
     // ============================================================
-    // PHASE 2: Resource Cleanup Verification Tests
+    // Resource Cleanup Verification Tests
     // ============================================================
 
     @Test
@@ -358,7 +353,6 @@ class AddressDaoImplTest {
 
         addressDao.findByCred("20100", "Via Roma", "10");
 
-        // ResultSet created inline, not explicitly closed
         verify(preparedStatement, times(1)).close();
         verify(connection, times(1)).close();
     }

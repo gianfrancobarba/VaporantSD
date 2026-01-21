@@ -67,7 +67,7 @@ class OrderDaoImplTest {
         int result = orderDao.saveOrder(order);
 
         assertEquals(1, result, "saveOrder dovrebbe ritornare 1 per inserimento riuscito");
-        // ✅ Verify TUTTI i 5 setters (kill VoidMethodCallMutator)
+        // Verify all setters (kill VoidMethodCallMutator)
         verify(preparedStatement).setInt(1, 1); // ID_Utente
         verify(preparedStatement).setInt(2, 1); // ID_Indirizzo
         verify(preparedStatement).setDouble(3, 100.0); // prezzoTot
@@ -129,10 +129,8 @@ class OrderDaoImplTest {
         assertNotNull(result, "findByKey dovrebbe ritornare OrderBean per ID esistente");
         assertEquals(1, result.getId_ordine(), "ID ordine dovrebbe essere 1");
 
-        // ✅ PHASE 2.4 FIX: Verify ALL bean setters (kill VoidMethodCall)
+        // Verify ALL bean setters (kill VoidMethodCall)
         assertNotNull(result.getDataAcquisto(), "DataAcquisto should be set");
-        // Note: Other fields (id_utente, id_indirizzo, prezzoTot, metodoPagamento)
-        // require mock setup enhancement for complete verification
     }
 
     @Test
@@ -266,7 +264,7 @@ class OrderDaoImplTest {
 
         // Assert
         assertNull(result, "findByKey dovrebbe ritornare null se non trovato");
-        // ✅ Verify setter parameter (kill VoidMethodCallMutator)
+        // Verify setter parameter (kill VoidMethodCallMutator)
         verify(preparedStatement).setInt(1, 999);
     }
 
@@ -284,7 +282,7 @@ class OrderDaoImplTest {
 
         // Assert
         assertNull(result, "findByIdUtente dovrebbe ritornare null se non trovato");
-        // ✅ Verify setter parameter
+        // Verify setter parameter
         verify(preparedStatement).setInt(1, 456);
     }
 
@@ -313,7 +311,7 @@ class OrderDaoImplTest {
         assertNotNull(result, "findByIdUtente dovrebbe ritornare ArrayList");
         assertEquals(3, result.size(), "Dovrebbe ritornare 3 ordini");
 
-        // ✅ Verify loop iterations (kill NegateConditionalsMutator su while)
+        // Verify loop iterations (kill NegateConditionalsMutator on while)
         verify(resultSet, times(4)).next(); // 3 true + 1 false
     }
 
@@ -324,12 +322,8 @@ class OrderDaoImplTest {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
-
-        // ✅ whiTee: Simula 2 ordini per stesso utente
         when(resultSet.isBeforeFirst()).thenReturn(true);
         when(resultSet.next()).thenReturn(true, true, false);
-
-        // Mock TUTTI i 6 campi OrderBean per 2 ordini
         when(resultSet.getInt("ID_Ordine")).thenReturn(1, 2);
         when(resultSet.getInt("ID_Utente")).thenReturn(100, 100);
         when(resultSet.getInt("ID_Indirizzo")).thenReturn(5, 6);
@@ -346,7 +340,6 @@ class OrderDaoImplTest {
         assertNotNull(results, "findByIdUtente dovrebbe ritornare ArrayList");
         assertEquals(2, results.size(), "Dovrebbe ritornare 2 ordini");
 
-        // ✅ whiTee: Verify PRIMO ordine con TUTTI 6 campi
         OrderBean first = results.get(0);
         assertEquals(1, first.getId_ordine(), "ID ordine 1 dovrebbe essere 1");
         assertEquals(100, first.getId_utente(), "ID utente dovrebbe essere 100");
@@ -356,7 +349,6 @@ class OrderDaoImplTest {
                 "Data acquisto dovrebbe essere 2024-01-15");
         assertEquals("Carta", first.getMetodoPagamento(), "Metodo pagamento dovrebbe essere Carta");
 
-        // ✅ whiTee: Verify SECONDO ordine (almeno id + prezzo)
         OrderBean second = results.get(1);
         assertEquals(2, second.getId_ordine(), "ID ordine 2 dovrebbe essere 2");
         assertEquals(100, second.getId_utente(), "ID utente dovrebbe essere 100");
@@ -367,7 +359,7 @@ class OrderDaoImplTest {
     }
 
     // ============================================================
-    // PHASE 2: Resource Cleanup Verification Tests
+    // Resource Cleanup Verification Tests
     // ============================================================
 
     @Test

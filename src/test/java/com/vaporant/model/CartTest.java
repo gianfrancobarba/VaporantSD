@@ -18,7 +18,7 @@ class CartTest {
         testProduct = createProduct(1, "Test Product", 10.0f, 100);
     }
 
-    // ========== GRUPPO 1: addProduct() Tests ==========
+    // ========== GROUP 1: addProduct() Tests ==========
 
     @Test
     @DisplayName("addProduct - Prodotto nuovo aggiunto correttamente")
@@ -49,14 +49,14 @@ class CartTest {
     @Test
     @DisplayName("addProduct - Quantità = stock (boundary) NON incrementa")
     void addProduct_quantityEqualsStock_doesNotIncrement() {
-        // Arrange - prodotto con stock limitato
+        // Arrange - product with limited stock
         ProductBean limitedProduct = createProduct(2, "Limited", 5.0f, 1);
         cart.addProduct(limitedProduct);
 
-        // Act - tentativo di aggiungere ancora (qty=1, stock=1, quindi qty == stock)
+        // Act - attempt to add again (qty=1, stock=1, therefore qty == stock)
         cart.addProduct(limitedProduct);
 
-        // Assert - quantità NON deve aumentare
+        // Assert - quantity should not increase when qty == stock
         assertEquals(1, cart.getProducts().get(0).getQuantity(),
                 "Quantità non dovrebbe incrementare quando qty == stock");
         assertEquals(5.0, cart.getPrezzoTotale(), 0.01,
@@ -66,10 +66,10 @@ class CartTest {
     @Test
     @DisplayName("addProduct - Quantità > stock NON incrementa")
     void addProduct_quantityExceedsStock_doesNotIncrement() {
-        // Arrange - forza quantity > stock
+        // Arrange - force quantity > stock
         ProductBean product = createProduct(3, "Overstocked", 8.0f, 2);
         cart.addProduct(product);
-        cart.getProducts().get(0).setQuantity(3); // Forza qty > stock (simulazione edge case)
+        cart.getProducts().get(0).setQuantity(3); // Force qty > stock (simulation edge case)
 
         double priceBefore = cart.getPrezzoTotale();
 
@@ -82,7 +82,7 @@ class CartTest {
         assertEquals(priceBefore, cart.getPrezzoTotale(), 0.01);
     }
 
-    // ========== GRUPPO 2: deleteProduct() Tests ==========
+    // ========== GROUP 2: deleteProduct() Tests ==========
 
     @Test
     @DisplayName("deleteProduct - Rimuove prodotto e aggiorna prezzo")
@@ -105,12 +105,12 @@ class CartTest {
         // Arrange
         ProductBean otherProduct = createProduct(99, "Other", 1.0f, 1);
 
-        // Act & Assert - non dovrebbe lanciare exception
+        // Act & Assert - should not throw exception
         assertDoesNotThrow(() -> cart.deleteProduct(otherProduct));
         assertEquals(0, cart.getProducts().size());
     }
 
-    // ========== GRUPPO 3: aggiorna() Tests ==========
+    // ========== GROUP 3: aggiorna() Tests ==========
 
     @Test
     @DisplayName("aggiorna - Incrementa quantità e ricalcola prezzo")
@@ -131,7 +131,7 @@ class CartTest {
     void aggiorna_decreasesQuantity_recalculatesPrice() {
         // Arrange
         cart.addProduct(testProduct);
-        cart.aggiorna(testProduct, 5); // Primo porta a qty=5
+        cart.aggiorna(testProduct, 5); // First sets qty=5
 
         // Act
         cart.aggiorna(testProduct, 2);
@@ -156,7 +156,7 @@ class CartTest {
         assertEquals(0.0, cart.getPrezzoTotale(), 0.01, "Prezzo dovrebbe essere 0.0");
     }
 
-    // ========== GRUPPO 4: containsProduct() Tests ==========
+    // ========== GROUP 4: containsProduct() Tests ==========
 
     @Test
     @DisplayName("containsProduct - Trova prodotto esistente")
@@ -175,7 +175,7 @@ class CartTest {
     @Test
     @DisplayName("containsProduct - Ritorna null se non trovato")
     void containsProduct_productNotExists_returnsNull() {
-        // Arrange - cart vuoto
+        // Arrange - cart is empty
         ProductBean otherProduct = createProduct(99, "Other", 1.0f, 1);
 
         // Act
@@ -185,19 +185,19 @@ class CartTest {
         assertNull(found, "Dovrebbe ritornare null per prodotto non esistente");
     }
 
-    // ========== GRUPPO 5: getPrezzoTotale() Tests ==========
+    // ========== GROUP 5: getPrezzoTotale() Tests ==========
 
     @Test
     @DisplayName("getPrezzoTotale - Arrotondamento a 2 decimali")
     void getPrezzoTotale_withDecimals_roundsToTwoDecimals() {
-        // Arrange - prodotto con prezzo decimale
+        // Arrange - product with decimal price
         ProductBean decimalProduct = createProduct(4, "Decimal", 10.555f, 10);
         cart.addProduct(decimalProduct);
 
         // Act
         double total = cart.getPrezzoTotale();
 
-        // Assert - arrotondamento a 2 decimali: 10.555 → 10.56
+        // Assert - rounding to 2 decimals: 10.555 → 10.56
         assertEquals(10.56, total, 0.01,
                 "Prezzo dovrebbe essere arrotondato a 10.56 (da 10.555)");
     }
@@ -205,12 +205,12 @@ class CartTest {
     // ========== Helper Method ==========
 
     /**
-     * Crea un ProductBean di test con parametri specificati.
+     * Creates a ProductBean for testing with specified parameters.
      * 
-     * @param code  Codice prodotto
-     * @param name  Nome prodotto
-     * @param price Prezzo unitario
-     * @param stock Quantità disponibile in magazzino
+     * @param code  Product code
+     * @param name  Product name
+     * @param price Product price
+     * @param stock Product stock quantity
      * @return ProductBean configurato
      */
     private ProductBean createProduct(int code, String name, float price, int stock) {
@@ -220,7 +220,7 @@ class CartTest {
         p.setDescription(name + " description");
         p.setPrice(price);
         p.setQuantityStorage(stock);
-        p.setQuantity(1); // Default quantity iniziale
+        p.setQuantity(1); // Default quantity initial
         return p;
     }
 }
