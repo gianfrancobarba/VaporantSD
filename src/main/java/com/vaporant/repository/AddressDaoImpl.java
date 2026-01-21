@@ -37,7 +37,7 @@ public class AddressDaoImpl implements AddressDAO {
 		int result = 0;
 
 		String insertSQL = "INSERT INTO " + TABLE +
-				" (ID_Utente, stato, Via, numCivico, citta, CAP, provincia) VALUES (?, ?, ?, ?, ?, ?, ?)";
+				" (ID_Utente, stato, via, numCivico, citta, CAP, provincia) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
 		try {
 			connection = getConnection();
@@ -100,7 +100,7 @@ public class AddressDaoImpl implements AddressDAO {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 
-		String selectSQL = "SELECT * FROM " + TABLE + " WHERE CAP = ? AND Via = ? AND numCivico = ?";
+		String selectSQL = "SELECT * FROM " + TABLE + " WHERE CAP = ? AND via = ? AND numCivico = ?";
 		AddressBean address = null;
 
 		try {
@@ -119,7 +119,7 @@ public class AddressDaoImpl implements AddressDAO {
 
 			while (rs.next()) {
 				address.setId(rs.getInt("ID"));
-				address.setVia(rs.getString("Via"));
+				address.setVia(rs.getString("via"));
 				address.setNumCivico(rs.getString("numCivico"));
 				address.setCitta(rs.getString("citta"));
 				address.setCap(rs.getString("CAP"));
@@ -160,7 +160,7 @@ public class AddressDaoImpl implements AddressDAO {
 			while (rs.next()) {
 				AddressBean address = new AddressBean();
 				address.setId(rs.getInt("ID"));
-				address.setVia(rs.getString("Via"));
+				address.setVia(rs.getString("via"));
 				address.setNumCivico(rs.getString("numCivico"));
 				address.setCitta(rs.getString("citta"));
 				address.setCap(rs.getString("CAP"));
@@ -205,7 +205,7 @@ public class AddressDaoImpl implements AddressDAO {
 
 			while (rs.next()) {
 				address.setId(rs.getInt("ID"));
-				address.setVia(rs.getString("Via"));
+				address.setVia(rs.getString("via"));
 				address.setNumCivico(rs.getString("numCivico"));
 				address.setCitta(rs.getString("citta"));
 				address.setCap(rs.getString("CAP"));

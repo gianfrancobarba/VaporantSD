@@ -63,11 +63,13 @@ class AddressDaoImplTest {
 
         assertEquals(1, result, "saveAddress dovrebbe ritornare 1 per inserimento riuscito");
         // Verify all 5 setters (kill VoidMethodCallMutator)
-        verify(preparedStatement).setString(1, "Via Roma"); // Via
-        verify(preparedStatement).setString(2, "10"); // numCivico
-        verify(preparedStatement).setString(3, "Milano"); // citta
-        verify(preparedStatement).setString(4, "20100"); // CAP
-        verify(preparedStatement).setString(5, "MI"); // provincia
+        verify(preparedStatement).setInt(1, 0); // ID_Utente (default)
+        verify(preparedStatement).setString(2, ""); // Stato (default)
+        verify(preparedStatement).setString(3, "Via Roma"); // Via
+        verify(preparedStatement).setString(4, "10"); // numCivico
+        verify(preparedStatement).setString(5, "Milano"); // citta
+        verify(preparedStatement).setString(6, "20100"); // CAP
+        verify(preparedStatement).setString(7, "MI"); // provincia
     }
 
     @Test
@@ -116,7 +118,7 @@ class AddressDaoImplTest {
         when(resultSet.isBeforeFirst()).thenReturn(true);
         when(resultSet.next()).thenReturn(true).thenReturn(false);
         when(resultSet.getInt("ID")).thenReturn(1);
-        when(resultSet.getString("Via")).thenReturn("Via Roma");
+        when(resultSet.getString("via")).thenReturn("Via Roma");
         when(resultSet.getString("numCivico")).thenReturn("10");
         when(resultSet.getString("citta")).thenReturn("Milano");
         when(resultSet.getString("CAP")).thenReturn("20100");
@@ -164,7 +166,7 @@ class AddressDaoImplTest {
 
         when(resultSet.next()).thenReturn(true, true, false);
         when(resultSet.getInt("ID")).thenReturn(1, 2);
-        when(resultSet.getString("Via")).thenReturn("Via Roma", "Via Milano");
+        when(resultSet.getString("via")).thenReturn("Via Roma", "Via Milano");
         when(resultSet.getString("numCivico")).thenReturn("10", "20");
         when(resultSet.getString("citta")).thenReturn("Milano", "Milano");
         when(resultSet.getString("CAP")).thenReturn("20100", "20121");
@@ -236,7 +238,7 @@ class AddressDaoImplTest {
         when(resultSet.isBeforeFirst()).thenReturn(true);
         when(resultSet.next()).thenReturn(true).thenReturn(false);
         when(resultSet.getInt("ID")).thenReturn(5);
-        when(resultSet.getString("Via")).thenReturn("Via Test");
+        when(resultSet.getString("via")).thenReturn("Via Test");
         when(resultSet.getString("numCivico")).thenReturn("100");
         when(resultSet.getString("citta")).thenReturn("Roma");
         when(resultSet.getString("CAP")).thenReturn("00100");
@@ -345,7 +347,7 @@ class AddressDaoImplTest {
         when(resultSet.isBeforeFirst()).thenReturn(true);
         when(resultSet.next()).thenReturn(true, false);
         when(resultSet.getInt("ID")).thenReturn(1);
-        when(resultSet.getString("Via")).thenReturn("Via Roma");
+        when(resultSet.getString("via")).thenReturn("Via Roma");
         when(resultSet.getString("numCivico")).thenReturn("10");
         when(resultSet.getString("citta")).thenReturn("Milano");
         when(resultSet.getString("CAP")).thenReturn("20100");
@@ -366,7 +368,7 @@ class AddressDaoImplTest {
 
         when(resultSet.next()).thenReturn(true, false);
         when(resultSet.getInt("ID")).thenReturn(1);
-        when(resultSet.getString("Via")).thenReturn("Via Roma");
+        when(resultSet.getString("via")).thenReturn("Via Roma");
         when(resultSet.getString("numCivico")).thenReturn("10");
         when(resultSet.getString("citta")).thenReturn("Milano");
         when(resultSet.getString("CAP")).thenReturn("20100");

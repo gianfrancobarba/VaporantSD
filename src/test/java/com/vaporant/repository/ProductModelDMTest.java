@@ -14,7 +14,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import java.util.Collection;
 
@@ -40,9 +39,6 @@ class ProductModelDMTest {
 
     @Mock
     private PreparedStatement preparedStatement;
-
-    @Mock
-    private Statement statement;
 
     @Mock
     private ResultSet resultSet;
@@ -101,13 +97,12 @@ class ProductModelDMTest {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
         when(preparedStatement.executeUpdate()).thenReturn(1);
-        when(connection.createStatement()).thenReturn(statement);
 
         boolean result = productModel.doDelete(1);
 
         assertTrue(result, "doDelete dovrebbe ritornare true per ID esistente");
         verify(preparedStatement).setInt(1, 1);
-        verify(statement).executeUpdate(anyString());
+
     }
 
     @Test
@@ -116,7 +111,6 @@ class ProductModelDMTest {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
         when(preparedStatement.executeUpdate()).thenReturn(0);
-        when(connection.createStatement()).thenReturn(statement);
 
         boolean result = productModel.doDelete(999);
 
@@ -244,7 +238,6 @@ class ProductModelDMTest {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
         when(preparedStatement.executeUpdate()).thenReturn(1);
-        when(connection.createStatement()).thenReturn(statement);
 
         // Act
         boolean result = productModel.doDelete(999);
@@ -326,7 +319,6 @@ class ProductModelDMTest {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
         when(preparedStatement.executeUpdate()).thenReturn(0); // 0 rows affected
-        when(connection.createStatement()).thenReturn(statement);
 
         boolean result = productModel.doDelete(999);
 

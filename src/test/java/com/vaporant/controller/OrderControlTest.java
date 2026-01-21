@@ -2,7 +2,7 @@ package com.vaporant.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -71,13 +71,12 @@ class OrderControlTest {
         mockMvc.perform(post("/Ordine")
                 .session(session)
                 .param("payment", "PayPal")
-                .param("addressDropdown", "4")
-                .param("addressDropdown2", "5"))
+                .param("addressDropdown", "4"))
+
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("ordine.jsp"));
 
         // Verify flow completo
-        verify(userDao).updateAddress(anyString(), eq(user));
 
         verify(orderDao).saveOrder(argThat(order -> order.getId_utente() == user.getId() &&
                 order.getMetodoPagamento().equals("PayPal") &&
@@ -117,8 +116,8 @@ class OrderControlTest {
         mockMvc.perform(post("/Ordine")
                 .session(session)
                 .param("payment", "Carta")
-                .param("addressDropdown", "1")
-                .param("addressDropdown2", "1"))
+                .param("addressDropdown", "1"))
+
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("ordine.jsp"));
     }

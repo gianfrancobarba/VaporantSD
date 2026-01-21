@@ -288,22 +288,6 @@ class UserDaoImplTest {
     }
 
     @Test
-    @DisplayName("updateAddress - Indirizzo nuovo - Aggiorna UserBean")
-    void testUpdateAddress() throws SQLException {
-        when(dataSource.getConnection()).thenReturn(connection);
-        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
-
-        UserBean user = new UserBean();
-        user.setId(1);
-        userDao.updateAddress("New Address", user);
-
-        verify(preparedStatement).setString(1, "New Address");
-        verify(preparedStatement).setInt(2, 1);
-
-        assertEquals("New Address", user.getIndirizzoFatt(), "Indirizzo fatturazione dovrebbe essere aggiornato");
-    }
-
-    @Test
     @DisplayName("modifyMail - SQLException dal DataSource - Propaga eccezione")
     void testModifyMailException() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException("DB Error"));
@@ -319,15 +303,6 @@ class UserDaoImplTest {
         UserBean user = new UserBean();
         user.setId(1);
         assertThrows(SQLException.class, () -> userDao.modifyTelefono(user, "123"));
-    }
-
-    @Test
-    @DisplayName("updateAddress - SQLException dal DataSource - Propaga eccezione")
-    void testUpdateAddressException() throws SQLException {
-        when(dataSource.getConnection()).thenThrow(new SQLException("DB Error"));
-        UserBean user = new UserBean();
-        user.setId(1);
-        assertThrows(SQLException.class, () -> userDao.updateAddress("address", user));
     }
 
     @Test

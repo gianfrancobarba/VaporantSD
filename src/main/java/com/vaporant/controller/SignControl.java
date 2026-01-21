@@ -40,7 +40,7 @@ public class SignControl {
 		user.setCodF(request.getParameter("codice_fiscale"));
 		user.setNumTelefono(request.getParameter("telefono"));
 
-		// ✅ Email validation BEFORE setting to bean
+		// Email validation BEFORE setting to bean
 		String email = request.getParameter("email");
 		if (!isValidEmail(email)) {
 			return "redirect:SignForm.jsp"; // Email invalida, ritorna a form senza chiamare DAO
@@ -48,7 +48,6 @@ public class SignControl {
 
 		user.setEmail(email);
 		user.setPassword(request.getParameter("password"));
-		user.setIndirizzoFatt(request.getParameter("indirizzoFatt"));
 
 		int result = 0;
 
