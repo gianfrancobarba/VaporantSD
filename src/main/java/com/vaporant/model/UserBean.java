@@ -140,6 +140,9 @@ public class UserBean {
 	 * @
 	 */
 	public void setPassword(String password) {
+		if (password != null && password.length() > 30) {
+			throw new IllegalArgumentException("Password can be max 30 chars");
+		}
 		this.password = password;
 	}
 
@@ -157,6 +160,9 @@ public class UserBean {
 	 * @
 	 */
 	public void setTipo(String tipo) {
+		if (tipo == null || (!tipo.equals("user") && !tipo.equals("admin"))) {
+			throw new IllegalArgumentException("Tipo must be 'user' or 'admin'");
+		}
 		this.tipo = tipo;
 	}
 

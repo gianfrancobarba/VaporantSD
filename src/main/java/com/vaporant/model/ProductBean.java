@@ -152,6 +152,9 @@ public class ProductBean implements Serializable {
 	 * @
 	 */
 	public void setTipo(String tipo) {
+		if (tipo != null && tipo.length() > 20) {
+			throw new IllegalArgumentException("Tipo can be max 20 chars");
+		}
 		this.tipo = tipo;
 	}
 
@@ -170,6 +173,9 @@ public class ProductBean implements Serializable {
 	 * @
 	 */
 	public void setColore(String colore) {
+		if (colore != null && colore.length() > 20) {
+			throw new IllegalArgumentException("Colore can be max 20 chars");
+		}
 		this.colore = colore;
 	}
 

@@ -86,7 +86,7 @@ class ContenutoDaoImplTest {
         // Assert
         assertEquals(1, result);
         verify(preparedStatement).setInt(1, 10); // ID_Ordine
-        verify(preparedStatement).setInt(2, 20); // ID_Prodotto
+        verify(preparedStatement, times(2)).setInt(2, 20); // ID_Prodotto called twice (Insert + Update)
         verify(preparedStatement).setInt(3, 3); // quantita
         verify(preparedStatement).setFloat(4, 15.5f); // prezzoAcquisto
         verify(preparedStatement).setInt(5, 22); // ivaAcquisto
