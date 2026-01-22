@@ -1,28 +1,44 @@
 package com.vaporant.model;
 
-
 public class UserBean {
 
-	/*@ spec_public @*/ private String nome, cognome, numTelefono, email, codF, password, indirizzoFatt;
+	/* @ spec_public @ */ private String nome, cognome, numTelefono, email, codF, password;
 
-	/*@ spec_public @*/ private String tipo;
-	/*@ spec_public @*/ private java.time.LocalDate dataNascita;
-	/*@ spec_public @*/ private int id;
+	/* @ spec_public @ */ private String tipo;
+	/* @ spec_public @ */ private java.time.LocalDate dataNascita;
+	/* @ spec_public @ */ private int id;
 
-	/*@ 
-	  @ public invariant nome != null;
-	  @ public invariant cognome != null;
-	  @ public invariant email != null;
-	  @ public invariant password != null;
-	  @ public invariant tipo != null && (tipo.equals("admin") || tipo.equals("user"));
-	  @ public invariant dataNascita != null;
-	  @*/
-	/*@ 
-	  @ public normal_behavior
-	  @   ensures nome != null && cognome != null && email != null && password != null;
-	  @   ensures tipo.equals("user") && dataNascita != null;
-	  @*/
-	/*@ skipesc @*/
+	/*
+	 * @
+	 * 
+	 * @ public invariant nome != null;
+	 * 
+	 * @ public invariant cognome != null;
+	 * 
+	 * @ public invariant email != null;
+	 * 
+	 * @ public invariant password != null;
+	 * 
+	 * @ public invariant tipo != null && (tipo.equals("admin") ||
+	 * tipo.equals("user"));
+	 * 
+	 * @ public invariant dataNascita != null;
+	 * 
+	 * @
+	 */
+	/*
+	 * @
+	 * 
+	 * @ public normal_behavior
+	 * 
+	 * @ ensures nome != null && cognome != null && email != null && password !=
+	 * null;
+	 * 
+	 * @ ensures tipo.equals("user") && dataNascita != null;
+	 * 
+	 * @
+	 */
+	/* @ skipesc @ */
 	public UserBean() {
 		this.nome = "";
 		this.cognome = "";
@@ -32,25 +48,22 @@ public class UserBean {
 		this.dataNascita = java.time.LocalDate.now().minusYears(18);
 		this.codF = "";
 		this.numTelefono = "";
-		this.indirizzoFatt = "";
-	}
 
-	public String getIndirizzoFatt() {
-		return indirizzoFatt;
-	}
-
-	public void setIndirizzoFatt(String indirizzoFatt) {
-		this.indirizzoFatt = indirizzoFatt;
 	}
 
 	public String getEmail() {
 		return email;
 	}
 
-	/*@ 
-	  @ requires email != null;
-	  @ ensures this.email == email;
-	  @*/
+	/*
+	 * @
+	 * 
+	 * @ requires email != null;
+	 * 
+	 * @ ensures this.email == email;
+	 * 
+	 * @
+	 */
 	public void setEmail(String email) {
 		this.email = email;
 	}
@@ -67,10 +80,15 @@ public class UserBean {
 		return nome;
 	}
 
-	/*@ 
-	  @ requires nome != null;
-	  @ ensures this.nome == nome;
-	  @*/
+	/*
+	 * @
+	 * 
+	 * @ requires nome != null;
+	 * 
+	 * @ ensures this.nome == nome;
+	 * 
+	 * @
+	 */
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
@@ -79,10 +97,15 @@ public class UserBean {
 		return cognome;
 	}
 
-	/*@ 
-	  @ requires cognome != null;
-	  @ ensures this.cognome == cognome;
-	  @*/
+	/*
+	 * @
+	 * 
+	 * @ requires cognome != null;
+	 * 
+	 * @ ensures this.cognome == cognome;
+	 * 
+	 * @
+	 */
 	public void setCognome(String cognome) {
 		this.cognome = cognome;
 	}
@@ -107,11 +130,19 @@ public class UserBean {
 		return password;
 	}
 
-	/*@ 
-	  @ requires password != null;
-	  @ ensures this.password == password;
-	  @*/
+	/*
+	 * @
+	 * 
+	 * @ requires password != null;
+	 * 
+	 * @ ensures this.password == password;
+	 * 
+	 * @
+	 */
 	public void setPassword(String password) {
+		if (password != null && password.length() > 30) {
+			throw new IllegalArgumentException("Password can be max 30 chars");
+		}
 		this.password = password;
 	}
 
@@ -119,11 +150,19 @@ public class UserBean {
 		return tipo;
 	}
 
-	/*@ 
-	  @ requires tipo != null && (tipo.equals("admin") || tipo.equals("user"));
-	  @ ensures this.tipo == tipo;
-	  @*/
+	/*
+	 * @
+	 * 
+	 * @ requires tipo != null && (tipo.equals("admin") || tipo.equals("user"));
+	 * 
+	 * @ ensures this.tipo == tipo;
+	 * 
+	 * @
+	 */
 	public void setTipo(String tipo) {
+		if (tipo == null || (!tipo.equals("user") && !tipo.equals("admin"))) {
+			throw new IllegalArgumentException("Tipo must be 'user' or 'admin'");
+		}
 		this.tipo = tipo;
 	}
 
@@ -131,15 +170,20 @@ public class UserBean {
 		return dataNascita;
 	}
 
-	/*@ 
-	  @ requires dataNascita != null;
-	  @ ensures this.dataNascita == dataNascita;
-	  @*/
+	/*
+	 * @
+	 * 
+	 * @ requires dataNascita != null;
+	 * 
+	 * @ ensures this.dataNascita == dataNascita;
+	 * 
+	 * @
+	 */
 	public void setDataNascita(java.time.LocalDate dataNascita) {
 		this.dataNascita = dataNascita;
 	}
 
-	/*@ skipesc @*/
+	/* @ skipesc @ */
 	public String toString() {
 
 		String s = "";
@@ -169,9 +213,6 @@ public class UserBean {
 		s += " - ";
 
 		s += tipo;
-		s += "\n";
-
-		s += indirizzoFatt;
 		s += "\n";
 
 		return s;

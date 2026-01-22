@@ -115,6 +115,33 @@ class ProductControlTest {
     }
 
     @Test
+    @DisplayName("Product - SQLException in insert gestita correttamente")
+    void testInsertProduct_SQLException() throws Exception {
+        // Arrange
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("tipo", "admin");
+
+        // Mock exception on save
+        doThrow(new SQLException("DB Error")).when(productModel).doSave(any());
+        when(productModel.doRetrieveAll(null)).thenReturn(new ArrayList<>());
+
+        // Act
+        mockMvc.perform(post("/product")
+                .session(session)
+                .param("action", "insert")
+                .param("name", "New Product")
+                .param("description", "Test description")
+                .param("price", "29")
+                .param("quantity", "10"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("ProductViewAdmin.jsp"));
+
+        // Assert: Exception caught, flow continues to redirect
+        verify(productModel).doSave(any());
+        verify(productModel).doRetrieveAll(null); // Should still reload list
+    }
+
+    @Test
     @DisplayName("Product - SQLException durante retrieve - Gestione errore gracefully")
     void testSQLExceptionHandling() throws Exception {
         doThrow(new SQLException("DB Error")).when(productModel).doRetrieveAll(anyString());

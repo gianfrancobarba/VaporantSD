@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -14,7 +16,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import java.util.Collection;
 
@@ -42,9 +43,6 @@ class ProductModelDMTest {
     private PreparedStatement preparedStatement;
 
     @Mock
-    private Statement statement;
-
-    @Mock
     private ResultSet resultSet;
 
     @InjectMocks
@@ -54,7 +52,8 @@ class ProductModelDMTest {
     @DisplayName("doRetrieveAll - Ordine specificato - Restituisce lista prodotti ordinata")
     void testDoRetrieveAll() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
-        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        // Kill SQL Logic Mutants: Verify correct ORDER BY clause
+        when(connection.prepareStatement(contains("ORDER BY nome"))).thenReturn(preparedStatement);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
 
         when(resultSet.next()).thenReturn(true).thenReturn(false);
@@ -70,13 +69,16 @@ class ProductModelDMTest {
         assertEquals(1, products.size(), "Collection dovrebbe contenere 1 prodotto");
         ProductBean p = products.iterator().next();
         assertEquals("Product 1", p.getName(), "Nome prodotto dovrebbe essere 'Product 1'");
+
+        verify(connection).prepareStatement(contains("ORDER BY nome"));
     }
 
     @Test
     @DisplayName("doSave - Prodotto valido - Inserimento con successo")
     void testDoSave() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
-        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        // Verify INSERT statement structure
+        when(connection.prepareStatement(startsWith("INSERT INTO prodotto"))).thenReturn(preparedStatement);
         when(preparedStatement.executeUpdate()).thenReturn(1);
 
         ProductBean p = new ProductBean();
@@ -87,7 +89,7 @@ class ProductModelDMTest {
 
         productModel.doSave(p);
 
-        // ✅ Verify TUTTI i 4 setters (kill VoidMethodCallMutator)
+        // Verify all setters
         verify(preparedStatement).setString(1, "New Product"); // Nome
         verify(preparedStatement).setString(2, "Desc"); // Description
         verify(preparedStatement).setInt(3, 10); // QuantityStorage
@@ -99,24 +101,22 @@ class ProductModelDMTest {
     @DisplayName("doDelete - ID esistente - Cancellazione con successo")
     void testDoDelete() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
-        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(connection.prepareStatement(startsWith("DELETE FROM prodotto"))).thenReturn(preparedStatement);
         when(preparedStatement.executeUpdate()).thenReturn(1);
-        when(connection.createStatement()).thenReturn(statement);
 
         boolean result = productModel.doDelete(1);
 
         assertTrue(result, "doDelete dovrebbe ritornare true per ID esistente");
         verify(preparedStatement).setInt(1, 1);
-        verify(statement).executeUpdate(anyString());
+
     }
 
     @Test
     @DisplayName("doDelete - ID non esistente - Restituisce false")
     void testDoDeleteFailure() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
-        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(connection.prepareStatement(startsWith("DELETE FROM prodotto"))).thenReturn(preparedStatement);
         when(preparedStatement.executeUpdate()).thenReturn(0);
-        when(connection.createStatement()).thenReturn(statement);
 
         boolean result = productModel.doDelete(999);
 
@@ -136,12 +136,13 @@ class ProductModelDMTest {
     @DisplayName("doRetrieveByKey - ID esistente - Restituisce ProductBean popolato")
     void testDoRetrieveByKeySuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
-        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(connection.prepareStatement(contains("WHERE ID = ?"))).thenReturn(preparedStatement);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
 
         when(resultSet.next()).thenReturn(true).thenReturn(false);
         when(resultSet.getInt("ID")).thenReturn(1);
         when(resultSet.getString("nome")).thenReturn("Product 1");
+        when(resultSet.getFloat("prezzoAttuale")).thenReturn(10.0f);
 
         ProductBean result = productModel.doRetrieveByKey(1);
 
@@ -163,7 +164,7 @@ class ProductModelDMTest {
     @DisplayName("updateQuantityStorage - Quantità valida - Aggiorna con successo")
     void testUpdateQuantityStorageSuccess() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
-        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(connection.prepareStatement(contains("UPDATE "))).thenReturn(preparedStatement);
         when(preparedStatement.executeUpdate()).thenReturn(1);
 
         ProductBean prod = new ProductBean();
@@ -192,15 +193,19 @@ class ProductModelDMTest {
     @DisplayName("doRetrieveAll - Nessun ordine specificato - Restituisce lista prodotti")
     void testDoRetrieveAllNoOrder() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
-        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        // Verify default query (No ORDER BY)
+        when(connection.prepareStatement(startsWith("SELECT * FROM prodotto"))).thenReturn(preparedStatement);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(false);
 
         Collection<ProductBean> products = productModel.doRetrieveAll(null);
         assertNotNull(products, "doRetrieveAll dovrebbe ritornare Collection anche senza ordine");
+        verify(connection).prepareStatement(startsWith("SELECT * FROM prodotto")); // Strict check
 
-        products = productModel.doRetrieveAll("");
-        assertNotNull(products, "doRetrieveAll dovrebbe ritornare Collection per ordine vuoto");
+        // Reset for next call logic
+        when(connection.prepareStatement(contains("ORDER BY custom"))).thenReturn(preparedStatement);
+        products = productModel.doRetrieveAll("custom");
+        assertNotNull(products, "doRetrieveAll dovrebbe ritornare Collection per ordine");
     }
 
     @Test
@@ -244,7 +249,6 @@ class ProductModelDMTest {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
         when(preparedStatement.executeUpdate()).thenReturn(1);
-        when(connection.createStatement()).thenReturn(statement);
 
         // Act
         boolean result = productModel.doDelete(999);
@@ -326,7 +330,6 @@ class ProductModelDMTest {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
         when(preparedStatement.executeUpdate()).thenReturn(0); // 0 rows affected
-        when(connection.createStatement()).thenReturn(statement);
 
         boolean result = productModel.doDelete(999);
 

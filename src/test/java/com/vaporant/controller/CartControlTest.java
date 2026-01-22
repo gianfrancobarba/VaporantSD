@@ -53,6 +53,11 @@ class CartControlTest {
                 .andExpect(redirectedUrl("CartView.jsp"));
 
         verify(productModel).doRetrieveByKey(1);
+
+        // Verify Session State (kill logic mutants)
+        Cart updatedCart = (Cart) session.getAttribute("cart");
+        assertEquals(1, updatedCart.getProducts().size(), "Cart should contain 1 product");
+        assertEquals(1, updatedCart.getProducts().get(0).getCode(), "Product ID matches");
     }
 
     @Test
@@ -77,6 +82,10 @@ class CartControlTest {
                 .andExpect(redirectedUrl("CartView.jsp"));
 
         verify(productModel).doRetrieveByKey(1);
+
+        // Verify Session State
+        Cart updatedCart = (Cart) session.getAttribute("cart");
+        assertEquals(0, updatedCart.getProducts().size(), "Cart should be empty after delete");
     }
 
     @Test

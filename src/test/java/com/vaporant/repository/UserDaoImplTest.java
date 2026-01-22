@@ -64,7 +64,7 @@ class UserDaoImplTest {
         when(resultSet.next()).thenReturn(true).thenReturn(false);
 
         when(resultSet.getString("email")).thenReturn("test@test.com");
-        when(resultSet.getString("CF")).thenReturn("CF123");
+        when(resultSet.getString("CF")).thenReturn("CF12345678901234");
         when(resultSet.getString("nome")).thenReturn("Test");
         when(resultSet.getString("cognome")).thenReturn("User");
         when(resultSet.getString("numTelefono")).thenReturn("123456");
@@ -85,7 +85,7 @@ class UserDaoImplTest {
         assertNotNull(user.getCognome(), "Cognome should be set");
         assertEquals("User", user.getCognome());
         assertNotNull(user.getCodF(), "CF should be set");
-        assertEquals("CF123", user.getCodF());
+        assertEquals("CF12345678901234", user.getCodF());
         assertNotNull(user.getNumTelefono(), "Telefono should be set");
         assertEquals("123456", user.getNumTelefono());
         assertNotNull(user.getDataNascita(), "DataNascita should be set");
@@ -124,7 +124,7 @@ class UserDaoImplTest {
         user.setCognome("User");
         user.setEmail("test@test.com");
         user.setPassword("password");
-        user.setCodF("CF123");
+        user.setCodF("CF12345678901234");
         user.setNumTelefono("123456");
         user.setDataNascita(LocalDate.now());
         user.setTipo("user");
@@ -137,7 +137,7 @@ class UserDaoImplTest {
         verify(preparedStatement).setString(2, "User");
         verify(preparedStatement).setString(3, "test@test.com");
         verify(preparedStatement).setString(4, "password");
-        verify(preparedStatement).setString(5, "CF123");
+        verify(preparedStatement).setString(5, "CF12345678901234");
         verify(preparedStatement).setString(6, "123456");
         verify(preparedStatement).setString(7, user.getDataNascita().toString());
         verify(preparedStatement).setString(8, "user");
@@ -154,8 +154,8 @@ class UserDaoImplTest {
     }
 
     @Test
-    @DisplayName("saveUser - Tipo null - Default a 'user'")
-    void testSaveUserWithNullType() throws SQLException {
+    @DisplayName("saveUser - Tipo default - Default a 'user'")
+    void testSaveUserWithDefaultType() throws SQLException {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
         when(preparedStatement.executeUpdate()).thenReturn(1);
@@ -165,15 +165,15 @@ class UserDaoImplTest {
         user.setCognome("User");
         user.setEmail("test@test.com");
         user.setPassword("password");
-        user.setCodF("CF123");
+        user.setCodF("CF12345678901234");
         user.setNumTelefono("123456");
         user.setDataNascita(LocalDate.now());
-        user.setTipo(null); // Null type
+        // Default constructor sets tipo = "user"
 
         int result = userDao.saveUser(user);
 
-        assertEquals(1, result, "saveUser dovrebbe ritornare 1 anche con tipo null (default 'user')");
-        verify(preparedStatement).setString(8, "user"); // Should default to "user"
+        assertEquals(1, result, "saveUser dovrebbe ritornare 1 con tipo default");
+        verify(preparedStatement).setString(8, "user");
     }
 
     @Test
@@ -187,7 +187,7 @@ class UserDaoImplTest {
         when(resultSet.next()).thenReturn(true).thenReturn(false);
 
         when(resultSet.getString("email")).thenReturn("test@test.com");
-        when(resultSet.getString("CF")).thenReturn("CF123");
+        when(resultSet.getString("CF")).thenReturn("CF12345678901234");
         when(resultSet.getString("nome")).thenReturn("Test");
         when(resultSet.getString("cognome")).thenReturn("User");
         when(resultSet.getString("numTelefono")).thenReturn("123456");
@@ -288,22 +288,6 @@ class UserDaoImplTest {
     }
 
     @Test
-    @DisplayName("updateAddress - Indirizzo nuovo - Aggiorna UserBean")
-    void testUpdateAddress() throws SQLException {
-        when(dataSource.getConnection()).thenReturn(connection);
-        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
-
-        UserBean user = new UserBean();
-        user.setId(1);
-        userDao.updateAddress("New Address", user);
-
-        verify(preparedStatement).setString(1, "New Address");
-        verify(preparedStatement).setInt(2, 1);
-
-        assertEquals("New Address", user.getIndirizzoFatt(), "Indirizzo fatturazione dovrebbe essere aggiornato");
-    }
-
-    @Test
     @DisplayName("modifyMail - SQLException dal DataSource - Propaga eccezione")
     void testModifyMailException() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException("DB Error"));
@@ -319,15 +303,6 @@ class UserDaoImplTest {
         UserBean user = new UserBean();
         user.setId(1);
         assertThrows(SQLException.class, () -> userDao.modifyTelefono(user, "123"));
-    }
-
-    @Test
-    @DisplayName("updateAddress - SQLException dal DataSource - Propaga eccezione")
-    void testUpdateAddressException() throws SQLException {
-        when(dataSource.getConnection()).thenThrow(new SQLException("DB Error"));
-        UserBean user = new UserBean();
-        user.setId(1);
-        assertThrows(SQLException.class, () -> userDao.updateAddress("address", user));
     }
 
     @Test
@@ -448,7 +423,7 @@ class UserDaoImplTest {
         user.setCognome("User");
         user.setEmail("test@test.com");
         user.setPassword("password");
-        user.setCodF("CF123");
+        user.setCodF("CF12345678901234");
         user.setNumTelefono("123456");
         user.setDataNascita(LocalDate.now());
         user.setTipo("user");
@@ -491,7 +466,7 @@ class UserDaoImplTest {
         when(resultSet.isBeforeFirst()).thenReturn(true);
         when(resultSet.next()).thenReturn(true, false);
         when(resultSet.getString("email")).thenReturn("test@test.com");
-        when(resultSet.getString("CF")).thenReturn("CF123");
+        when(resultSet.getString("CF")).thenReturn("CF12345678901234");
         when(resultSet.getString("nome")).thenReturn("Test");
         when(resultSet.getString("cognome")).thenReturn("User");
         when(resultSet.getString("numTelefono")).thenReturn("123456");

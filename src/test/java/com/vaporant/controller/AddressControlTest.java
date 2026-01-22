@@ -1,6 +1,7 @@
 package com.vaporant.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -51,7 +52,13 @@ class AddressControlTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("Utente.jsp"));
 
-        verify(addressDao).saveAddress(any(AddressBean.class));
+        verify(addressDao).saveAddress(argThat(address -> address.getCitta().equals("Milano") &&
+                address.getProvincia().equals("MI") &&
+                address.getVia().equals("Via Roma") &&
+                address.getCap().equals("20100") &&
+                address.getNumCivico().equals("10") &&
+                address.getStato().equals("Italia") &&
+                address.getId_utente() == 1));
     }
 
     @Test
