@@ -1,6 +1,6 @@
 package com.vaporant.controller;
 
-import java.io.IOException; 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import jakarta.servlet.ServletException;
@@ -17,64 +17,72 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Controller
 public class ProductControl {
 
-	@Autowired
-	private ProductModel model;
+    @Autowired
+    private ProductModel model;
 
-	
-	@RequestMapping(value = "/product", method = {RequestMethod.GET, RequestMethod.POST})
-	public String execute(HttpServletRequest request, HttpServletResponse response)
+    @RequestMapping(value = "/product", method = { RequestMethod.GET, RequestMethod.POST })
+    public String execute(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
 
         String action = request.getParameter("action");
 
         try {
             if (action != null) {
 
-                if (action.equalsIgnoreCase("delete")) 
-                {
-
-                    int id = Integer.parseInt(request.getParameter("id"));
-                    model.doDelete(id);
-                }
-                else if(action.equalsIgnoreCase("insert"))
-                {
+                if (action.equalsIgnoreCase("delete")) {
+                    String idParam = request.getParameter("id");
+                    if (idParam != null) {
+                        try {
+                            int id = Integer.parseInt(idParam);
+                            model.doDelete(id);
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid ID format: " + idParam);
+                        }
+                    }
+                } else if (action.equalsIgnoreCase("insert")) {
                     String name = request.getParameter("name");
                     String description = request.getParameter("description");
-                    int price = Integer.parseInt(request.getParameter("price"));
-                    int quantity = Integer.parseInt(request.getParameter("quantity"));
+                    String priceParam = request.getParameter("price");
+                    String quantityParam = request.getParameter("quantity");
 
-                    ProductBean bean = new ProductBean();
-                    bean.setName(name);
-                    bean.setDescription(description);
-                    bean.setPrice(price);
-                    bean.setQuantityStorage(quantity);
-                    model.doSave(bean);
+                    if (name != null && priceParam != null && quantityParam != null) {
+                        try {
+                            int price = Integer.parseInt(priceParam);
+                            int quantity = Integer.parseInt(quantityParam);
+
+                            ProductBean bean = new ProductBean();
+                            bean.setName(name);
+                            bean.setDescription(description);
+                            bean.setPrice(price);
+                            bean.setQuantityStorage(quantity);
+                            model.doSave(bean);
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid number format in product insert");
+                        }
+                    }
                 }
             }
 
         } catch (SQLException e) {
-                System.out.println("Error:" + e.getMessage());
-          }
+            System.out.println("Error:" + e.getMessage());
+        }
 
         String sort = request.getParameter("sort");
 
         try {
-        	
+
             request.getSession().removeAttribute("products");
             request.getSession().setAttribute("products", model.doRetrieveAll(sort));
-        
+
         } catch (SQLException e) {
             System.out.println("Error:" + e.getMessage());
         }
-        
-        if(request.getSession().getAttribute("tipo").equals("admin")) 
-        	return "redirect:ProductViewAdmin.jsp";
+
+        String tipo = (String) request.getSession().getAttribute("tipo");
+        if (tipo != null && tipo.equals("admin"))
+            return "redirect:ProductViewAdmin.jsp";
         else
-        	return "redirect:ProductView.jsp";
-	}
-
-	
-
+            return "redirect:ProductView.jsp";
+    }
 
 }

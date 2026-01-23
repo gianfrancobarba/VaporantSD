@@ -31,6 +31,11 @@ public class ModifyControl {
         String action = request.getParameter("action");
         UserBean user = (UserBean) request.getSession().getAttribute("user");
 
+        if (action == null || user == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
         switch (action) {
             case "modificaEmail":
                 String nuovaMail = request.getParameter("nuovaEmail");

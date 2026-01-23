@@ -42,11 +42,28 @@ public class OrderControl {
 		Cart cart = (Cart) session.getAttribute("cart");
 		UserBean user = (UserBean) session.getAttribute("user");
 
+		if (cart == null || user == null) {
+			res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing session data");
+			return null;
+		}
+
 		int idUtente = user.getId();
 		System.out.println("order " + user.getId());
 
 		String payment = req.getParameter("payment");
-		int idIndirizzo = Integer.parseInt(req.getParameter("addressDropdown"));
+		String addressParam = req.getParameter("addressDropdown");
+		if (payment == null || addressParam == null) {
+			res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameters");
+			return null;
+		}
+
+		int idIndirizzo;
+		try {
+			idIndirizzo = Integer.parseInt(addressParam);
+		} catch (NumberFormatException e) {
+			res.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid address ID");
+			return null;
+		}
 
 		OrderBean order = new OrderBean(idUtente, idIndirizzo, cart.getPrezzoTotale(), LocalDate.now(), payment);
 

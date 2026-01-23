@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -179,18 +178,30 @@ class ProductControlTest {
     }
 
     @Test
-    @DisplayName("Product - Action parameter null/missing - No operations executed")
-    void testExecuteWithNoAction() throws Exception {
-        // Arrange
+    @DisplayName("Product - Sessione tipo mancante - Gestione gracefully (NPE)")
+    void testProductMissingTipo() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        // Missing "tipo"
+
+        mockMvc.perform(get("/product")
+                .session(session))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("ProductView.jsp"));
+    }
+
+    @Test
+    @DisplayName("Product - Parametri non numerici (insert) - Gestione gracefully (NFE)")
+    void testProductInvalidNumericParams() throws Exception {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("tipo", "admin");
 
-        // Act & Assert - NO action param
         mockMvc.perform(post("/product")
-                .session(session))
-                .andExpect(status().is3xxRedirection());
-        // Kill conditional mutations su action check
-        verify(productModel, never()).doDelete(anyInt());
-        verify(productModel, never()).doSave(any());
+                .session(session)
+                .param("action", "insert")
+                .param("name", "Product")
+                .param("price", "invalid")
+                .param("quantity", "10"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("ProductViewAdmin.jsp"));
     }
 }

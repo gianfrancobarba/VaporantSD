@@ -107,7 +107,13 @@ class OrderControlTest {
         user.setId(1);
         Cart cart = new Cart();
 
-        when(addressDao.findAddressByID(anyInt())).thenThrow(new SQLException("DB Error"));
+        // Simulate SQLException during saveOrder
+        // Since we are mocking, we can't easily throw checked SQLException from void
+        // method without more setup,
+        // but we can throw RuntimeException or mock the behavior.
+        // Actually saveOrder throws SQLException, so we can use doThrow.
+
+        org.mockito.Mockito.doThrow(new SQLException("Simulated SQL Error")).when(orderDao).saveOrder(any());
 
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("user", user);
@@ -117,9 +123,39 @@ class OrderControlTest {
                 .session(session)
                 .param("payment", "Carta di credito/debito")
                 .param("addressDropdown", "1"))
-
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("ordine.jsp"));
+    }
+
+    @Test
+    @DisplayName("Order - Sessione mancante (user) - Gestione gracefully (NPE)")
+    void testOrderMissingUser() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("cart", new Cart());
+        // Missing "user"
+
+        mockMvc.perform(post("/Ordine")
+                .session(session)
+                .param("payment", "PayPal")
+                .param("addressDropdown", "1"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Order - Parametro indirizzo non numerico - Gestione gracefully (NFE)")
+    void testOrderInvalidAddressId() throws Exception {
+        UserBean user = createTestUser();
+        Cart cart = createTestCart();
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("user", user);
+        session.setAttribute("cart", cart);
+
+        mockMvc.perform(post("/Ordine")
+                .session(session)
+                .param("payment", "PayPal")
+                .param("addressDropdown", "invalid"))
+                .andExpect(status().isBadRequest());
     }
 
     // Helper methods

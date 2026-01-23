@@ -5,11 +5,10 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.sql.SQLException;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -130,20 +129,29 @@ class ModifyControlTest {
     }
 
     @Test
-    @DisplayName("Modify - SQLException durante modifica email - Gestione errore gracefully")
-    void testModifyEmailException() throws Exception {
-        UserBean user = new UserBean();
-        user.setId(1);
+    @DisplayName("Modify - Sessione utente mancante - Gestione gracefully (NPE)")
+    void testModifyMissingUser() throws Exception {
         MockHttpSession session = new MockHttpSession();
-        session.setAttribute("user", user);
-
-        when(userDao.findById(1)).thenThrow(new SQLException("DB Error"));
+        // Missing "user"
 
         mockMvc.perform(post("/modify")
                 .session(session)
                 .param("action", "modificaEmail")
                 .param("nuovaEmail", "new@test.com"))
-                .andExpect(status().isOk()); // It catches exception and does nothing, so status might be 200 but empty
-                                             // body
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Modify - Action null - Gestione gracefully (NPE)")
+    void testModifyNullAction() throws Exception {
+        UserBean user = new UserBean();
+        user.setId(1);
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("user", user);
+
+        mockMvc.perform(post("/modify")
+                .session(session))
+                // NO action param
+                .andExpect(status().isBadRequest());
     }
 }

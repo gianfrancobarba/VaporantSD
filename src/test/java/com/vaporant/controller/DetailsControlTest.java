@@ -63,4 +63,14 @@ class DetailsControlTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("DetailsView.jsp"));
     }
+
+    @Test
+    @DisplayName("Details - Parametro ID non numerico - Operazione saltata (graceful reload)")
+    void testInvalidId() throws Exception {
+        mockMvc.perform(get("/details")
+                .param("action", "read")
+                .param("id", "invalid"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("DetailsView.jsp"));
+    }
 }

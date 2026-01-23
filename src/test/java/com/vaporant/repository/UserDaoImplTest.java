@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -557,5 +558,63 @@ class UserDaoImplTest {
         // Assert - Verify resources closed
         verify(preparedStatement, times(1)).close();
         verify(connection, times(1)).close();
+    }
+
+    // Additional Coverage (Branches & getConnection)
+
+    @Test
+    @DisplayName("saveUser - Tipo null - Default a 'user'")
+    void testSaveUserWithNullType() throws Exception {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        UserBean user = new UserBean();
+        user.setDataNascita(LocalDate.now());
+
+        // Use reflection to bypass UserBean validation in setTipo
+        java.lang.reflect.Field field = UserBean.class.getDeclaredField("tipo");
+        field.setAccessible(true);
+        field.set(user, null);
+
+        userDao.saveUser(user);
+
+        verify(preparedStatement).setString(8, "user");
+    }
+
+    @Test
+    @DisplayName("saveUser - Tipo vuoto - Default a 'user'")
+    void testSaveUserWithEmptyType() throws Exception {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        UserBean user = new UserBean();
+        user.setDataNascita(LocalDate.now());
+
+        // Use reflection to bypass UserBean validation in setTipo
+        java.lang.reflect.Field field = UserBean.class.getDeclaredField("tipo");
+        field.setAccessible(true);
+        field.set(user, "");
+
+        userDao.saveUser(user);
+
+        verify(preparedStatement).setString(8, "user");
+    }
+
+    @Test
+    @DisplayName("getConnection - DataSource nullo - Fallback su DataSourceUtil")
+    void testGetConnection_FallbackToStatic() throws Exception {
+        // Force 'ds' to null via reflection
+        java.lang.reflect.Field field = UserDaoImpl.class.getDeclaredField("ds");
+        field.setAccessible(true);
+        field.set(userDao, null);
+
+        // We cannot easily mock the static DataSourceUtil.getDataSource()
+        // without mockito-inline, but we can verify it throws if it returns null.
+        // In this environment, it should probably return null if not initialized.
+
+        SQLException ex = assertThrows(SQLException.class, () -> userDao.findById(1));
+        assertTrue(ex.getMessage().contains("DataSource is null") || ex.getMessage().contains("driver"));
     }
 }
