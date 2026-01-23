@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaporant.repository.ContenutoDAO;
 import com.vaporant.repository.OrderDAO;
-import com.vaporant.repository.ProductModel;
 
 @Controller
 public class OrderControl {
@@ -32,9 +31,8 @@ public class OrderControl {
 	private OrderDAO orderDao;
 	@Autowired
 	private ContenutoDAO contDao;
-
 	@Autowired
-	private ProductModel productDao;
+	private com.vaporant.repository.ProductModel productDao;
 
 	@RequestMapping(value = "/Ordine", method = { RequestMethod.GET, RequestMethod.POST })
 	public String execute(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -71,9 +69,12 @@ public class OrderControl {
 			try {
 				contDao.saveContenuto(
 						new ContenutoBean(idOrdine, prod.getCode(), prod.getQuantity(), 22, prod.getPrice()));
-				System.out.println("prodotto " + i++ + prod.toString());
-				productDao.updateQuantityStorage(prod, prod.getQuantityStorage() - prod.getQuantity());
 
+				// Decrement stock in storage
+				int newQuantity = prod.getQuantityStorage() - prod.getQuantity();
+				productDao.updateQuantityStorage(prod, newQuantity);
+
+				System.out.println("prodotto " + i++ + prod.toString());
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

@@ -271,6 +271,8 @@ class ProductModelDMTest {
         when(resultSet.getString("descrizione")).thenReturn("Descrizione completa");
         when(resultSet.getFloat("prezzoAttuale")).thenReturn(19.99f);
         when(resultSet.getInt("quantita")).thenReturn(50);
+        when(resultSet.getString("tipo")).thenReturn("Svapo");
+        when(resultSet.getString("colore")).thenReturn("Nero");
 
         ProductBean result = productModel.doRetrieveByKey(1);
         assertNotNull(result, "doRetrieveByKey dovrebbe ritornare ProductBean");
@@ -279,6 +281,8 @@ class ProductModelDMTest {
         assertEquals("Descrizione completa", result.getDescription(), "Descrizione dovrebbe essere completa");
         assertEquals(19.99f, result.getPrice(), 0.0001f, "Prezzo dovrebbe essere 19.99");
         assertEquals(50, result.getQuantityStorage(), "Quantità dovrebbe essere 50");
+        assertEquals("Svapo", result.getTipo(), "Tipo dovrebbe essere 'Svapo'");
+        assertEquals("Nero", result.getColore(), "Colore dovrebbe essere 'Nero'");
 
         verify(preparedStatement).setInt(1, 1);
     }

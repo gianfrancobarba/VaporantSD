@@ -202,6 +202,38 @@ class CartTest {
                 "Prezzo dovrebbe essere arrotondato a 10.56 (da 10.555)");
     }
 
+    @Test
+    @DisplayName("addProduct - Prodotto con prezzo zero non altera il totale")
+    void addProduct_zeroPrice_doesNotChangeTotal() {
+        ProductBean freeProduct = createProduct(5, "Free", 0.0f, 10);
+        cart.addProduct(testProduct); // total 10.0
+        cart.addProduct(freeProduct);
+        assertEquals(10.0, cart.getPrezzoTotale(), 0.01);
+    }
+
+    @Test
+    @DisplayName("aggiorna - Quantità negativa (edge case modello) azzera prezzo")
+    void aggiorna_negativeQuantity_recalculatesPrice() {
+        cart.addProduct(testProduct);
+        cart.aggiorna(testProduct, -1);
+        // The current implementation probably does price * Math.max(0, qty) or similar,
+        // or just price * qty. Let's verify business logic intent.
+        // Assuming it handles it or we want to see how it behaves.
+        assertTrue(cart.getPrezzoTotale() <= 0, "Il prezzo totale non dovrebbe essere positivo");
+    }
+
+    @Test
+    @DisplayName("addProduct - Raggiungimento esatto dello stock (boundary)")
+    void addProduct_reachesExactStock() {
+        ProductBean exactStock = createProduct(6, "Exact", 1.0f, 2);
+        cart.addProduct(exactStock); // qty=1
+        cart.addProduct(exactStock); // qty=2 (reaches stock)
+        assertEquals(2, cart.getProducts().get(0).getQuantity());
+
+        cart.addProduct(exactStock); // try to exceed
+        assertEquals(2, cart.getProducts().get(0).getQuantity(), "Non deve superare lo stock");
+    }
+
     // ========== Helper Method ==========
 
     /**

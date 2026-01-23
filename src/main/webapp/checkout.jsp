@@ -16,7 +16,7 @@
     } else {
         user = (UserBean) session.getAttribute("user");
 
-        list = new AddressList(user);
+        list = new AddressList(user, new com.vaporant.repository.AddressDaoImpl());
 
         if (list != null) {
             json = list.getJson();

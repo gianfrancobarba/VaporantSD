@@ -118,6 +118,8 @@ class AddressDaoImplTest {
         when(resultSet.isBeforeFirst()).thenReturn(true);
         when(resultSet.next()).thenReturn(true).thenReturn(false);
         when(resultSet.getInt("ID")).thenReturn(1);
+        when(resultSet.getInt("ID_Utente")).thenReturn(10);
+        when(resultSet.getString("stato")).thenReturn("Italia");
         when(resultSet.getString("via")).thenReturn("Via Roma");
         when(resultSet.getString("numCivico")).thenReturn("10");
         when(resultSet.getString("citta")).thenReturn("Milano");
@@ -128,6 +130,8 @@ class AddressDaoImplTest {
 
         assertNotNull(result, "findByCred dovrebbe ritornare AddressBean per credenziali esistenti");
         assertEquals(1, result.getId(), "ID indirizzo dovrebbe essere 1");
+        assertEquals(10, result.getId_utente(), "ID utente dovrebbe essere 10");
+        assertEquals("Italia", result.getStato(), "Stato dovrebbe essere 'Italia'");
         assertEquals("Via Roma", result.getVia(), "Via dovrebbe essere 'Via Roma'");
         assertEquals("10", result.getNumCivico(), "Numero civico dovrebbe essere '10'");
         assertEquals("Milano", result.getCitta(), "Città dovrebbe essere 'Milano'");
@@ -238,6 +242,8 @@ class AddressDaoImplTest {
         when(resultSet.isBeforeFirst()).thenReturn(true);
         when(resultSet.next()).thenReturn(true).thenReturn(false);
         when(resultSet.getInt("ID")).thenReturn(5);
+        when(resultSet.getInt("ID_Utente")).thenReturn(50);
+        when(resultSet.getString("stato")).thenReturn("Italia");
         when(resultSet.getString("via")).thenReturn("Via Test");
         when(resultSet.getString("numCivico")).thenReturn("100");
         when(resultSet.getString("citta")).thenReturn("Roma");
@@ -248,6 +254,8 @@ class AddressDaoImplTest {
 
         assertNotNull(result, "findAddressByID dovrebbe ritornare AddressBean per ID esistente");
         assertEquals(5, result.getId());
+        assertEquals(50, result.getId_utente());
+        assertEquals("Italia", result.getStato());
         assertEquals("Via Test", result.getVia());
         assertEquals("100", result.getNumCivico());
         assertEquals("Roma", result.getCitta());

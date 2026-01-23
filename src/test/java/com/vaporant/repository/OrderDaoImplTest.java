@@ -62,7 +62,7 @@ class OrderDaoImplTest {
         order.setId_indirizzo(1);
         order.setPrezzoTot(100.0);
         order.setDataAcquisto(LocalDate.now());
-        order.setMetodoPagamento("Carta");
+        order.setMetodoPagamento("Carta di credito/debito");
 
         int result = orderDao.saveOrder(order);
 
@@ -72,7 +72,7 @@ class OrderDaoImplTest {
         verify(preparedStatement).setInt(2, 1); // ID_Indirizzo
         verify(preparedStatement).setDouble(3, 100.0); // prezzoTot
         verify(preparedStatement).setString(4, order.getDataAcquisto().toString()); // dataAcquisto
-        verify(preparedStatement).setString(5, "Carta"); // metodoPagamento
+        verify(preparedStatement).setString(5, "Carta di credito/debito"); // metodoPagamento
     }
 
     @Test
@@ -302,7 +302,7 @@ class OrderDaoImplTest {
         when(resultSet.getInt("ID_Indirizzo")).thenReturn(5);
         when(resultSet.getDouble("prezzoTot")).thenReturn(100.0, 200.0, 300.0);
         when(resultSet.getDate("dataAcquisto")).thenReturn(java.sql.Date.valueOf(LocalDate.now()));
-        when(resultSet.getString("metodoPagamento")).thenReturn("PayPal", "Carta", "Contrassegno");
+        when(resultSet.getString("metodoPagamento")).thenReturn("PayPal", "Carta di credito/debito", "PayPal");
 
         // Act
         ArrayList<OrderBean> result = orderDao.findByIdUtente(10);
@@ -331,7 +331,7 @@ class OrderDaoImplTest {
         when(resultSet.getDate("dataAcquisto")).thenReturn(
                 java.sql.Date.valueOf("2024-01-15"),
                 java.sql.Date.valueOf("2024-01-20"));
-        when(resultSet.getString("metodoPagamento")).thenReturn("Carta", "PayPal");
+        when(resultSet.getString("metodoPagamento")).thenReturn("Carta di credito/debito", "PayPal");
 
         // Act
         ArrayList<OrderBean> results = orderDao.findByIdUtente(100);
@@ -347,7 +347,8 @@ class OrderDaoImplTest {
         assertEquals(50.0, first.getPrezzoTot(), 0.0001, "Prezzo totale dovrebbe essere 50.0");
         assertEquals(LocalDate.parse("2024-01-15"), first.getDataAcquisto(),
                 "Data acquisto dovrebbe essere 2024-01-15");
-        assertEquals("Carta", first.getMetodoPagamento(), "Metodo pagamento dovrebbe essere Carta");
+        assertEquals("Carta di credito/debito", first.getMetodoPagamento(),
+                "Metodo pagamento dovrebbe essere Carta di credito/debito");
 
         OrderBean second = results.get(1);
         assertEquals(2, second.getId_ordine(), "ID ordine 2 dovrebbe essere 2");
@@ -374,7 +375,7 @@ class OrderDaoImplTest {
         order.setId_indirizzo(1);
         order.setPrezzoTot(100.0);
         order.setDataAcquisto(LocalDate.now());
-        order.setMetodoPagamento("Carta");
+        order.setMetodoPagamento("Carta di credito/debito");
 
         orderDao.saveOrder(order);
 

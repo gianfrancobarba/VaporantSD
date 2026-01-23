@@ -2,31 +2,33 @@ package com.vaporant.model;
 
 import com.vaporant.repository.AddressScript;
 import java.util.ArrayList;
-
-import com.vaporant.repository.AddressDaoImpl;
-// Gson import removed to avoid OpenJML visibility errors
 import java.sql.SQLException;
 import java.util.List;
 
 public class AddressList {
-	/*@ spec_public non_null @*/ private ArrayList<AddressScript> listaIndirizzi;
-	/*@ spec_public non_null @*/ private ArrayList<AddressBean> addresses;
+    /* @ spec_public non_null @ */ private ArrayList<AddressScript> listaIndirizzi;
+    /* @ spec_public non_null @ */ private ArrayList<AddressBean> addresses;
 
-	/*@ 
-	  @ public invariant listaIndirizzi != null;
-	  @ public invariant addresses != null;
-	  @ public invariant listaIndirizzi.size() == addresses.size();
-	  @*/
+    /*
+     * @
+     * 
+     * @ public invariant listaIndirizzi != null;
+     * 
+     * @ public invariant addresses != null;
+     * 
+     * @ public invariant listaIndirizzi.size() == addresses.size();
+     * 
+     * @
+     */
 
     public AddressList() {
         this.listaIndirizzi = new ArrayList<>();
         this.addresses = new ArrayList<>();
     }
 
-    public AddressList(UserBean user) {
+    public AddressList(UserBean user, com.vaporant.repository.AddressDAO dao) {
         this.listaIndirizzi = new ArrayList<>();
         this.addresses = new ArrayList<>();
-        AddressDaoImpl dao = new AddressDaoImpl();
         try {
             List<AddressBean> userAddresses = dao.findByID(user.getId());
             if (userAddresses != null) {
@@ -48,8 +50,8 @@ public class AddressList {
         return addresses;
     }
 
-	/*@ skipesc @*/
-	public String getJson() {
+    /* @ skipesc @ */
+    public String getJson() {
         try {
             // Using reflection to avoid Gson import visibility issues with OpenJML
             Class<?> gsonClass = Class.forName("com.google.gson.Gson");
@@ -59,29 +61,33 @@ public class AddressList {
         } catch (Exception e) {
             return "[]";
         }
-	}
+    }
 
-    /*@ skipesc @*/
+    /* @ skipesc @ */
     public void setListaIndirizzi(ArrayList<AddressScript> listaIndirizzi) {
         this.listaIndirizzi = listaIndirizzi;
     }
 
-	/*@ skipesc @*/
-	public void add(AddressBean address) {
-		this.listaIndirizzi.add(new AddressScript(address));
-		this.addresses.add(address);
-	}
+    /* @ skipesc @ */
+    public void add(AddressBean address) {
+        this.listaIndirizzi.add(new AddressScript(address));
+        this.addresses.add(address);
+    }
 
-	/*@ skipesc @*/
-	public void remove(int index) {
-		this.listaIndirizzi.remove(index);
-		this.addresses.remove(index);
-	}
+    /* @ skipesc @ */
+    public void remove(int index) {
+        this.listaIndirizzi.remove(index);
+        this.addresses.remove(index);
+    }
 
-	/*@ public normal_behavior
-	  @   ensures \result != null ==> listaIndirizzi.contains(\result);
-	  @*/
-    public /*@ nullable @*/ AddressScript get(int index) {
+    /*
+     * @ public normal_behavior
+     * 
+     * @ ensures \result != null ==> listaIndirizzi.contains(\result);
+     * 
+     * @
+     */
+    public /* @ nullable @ */ AddressScript get(int index) {
         if (index >= 0 && index < this.listaIndirizzi.size()) {
             return this.listaIndirizzi.get(index);
         }

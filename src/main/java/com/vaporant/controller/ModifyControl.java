@@ -1,4 +1,5 @@
 package com.vaporant.controller;
+
 import java.io.IOException;
 
 import java.io.PrintWriter;
@@ -20,24 +21,24 @@ import com.vaporant.repository.UserDAO;
 @Controller
 public class ModifyControl {
 
-    
-	@Autowired
-	private UserDAO need;
+    @Autowired
+    private UserDAO need;
 
-	@RequestMapping(value = "/modify", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/modify", method = { RequestMethod.GET, RequestMethod.POST })
 
-	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         String action = request.getParameter("action");
-        UserBean user =  (UserBean) request.getSession().getAttribute("user");
+        UserBean user = (UserBean) request.getSession().getAttribute("user");
 
-        
         switch (action) {
             case "modificaEmail":
                 String nuovaMail = request.getParameter("nuovaEmail");
                 try {
                     need.modifyMail(user, nuovaMail);
                     user = need.findById(user.getId());
+                    /* Sincronizzazione sessione dopo modifica email */
+                    request.getSession().setAttribute("user", user);
                     response.setStatus(HttpServletResponse.SC_OK);
                     response.setContentType("application/json");
                     PrintWriter out = response.getWriter();
@@ -52,12 +53,14 @@ public class ModifyControl {
                 try {
                     need.modifyTelefono(user, nuovoTelefono);
                     user = need.findById(user.getId());
+                    /* Sincronizzazione sessione dopo modifica telefono */
+                    request.getSession().setAttribute("user", user);
                     response.setStatus(HttpServletResponse.SC_OK);
                     response.setContentType("application/json");
                     PrintWriter out = response.getWriter();
                     out.print("{ \"numTelefono\": \"" + user.getNumTelefono() + "\" }");
                     out.flush();
-                } catch (SQLException e){
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
                 break;
@@ -70,6 +73,9 @@ public class ModifyControl {
                     if (need.modifyPsw(nuovaPsw, vecchiaPsw, user) == 0) {
                         success = false;
                     } else {
+                        /* Sincronizzazione sessione dopo modifica password */
+                        user = need.findById(user.getId());
+                        request.getSession().setAttribute("user", user);
                         response.setStatus(HttpServletResponse.SC_OK);
                     }
                     String jsonResponse = "{\"success\": " + success + "}";

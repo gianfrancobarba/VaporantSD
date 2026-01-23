@@ -115,7 +115,7 @@ class OrderControlTest {
 
         mockMvc.perform(post("/Ordine")
                 .session(session)
-                .param("payment", "Carta")
+                .param("payment", "Carta di credito/debito")
                 .param("addressDropdown", "1"))
 
                 .andExpect(status().is3xxRedirection())
