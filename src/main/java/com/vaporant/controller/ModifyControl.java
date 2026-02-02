@@ -19,10 +19,14 @@ import com.vaporant.repository.UserDAO;
 
 @Controller
 public class ModifyControl {
-
+    private static final String contentType = "application/json";
     
+	private final UserDAO need;
+	
 	@Autowired
-	private UserDAO need;
+	public ModifyControl(UserDAO need) {
+		this.need = need;
+	}
 
 	@RequestMapping(value = "/modify", method = {RequestMethod.GET, RequestMethod.POST})
 
@@ -39,7 +43,7 @@ public class ModifyControl {
                     need.modifyMail(user, nuovaMail);
                     user = need.findById(user.getId());
                     response.setStatus(HttpServletResponse.SC_OK);
-                    response.setContentType("application/json");
+                    response.setContentType(contentType);
                     PrintWriter out = response.getWriter();
                     out.print("{ \"email\": \"" + user.getEmail() + "\" }");
                     out.flush();
@@ -53,7 +57,7 @@ public class ModifyControl {
                     need.modifyTelefono(user, nuovoTelefono);
                     user = need.findById(user.getId());
                     response.setStatus(HttpServletResponse.SC_OK);
-                    response.setContentType("application/json");
+                    response.setContentType(contentType);
                     PrintWriter out = response.getWriter();
                     out.print("{ \"numTelefono\": \"" + user.getNumTelefono() + "\" }");
                     out.flush();
@@ -75,7 +79,7 @@ public class ModifyControl {
                     String jsonResponse = "{\"success\": " + success + "}";
 
                     // Impostazione dei corretti header della risposta JSON
-                    response.setContentType("application/json");
+                    response.setContentType(contentType);
                     response.setCharacterEncoding("UTF-8");
 
                     // Scrittura del JSON come risposta

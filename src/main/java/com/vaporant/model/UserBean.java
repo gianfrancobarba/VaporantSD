@@ -1,6 +1,10 @@
 package com.vaporant.model;
 
-public class UserBean {
+import java.io.Serializable;
+
+public class UserBean implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	/* @ spec_public @ */ private String nome, cognome, numTelefono, email, codF, password;
 

@@ -15,9 +15,14 @@ import java.time.LocalDate;
 public class UserDaoImpl implements UserDAO {
 
 	private static final String TABLE = "utente";
+	private static final String WHERE_ID = " WHERE ID = ?";
+
+	private DataSource ds;
 
 	@Autowired
-	private DataSource ds;
+	public UserDaoImpl(DataSource ds) {
+		this.ds = ds;
+	}
 
 	private Connection getConnection() throws SQLException {
 		if (ds != null) {
@@ -79,7 +84,7 @@ public class UserDaoImpl implements UserDAO {
 		PreparedStatement preparedStatement = null;
 		int result = 0;
 
-		String deleteSQL = "DELETE FROM " + TABLE + " WHERE ID = ?";
+		String deleteSQL = "DELETE FROM " + TABLE + WHERE_ID;
 
 		try {
 			connection = getConnection();
@@ -154,7 +159,7 @@ public class UserDaoImpl implements UserDAO {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 
-		String selectSQL = "SELECT * FROM " + TABLE + " WHERE ID = ?";
+		String selectSQL = "SELECT * FROM " + TABLE + WHERE_ID;
 		UserBean user = null;
 
 		try {
@@ -198,7 +203,7 @@ public class UserDaoImpl implements UserDAO {
 	public void modifyMail(UserBean user, String email) throws SQLException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
-		String modify = "UPDATE utente SET email = ? " + " WHERE ID = ?";
+		String modify = "UPDATE utente SET email = ?" + WHERE_ID;
 
 		try {
 			connection = getConnection();
@@ -223,7 +228,7 @@ public class UserDaoImpl implements UserDAO {
 	public void modifyTelefono(UserBean user, String cell) throws SQLException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
-		String modify = "UPDATE utente SET numTelefono = ? " + " WHERE ID = ?";
+		String modify = "UPDATE utente SET numTelefono = ?" + WHERE_ID;
 
 		try {
 			connection = getConnection();

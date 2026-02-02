@@ -32,16 +32,16 @@
             <!-- Titolo della tabella -->
             <h1><a href = "product"><img src="media/logo.png" class = "logosite" alt = "?">Accedi</a></h1>
     
-            <label>Email</label><br>
+            <label for="email">Email</label><br>
             <input type="email" id="email" name="email" autocomplete="off"><br>
             <p id="error-email" class="error-message"></p>
     
-            <label>Password</label><br>
+            <label for="password">Password</label><br>
             <input type="password" id="password" name="password" placeholder="********" autocomplete="off"><br>
             <p id="error-password" class="error-message"></p>
     
             <input type="checkbox" id="checkbox" onclick="hidePassword();">
-            <label>Mostra Password</label><br>
+            <label for="checkbox">Mostra Password</label><br>
     
             <input type="submit" id="submit" value="Accedi">
         </form>

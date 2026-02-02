@@ -16,6 +16,8 @@ import com.vaporant.model.OrderBean;
 import com.vaporant.model.ProductBean;
 import com.vaporant.model.ContenutoBean;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,13 +30,17 @@ import com.vaporant.repository.ProductModel;
 @Controller
 public class OrderControl {
 
-	@Autowired
-	private OrderDAO orderDao;
-	@Autowired
-	private ContenutoDAO contDao;
+	private static final Logger logger = LoggerFactory.getLogger(OrderControl.class);
+	private final OrderDAO orderDao;
+	private final ContenutoDAO contDao;
+	private final ProductModel productDao;
 
 	@Autowired
-	private ProductModel productDao;
+	public OrderControl(OrderDAO orderDao, ContenutoDAO contDao, ProductModel productDao) {
+		this.orderDao = orderDao;
+		this.contDao = contDao;
+		this.productDao = productDao;
+	}
 
 	@RequestMapping(value = "/Ordine", method = { RequestMethod.GET, RequestMethod.POST })
 	public String execute(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -45,7 +51,7 @@ public class OrderControl {
 		UserBean user = (UserBean) session.getAttribute("user");
 
 		int idUtente = user.getId();
-		System.out.println("order " + user.getId());
+		logger.info("Creating order for user ID: {}", user.getId());
 
 		String payment = req.getParameter("payment");
 		int idIndirizzo = Integer.parseInt(req.getParameter("addressDropdown"));
@@ -71,7 +77,7 @@ public class OrderControl {
 			try {
 				contDao.saveContenuto(
 						new ContenutoBean(idOrdine, prod.getCode(), prod.getQuantity(), 22, prod.getPrice()));
-				System.out.println("prodotto " + i++ + prod.toString());
+				logger.debug("Added product {} to order: {}", i++, prod.getName());
 				productDao.updateQuantityStorage(prod, prod.getQuantityStorage() - prod.getQuantity());
 
 			} catch (SQLException e) {

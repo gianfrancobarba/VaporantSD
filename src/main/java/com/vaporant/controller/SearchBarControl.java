@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import com.google.gson.Gson;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,10 +24,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Controller
 public class SearchBarControl {
 
+	private static final Logger logger = LoggerFactory.getLogger(SearchBarControl.class);
 	private static final String TABLE_NAME = "prodotto";
 	
+	private final DataSource ds;
+
 	@Autowired
-	private DataSource ds;
+	public SearchBarControl(DataSource ds) {
+		this.ds = ds;
+	}
 
 
 	@RequestMapping(value = "/SearchBar", method = {RequestMethod.GET, RequestMethod.POST})
@@ -63,7 +70,7 @@ public class SearchBarControl {
             resp.getWriter().write(lista);
 
         } catch (SQLException e) {
-        	System.out.println("Error:" + e.getMessage());
+        	logger.error("Error in search operation: {}", e.getMessage(), e);
         }
     }
 

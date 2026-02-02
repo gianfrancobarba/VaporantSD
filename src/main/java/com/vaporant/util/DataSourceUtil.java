@@ -11,16 +11,18 @@ import javax.sql.DataSource;
 @Component
 public class DataSourceUtil implements ApplicationContextAware {
 
-    private static ApplicationContext context;
+    private static DataSourceUtil instance;
+    private ApplicationContext context;
 
     @Override
     public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
-        context = applicationContext;
+        this.context = applicationContext;
+        instance = this;
     }
 
     public static DataSource getDataSource() {
-        if (context != null) {
-            return context.getBean(DataSource.class);
+        if (instance != null && instance.context != null) {
+            return instance.context.getBean(DataSource.class);
         }
         return null;
     }

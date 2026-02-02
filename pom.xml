@@ -25,6 +25,15 @@
         <java.version>17</java.version>
         <!-- Override Tomcat version to fix security vulnerabilities -->
         <tomcat.version>10.1.47</tomcat.version>
+        
+        <!-- Test dependencies versions -->
+        <junit.version>5.10.1</junit.version>
+        <jmh.version>1.37</jmh.version>
+        
+        <!-- Plugin versions -->
+        <surefire.version>3.2.5</surefire.version>
+        <jacoco.version>0.8.11</jacoco.version>
+        <pitest.version>1.15.3</pitest.version>
     </properties>
 
     <dependencies>

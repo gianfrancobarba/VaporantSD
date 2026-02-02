@@ -20,8 +20,12 @@ import com.vaporant.repository.UserDAO;
 @Controller
 public class LoginControl {
 
+	private final UserDAO userDao;
+	
 	@Autowired
-	private UserDAO userDao;
+	public LoginControl(UserDAO userDao) {
+		this.userDao = userDao;
+	}
 	
 	@RequestMapping(value = "/login", method = {RequestMethod.GET, RequestMethod.POST})
 	public String login(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

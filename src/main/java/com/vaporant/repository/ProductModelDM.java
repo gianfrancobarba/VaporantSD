@@ -19,8 +19,12 @@ public class ProductModelDM implements ProductModel {
 
 	private static final String TABLE_NAME = "prodotto";
 
-	@Autowired
 	private DataSource ds;
+
+	@Autowired
+	public ProductModelDM(DataSource ds) {
+		this.ds = ds;
+	}
 
 	@Override
 	public synchronized void doSave(ProductBean product) throws SQLException {
