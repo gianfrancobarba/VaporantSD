@@ -20,31 +20,28 @@ public class DetailsControl {
 	@Autowired
 	private ProductModel model;
 
-	@RequestMapping(value = "/details", method = {RequestMethod.GET, RequestMethod.POST})
-	public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		
-		
+	@RequestMapping(value = "/details", method = { RequestMethod.GET, RequestMethod.POST })
+	public String execute(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		String action = request.getParameter("action");
-		
+
 		try {
-			if(action!=null) {
+			if (action != null) {
 				if (action.equalsIgnoreCase("read")) {
 					int id = Integer.parseInt(request.getParameter("id"));
 					request.removeAttribute("product");
 					request.getSession().setAttribute("product", model.doRetrieveByKey(id));
 				}
 			}
-		}catch (SQLException e) {
-				System.out.println("error:" + e.getMessage());
+		} catch (NumberFormatException e) {
+			System.out.println("error: Invalid ID format - " + e.getMessage());
+		} catch (SQLException e) {
+			System.out.println("error:" + e.getMessage());
 		}
 
 		return "redirect:DetailsView.jsp";
 
 	}
-
-
-
 
 }
