@@ -1,5 +1,7 @@
 package com.vaporant.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 
@@ -98,6 +100,14 @@ class OrderControlTest {
                 argThat(p -> p.getCode() == 2),
                 eq(49) // EXACT VALUE: 50 - 1 = 49
         );
+
+        // === Verify Session State (kill VoidMethodCallMutator) ===
+        var orderInSession = session.getAttribute("order");
+        assertNotNull(orderInSession, "Order should be in session after creation");
+
+        var listaProdInSession = session.getAttribute("listaProd");
+        assertNotNull(listaProdInSession, "ListaProd should be in session");
+        assertEquals(cart.getProducts(), listaProdInSession, "ListaProd should match cart products");
     }
 
     @Test
@@ -156,6 +166,82 @@ class OrderControlTest {
                 .param("payment", "PayPal")
                 .param("addressDropdown", "invalid"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Order - Cart boundaries - Empty cart (0 products) - Order ancora creato")
+    void testOrderWithEmptyCart() throws Exception {
+        UserBean user = createTestUser();
+        Cart emptyCart = new Cart(); // 0 products
+
+        when(orderDao.getIdfromDB()).thenReturn(1);
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("user", user);
+        session.setAttribute("cart", emptyCart);
+
+        mockMvc.perform(post("/Ordine")
+                .session(session)
+                .param("payment", "Carta di credito/debito")
+                .param("addressDropdown", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("ordine.jsp"));
+
+        // Verify: Order created even with empty cart
+        verify(orderDao).saveOrder(any());
+        // No contenuto saved (cart is empty)
+        verify(contDao, times(0)).saveContenuto(any(ContenutoBean.class));
+        // No stock updates (no products)
+        verify(productDao, times(0)).updateQuantityStorage(any(), anyInt());
+
+        // Session state
+        assertNotNull(session.getAttribute("order"), "Order should be in session");
+        assertEquals(0, emptyCart.getProducts().size(), "Cart should be empty");
+    }
+
+    @Test
+    @DisplayName("Order - Cart boundaries - Single product (1 product) - Verifica stock decrement")
+    void testOrderWithSingleProduct() throws Exception {
+        UserBean user = createTestUser();
+        Cart cart = new Cart();
+
+        // Single product boundary test
+        ProductBean product = new ProductBean();
+        product.setCode(1);
+        product.setPrice(25.0f);
+        product.setQuantity(3);
+        product.setQuantityStorage(10); // Boundary: low stock
+        cart.addProduct(product);
+
+        when(orderDao.getIdfromDB()).thenReturn(1);
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("user", user);
+        session.setAttribute("cart", cart);
+
+        mockMvc.perform(post("/Ordine")
+                .session(session)
+                .param("payment", "PayPal")
+                .param("addressDropdown", "2"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("ordine.jsp"));
+
+        // Verify: Exactly 1 contenuto saved
+        verify(contDao, times(1)).saveContenuto(any(ContenutoBean.class));
+
+        // Verify stock decrement: 10 - 3 = 7
+        verify(productDao).updateQuantityStorage(
+                argThat(p -> p.getCode() == 1),
+                eq(7) // Boundary: 10 - 3 = 7
+        );
+
+        // Session state
+        var orderInSession = session.getAttribute("order");
+        assertNotNull(orderInSession, "Order should be in session");
+
+        var listaProd = session.getAttribute("listaProd");
+        assertNotNull(listaProd, "ListaProd should be in session");
+        assertEquals(1, cart.getProducts().size(), "Should have 1 product");
     }
 
     // Helper methods

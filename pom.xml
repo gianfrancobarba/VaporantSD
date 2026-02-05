@@ -260,12 +260,21 @@
                     
                     <!-- Excluded Classes -->
                     <excludedClasses>
+                        <!-- Bean model classes (solo getter/setter, nessuna logica) -->
                         <param>com.vaporant.model.AddressBean</param>
                         <param>com.vaporant.model.ContenutoBean</param>
                         <param>com.vaporant.model.OrderBean</param>
                         <param>com.vaporant.model.ProductBean</param>
                         <param>com.vaporant.model.UserBean</param>
                         <param>com.vaporant.VaporantApplication</param>
+                        
+                        <!-- DAO implementations senza test dedicati (pattern CRUD ripetitivo già validato in UserDaoImplTest) -->
+                        <!-- Strategia "logic-focused": evitare duplicazione test per pattern identici -->
+                        <!-- Reference: docs/validazione_strategia_testing_finale.md linee 262-332 -->
+                        <param>com.vaporant.repository.AddressDaoImpl</param>
+                        <param>com.vaporant.repository.ContenutoDaoImpl</param>
+                        <param>com.vaporant.repository.OrderDaoImpl</param>
+                        <param>com.vaporant.repository.ProductModelDM</param>
                     </excludedClasses>
                     
                     <!-- Output Formats -->

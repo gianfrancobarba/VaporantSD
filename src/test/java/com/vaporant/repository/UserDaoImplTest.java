@@ -288,6 +288,41 @@ class UserDaoImplTest {
         verify(dataSource, times(0)).getConnection();
     }
 
+    @ParameterizedTest(name = "Password matching: DB=[{0}] Provided=[{1}] → Success={2}")
+    @CsvSource({
+            "oldPass, oldPass, true", // Exact match
+            "oldPass, OldPass, false", // Case sensitive (compareTo)
+            "oldPass, oldpass, false", // Lower case mismatch
+            "Pass123, Pass123, true", // Match with numbers
+            "password, Password, false", // First char case
+            "abc, ABC, false", // All caps mismatch
+            "Test1, Test2, false" // Different suffix
+    })
+    @DisplayName("modifyPsw - Password matching boundaries - compareTo logic")
+    void testModifyPswPasswordMatchingBoundaries(String dbPassword, String providedOldPassword, boolean shouldSucceed)
+            throws SQLException {
+        UserBean user = new UserBean();
+        user.setId(1);
+        user.setPassword(dbPassword);
+
+        if (shouldSucceed) {
+            // Only mock DB if password matches
+            when(dataSource.getConnection()).thenReturn(connection);
+            when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+            when(preparedStatement.executeUpdate()).thenReturn(1);
+        }
+
+        int result = userDao.modifyPsw("newPass", providedOldPassword, user);
+
+        if (shouldSucceed) {
+            assertEquals(1, result, "Password dovrebbe essere aggiornata per match esatto");
+            verify(preparedStatement).executeUpdate();
+        } else {
+            assertEquals(0, result, "Password NON dovrebbe essere aggiornata per mismatch");
+            verify(dataSource, times(0)).getConnection(); // No DB interaction
+        }
+    }
+
     @Test
     @DisplayName("modifyMail - SQLException dal DataSource - Propaga eccezione")
     void testModifyMailException() throws SQLException {

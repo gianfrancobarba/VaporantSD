@@ -1,5 +1,7 @@
 package com.vaporant.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.vaporant.model.ProductBean;
@@ -33,15 +36,24 @@ class DetailsControlTest {
     void testReadDetails() throws Exception {
         ProductBean product = new ProductBean();
         product.setCode(1);
+        product.setName("Test Product");
         when(productModel.doRetrieveByKey(1)).thenReturn(product);
 
+        MockHttpSession session = new MockHttpSession();
+
         mockMvc.perform(get("/details")
+                .session(session)
                 .param("action", "read")
                 .param("id", "1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("DetailsView.jsp"));
 
         verify(productModel).doRetrieveByKey(1);
+
+        // Verify Session State (kill VoidMethodCallMutator)
+        ProductBean productInSession = (ProductBean) session.getAttribute("product");
+        assertNotNull(productInSession, "Product should be in session after read");
+        assertEquals(1, productInSession.getCode(), "Product code should match");
     }
 
     @Test
