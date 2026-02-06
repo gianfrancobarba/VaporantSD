@@ -195,7 +195,6 @@
                         </goals>
                         <configuration>
                             <excludes>
-                                <!-- IDENTICO a report execution per consistency -->
                                 <exclude>com/vaporant/model/AddressBean.class</exclude>
                                 <exclude>com/vaporant/model/ContenutoBean.class</exclude>
                                 <exclude>com/vaporant/model/OrderBean.class</exclude>
@@ -287,9 +286,9 @@
                         <outputFormat>HTML</outputFormat>
                     </outputFormats>
                     
-                    <!-- Quality Gates - TEMPORANEAMENTE DISABILITATI -->
-                    <!-- <mutationThreshold>50</mutationThreshold> -->      <!-- 50% mutation score -->
-                    <!-- <coverageThreshold>80</coverageThreshold> -->      <!-- 80% mutation coverage -->
+                    <!-- Quality Gates -->
+                    <mutationThreshold>50</mutationThreshold>      <!-- 50% mutation score -->
+                    <coverageThreshold>80</coverageThreshold>      <!-- 80% mutation coverage -->
                     
                     <!-- Performance Optimization -->
                     <timestampedReports>false</timestampedReports>
