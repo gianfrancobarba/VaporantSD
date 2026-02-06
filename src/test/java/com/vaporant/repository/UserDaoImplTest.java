@@ -652,4 +652,23 @@ class UserDaoImplTest {
         SQLException ex = assertThrows(SQLException.class, () -> userDao.findById(1));
         assertTrue(ex.getMessage().contains("DataSource is null") || ex.getMessage().contains("driver"));
     }
+
+    @ParameterizedTest(name = "modifyPsw with empty params: old='{0}', new='{1}'")
+    @CsvSource({
+            "'', newPass",
+            "oldPass, ''",
+            "'', ''"
+    })
+    @DisplayName("modifyPsw - Parametri vuoti - Return 0 (password mismatch)")
+    void testModifyPswWithEmptyParams(String oldPsw, String newPsw) throws SQLException {
+        UserBean user = new UserBean();
+        user.setId(1);
+        user.setPassword("currentPass");
+
+        // Empty oldPsw will not match "currentPass" via compareTo -> return 0
+        int result = userDao.modifyPsw(newPsw, oldPsw, user);
+
+        assertEquals(0, result, "Should return 0 when password params are empty (mismatch)");
+        verify(dataSource, times(0)).getConnection(); // No DB interaction
+    }
 }

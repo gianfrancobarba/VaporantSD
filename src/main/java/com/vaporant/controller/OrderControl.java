@@ -16,6 +16,8 @@ import com.vaporant.model.OrderBean;
 import com.vaporant.model.ProductBean;
 import com.vaporant.model.ContenutoBean;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,6 +28,8 @@ import com.vaporant.repository.OrderDAO;
 
 @Controller
 public class OrderControl {
+
+	private static final Logger logger = LoggerFactory.getLogger(OrderControl.class);
 
 	@Autowired
 	private OrderDAO orderDao;
@@ -48,7 +52,7 @@ public class OrderControl {
 		}
 
 		int idUtente = user.getId();
-		System.out.println("order " + user.getId());
+		logger.debug("Processing order for user ID: {}", idUtente);
 
 		String payment = req.getParameter("payment");
 		String addressParam = req.getParameter("addressDropdown");
@@ -91,7 +95,7 @@ public class OrderControl {
 				int newQuantity = prod.getQuantityStorage() - prod.getQuantity();
 				productDao.updateQuantityStorage(prod, newQuantity);
 
-				System.out.println("prodotto " + i++ + prod.toString());
+				logger.debug("Saved content for product {} - {}", i++, prod.toString());
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
