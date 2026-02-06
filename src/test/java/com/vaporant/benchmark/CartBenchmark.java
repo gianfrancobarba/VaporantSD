@@ -14,6 +14,11 @@ import java.util.concurrent.TimeUnit;
  * - Deleting products from cart
  * - Retrieving cart size
  * 
+ * IMPROVEMENTS (following JMH best practices):
+ * - @Param for testing different cart sizes (5, 20, 50)
+ * - State class to prevent constant folding
+ * - Return values to prevent dead code elimination
+ * 
  * Pattern from guide: guida_testing_parte3_jmh.md
  */
 @BenchmarkMode({ Mode.AverageTime, Mode.Throughput })
@@ -24,20 +29,28 @@ import java.util.concurrent.TimeUnit;
 @Fork(1)
 public class CartBenchmark {
 
+    /**
+     * IMPROVEMENT: @Param to test with different cart sizes
+     * This allows us to see how performance scales with cart size
+     */
+    @Param({ "5", "20", "50" })
+    public int cartSize;
+
     private Cart cart;
     private ProductBean[] preloadedProducts;
 
     /**
      * Setup executed once per benchmark iteration
-     * Creates cart and test products
+     * Creates cart and test products based on cartSize parameter
      */
     @Setup(Level.Trial)
     public void setup() {
         cart = new Cart();
 
-        // Pre-populate cart with 20 products for realistic scenario
-        preloadedProducts = new ProductBean[20];
-        for (int i = 0; i < 20; i++) {
+        // Pre-populate cart with cartSize products for realistic scenario
+        // IMPROVEMENT: Using @Param value instead of hardcoded 20
+        preloadedProducts = new ProductBean[cartSize];
+        for (int i = 0; i < cartSize; i++) {
             ProductBean p = createTestProduct(i, "Product " + i, 10.0f + i);
             p.setQuantity(1);
             preloadedProducts[i] = p;
@@ -60,14 +73,18 @@ public class CartBenchmark {
     /**
      * Benchmark: Adding product to pre-populated cart
      * Tests: addProduct() with containsProduct() check overhead
+     * NOTE: cart is pre-populated with cartSize products (5, 20, or 50)
      */
     @Benchmark
     public void benchmarkAddProductToPopulatedCart() {
-        ProductBean newProduct = createTestProduct(50, "New Product", 15.99f);
+        // Use unique ID to avoid collision with preloaded products
+        ProductBean newProduct = createTestProduct(9999, "New Product", 15.99f);
         newProduct.setQuantity(1);
         cart.addProduct(newProduct);
-        // Cleanup
+        // Cleanup to maintain cart state for next iteration
         cart.deleteProduct(newProduct);
+        // NOTE: void method - JVM could potentially eliminate this
+        // In practice, cart state modification prevents elimination
     }
 
     /**
@@ -86,9 +103,12 @@ public class CartBenchmark {
     /**
      * Benchmark: Getting cart products list
      * Tests: getProducts() method performance
+     * GOOD PRACTICE: Returns int to prevent dead code elimination
      */
     @Benchmark
     public int benchmarkGetCartSize() {
+        // ANTI-PATTERN would be: cart.getProducts().size(); (no return)
+        // JVM would optimize this away as "dead code"
         return cart.getProducts().size();
     }
 
@@ -107,29 +127,32 @@ public class CartBenchmark {
     /**
      * Benchmark: Complete cart operation cycle
      * Tests: add -> update -> delete cycle
+     * Uses cartSize parameter to test with different cart sizes
      */
     @Benchmark
     public double benchmarkCartCycle() {
         Cart localCart = new Cart();
 
-        // Add 5 products
-        for (int i = 0; i < 5; i++) {
+        // FIXED: Add cartSize products (not hardcoded 5)
+        // This allows testing cycle performance with different cart sizes
+        for (int i = 0; i < cartSize; i++) {
             ProductBean p = createTestProduct(200 + i, "Cycle Product " + i, 12.99f);
             p.setQuantity(1);
             localCart.addProduct(p);
         }
 
-        // Update quantity
+        // Update quantity of first product
         if (!localCart.getProducts().isEmpty()) {
             localCart.aggiorna(localCart.getProducts().get(0), 2);
         }
 
-        // Delete one
+        // Delete first product
         if (!localCart.getProducts().isEmpty()) {
             localCart.deleteProduct(localCart.getProducts().get(0));
         }
 
-        // Return total to prevent dead code elimination
+        // CRITICAL: Return total to prevent dead code elimination
+        // Without this return, JVM could optimize away the entire benchmark!
         return localCart.getPrezzoTotale();
     }
 
