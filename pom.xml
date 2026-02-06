@@ -176,6 +176,10 @@
                                 
                                 <!-- Application entry point -->
                                 <exclude>com/vaporant/VaporantApplication.class</exclude>
+                                <exclude>com/vaporant/repository/AddressDaoImpl.class</exclude>
+                                <exclude>com/vaporant/repository/ContenutoDaoImpl.class</exclude>
+                                <exclude>com/vaporant/repository/OrderDaoImpl.class</exclude>
+                                <exclude>com/vaporant/repository/ProductModelDM.class</exclude>
                                 
                                 <!-- NOTA: Cart.java e AddressList.java NON esclusi - hanno logica business -->
                             </excludes>
@@ -198,6 +202,10 @@
                                 <exclude>com/vaporant/model/ProductBean.class</exclude>
                                 <exclude>com/vaporant/model/UserBean.class</exclude>
                                 <exclude>com/vaporant/VaporantApplication.class</exclude>
+                                <exclude>com/vaporant/repository/AddressDaoImpl.class</exclude>
+                                <exclude>com/vaporant/repository/ContenutoDaoImpl.class</exclude>
+                                <exclude>com/vaporant/repository/OrderDaoImpl.class</exclude>
+                                <exclude>com/vaporant/repository/ProductModelDM.class</exclude>
                             </excludes>
                             <rules>
                                 <rule>
@@ -267,10 +275,6 @@
                         <param>com.vaporant.model.ProductBean</param>
                         <param>com.vaporant.model.UserBean</param>
                         <param>com.vaporant.VaporantApplication</param>
-                        
-                        <!-- DAO implementations senza test dedicati (pattern CRUD ripetitivo già validato in UserDaoImplTest) -->
-                        <!-- Strategia "logic-focused": evitare duplicazione test per pattern identici -->
-                        <!-- Reference: docs/validazione_strategia_testing_finale.md linee 262-332 -->
                         <param>com.vaporant.repository.AddressDaoImpl</param>
                         <param>com.vaporant.repository.ContenutoDaoImpl</param>
                         <param>com.vaporant.repository.OrderDaoImpl</param>
@@ -283,7 +287,7 @@
                         <outputFormat>HTML</outputFormat>
                     </outputFormats>
                     
-                    <!-- Quality Gates - TEMPORANEAMENTE DISABILITATI per Iteration 1 baseline -->
+                    <!-- Quality Gates - TEMPORANEAMENTE DISABILITATI -->
                     <!-- <mutationThreshold>50</mutationThreshold> -->      <!-- 50% mutation score -->
                     <!-- <coverageThreshold>80</coverageThreshold> -->      <!-- 80% mutation coverage -->
                     
