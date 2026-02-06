@@ -21,9 +21,15 @@ public class ProductModelDM implements ProductModel {
 
 	private DataSource ds;
 
-	@Autowired
-	public ProductModelDM(DataSource ds) {
-		this.ds = ds;
+	private Connection getConnection() throws SQLException {
+		if (ds != null) {
+			return ds.getConnection();
+		}
+		DataSource staticDs = com.vaporant.util.DataSourceUtil.getDataSource();
+		if (staticDs != null) {
+			return staticDs.getConnection();
+		}
+		throw new SQLException("DataSource is null");
 	}
 
 	@Override
@@ -36,7 +42,7 @@ public class ProductModelDM implements ProductModel {
 				+ " (nome, descrizione, quantita, prezzoAttuale, tipo, colore) VALUES (?, ?, ?, ?, ?, ?)";
 
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(insertSQL);
 			preparedStatement.setString(1, product.getName());
 			preparedStatement.setString(2, product.getDescription());
@@ -66,7 +72,7 @@ public class ProductModelDM implements ProductModel {
 		String selectSQL = "SELECT * FROM " + ProductModelDM.TABLE_NAME + " WHERE ID = ?";
 
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(selectSQL);
 			preparedStatement.setInt(1, id);
 
@@ -104,7 +110,7 @@ public class ProductModelDM implements ProductModel {
 		String deleteSQL = "DELETE FROM " + ProductModelDM.TABLE_NAME + " WHERE ID = ?";
 
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(deleteSQL);
 			preparedStatement.setInt(1, id);
 
@@ -133,7 +139,7 @@ public class ProductModelDM implements ProductModel {
 			selectSQL += " ORDER BY " + order;
 		}
 
-		try (Connection connection = ds.getConnection();
+		try (Connection connection = getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
 
 			ResultSet rs = preparedStatement.executeQuery();
@@ -165,7 +171,7 @@ public class ProductModelDM implements ProductModel {
 		String updateSQL = "UPDATE " + ProductModelDM.TABLE_NAME + " SET quantita = ? WHERE ID = ?";
 
 		try {
-			connection = ds.getConnection();
+			connection = getConnection();
 			preparedStatement = connection.prepareStatement(updateSQL);
 			preparedStatement.setInt(1, quantita);
 			preparedStatement.setInt(2, prod.getCode());

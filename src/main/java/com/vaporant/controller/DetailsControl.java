@@ -22,11 +22,6 @@ public class DetailsControl {
 	private static final Logger logger = LoggerFactory.getLogger(DetailsControl.class);
 	private final ProductModel model;
 
-	@Autowired
-	public DetailsControl(ProductModel model) {
-		this.model = model;
-	}
-
 	@RequestMapping(value = "/details", method = { RequestMethod.GET, RequestMethod.POST })
 	public String execute(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -34,13 +29,17 @@ public class DetailsControl {
 		String action = request.getParameter("action");
 
 		try {
-			if (action != null && action.equalsIgnoreCase("read")) {
-				int id = Integer.parseInt(request.getParameter("id"));
-				request.removeAttribute("product");
-				request.getSession().setAttribute("product", model.doRetrieveByKey(id));
+			if (action != null) {
+				if (action.equalsIgnoreCase("read")) {
+					int id = Integer.parseInt(request.getParameter("id"));
+					request.removeAttribute("product");
+					request.getSession().setAttribute("product", model.doRetrieveByKey(id));
+				}
 			}
+		} catch (NumberFormatException e) {
+			System.out.println("error: Invalid ID format - " + e.getMessage());
 		} catch (SQLException e) {
-			logger.error("Error retrieving product details: {}", e.getMessage(), e);
+			System.out.println("error:" + e.getMessage());
 		}
 
 		return "redirect:DetailsView.jsp";

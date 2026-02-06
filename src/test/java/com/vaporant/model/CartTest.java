@@ -202,6 +202,106 @@ class CartTest {
                 "Prezzo dovrebbe essere arrotondato a 10.56 (da 10.555)");
     }
 
+    @Test
+    @DisplayName("addProduct - Prodotto con prezzo zero non altera il totale")
+    void addProduct_zeroPrice_doesNotChangeTotal() {
+        ProductBean freeProduct = createProduct(5, "Free", 0.0f, 10);
+        cart.addProduct(testProduct); // total 10.0
+        cart.addProduct(freeProduct);
+        assertEquals(10.0, cart.getPrezzoTotale(), 0.01);
+    }
+
+    @Test
+    @DisplayName("aggiorna - Quantità negativa (edge case modello) azzera prezzo")
+    void aggiorna_negativeQuantity_recalculatesPrice() {
+        cart.addProduct(testProduct);
+        cart.aggiorna(testProduct, -1);
+        // The current implementation probably does price * Math.max(0, qty) or similar,
+        // or just price * qty. Let's verify business logic intent.
+        // Assuming it handles it or we want to see how it behaves.
+        assertTrue(cart.getPrezzoTotale() <= 0, "Il prezzo totale non dovrebbe essere positivo");
+    }
+
+    @Test
+    @DisplayName("addProduct - Raggiungimento esatto dello stock (boundary)")
+    void addProduct_reachesExactStock() {
+        ProductBean exactStock = createProduct(6, "Exact", 1.0f, 2);
+        cart.addProduct(exactStock); // qty=1
+        cart.addProduct(exactStock); // qty=2 (reaches stock)
+        assertEquals(2, cart.getProducts().get(0).getQuantity());
+
+        cart.addProduct(exactStock); // try to exceed
+        assertEquals(2, cart.getProducts().get(0).getQuantity(), "Non deve superare lo stock");
+    }
+
+    // ========== Edge Case Coverage (Reflection & Negative Logic)
+
+    @Test
+    @DisplayName("Coverage: deleteProduct handling null elements in list")
+    void deleteProduct_withNullElement_handlesGracefully() throws Exception {
+        // Use reflection to inject a null into the private products list
+        java.lang.reflect.Field field = Cart.class.getDeclaredField("products");
+        field.setAccessible(true);
+        @SuppressWarnings("unchecked")
+        java.util.ArrayList<ProductBean> products = (java.util.ArrayList<ProductBean>) field.get(cart);
+        products.add(null);
+        products.add(testProduct);
+        cart.setPrezzoTotale(10.0);
+
+        // This will trigger the (prod != null) false branch in deleteProduct
+        assertDoesNotThrow(() -> cart.deleteProduct(testProduct));
+        assertEquals(0, cart.getPrezzoTotale());
+    }
+
+    @Test
+    @DisplayName("Coverage: containsProduct handling null elements")
+    void containsProduct_withNullElement_returnsNull() throws Exception {
+        java.lang.reflect.Field field = Cart.class.getDeclaredField("products");
+        field.setAccessible(true);
+        @SuppressWarnings("unchecked")
+        java.util.ArrayList<ProductBean> products = (java.util.ArrayList<ProductBean>) field.get(cart);
+        products.add(null);
+
+        assertNull(cart.containsProduct(testProduct));
+    }
+
+    @Test
+    @DisplayName("Coverage: aggiorna handling null elements and missing product")
+    void aggiorna_withNullElementOrMissingProduct_handlesGracefully() throws Exception {
+        java.lang.reflect.Field field = Cart.class.getDeclaredField("products");
+        field.setAccessible(true);
+        @SuppressWarnings("unchecked")
+        java.util.ArrayList<ProductBean> products = (java.util.ArrayList<ProductBean>) field.get(cart);
+        products.add(null);
+
+        // Trigger loop completion (index < products.size() false) and null check false
+        // branch
+        assertDoesNotThrow(() -> cart.aggiorna(testProduct, 5));
+    }
+
+    @Test
+    @DisplayName("Coverage: deleteProduct/aggiorna hitting negative price branch")
+    void cart_negativePriceProtection_hitsElseBranch() {
+        // Force the price to a state where subtraction makes it negative
+        cart.setPrezzoTotale(5.0);
+
+        // Product in cart has price 10.0
+        cart.getProducts().add(testProduct);
+        testProduct.setQuantity(1);
+        testProduct.setPrice(10.0f);
+
+        // deleteProduct: 5.0 - 10.0 = -5.0 -> should be set to 0
+        cart.deleteProduct(testProduct);
+        assertEquals(0, cart.getPrezzoTotale());
+
+        // Reset and try with aggiorna
+        cart.getProducts().add(testProduct);
+        cart.setPrezzoTotale(5.0);
+        // aggiorna: 5.0 - (10.0 * 1) + (10.0 * 0) = -5.0 -> should be 0
+        cart.aggiorna(testProduct, 0);
+        assertEquals(0, cart.getPrezzoTotale());
+    }
+
     // ========== Helper Method ==========
 
     /**

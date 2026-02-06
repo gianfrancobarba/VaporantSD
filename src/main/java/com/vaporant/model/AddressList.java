@@ -2,12 +2,6 @@ package com.vaporant.model;
 
 import com.vaporant.repository.AddressScript;
 import java.util.ArrayList;
-
-import com.vaporant.repository.AddressDaoImpl;
-import com.vaporant.util.DataSourceUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-// Gson import removed to avoid OpenJML visibility errors
 import java.sql.SQLException;
 import java.util.List;
 import javax.sql.DataSource;
@@ -28,18 +22,14 @@ public class AddressList {
      * @
      */
 
-    private static final Logger logger = LoggerFactory.getLogger(AddressList.class);
-
     public AddressList() {
         this.listaIndirizzi = new ArrayList<>();
         this.addresses = new ArrayList<>();
     }
 
-    public AddressList(UserBean user) {
+    public AddressList(UserBean user, com.vaporant.repository.AddressDAO dao) {
         this.listaIndirizzi = new ArrayList<>();
         this.addresses = new ArrayList<>();
-        DataSource ds = DataSourceUtil.getDataSource();
-        AddressDaoImpl dao = new AddressDaoImpl(ds);
         try {
             List<AddressBean> userAddresses = dao.findByID(user.getId());
             if (userAddresses != null) {

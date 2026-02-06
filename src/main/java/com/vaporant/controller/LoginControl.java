@@ -23,49 +23,50 @@ public class LoginControl {
 	private final UserDAO userDao;
 	
 	@Autowired
-	public LoginControl(UserDAO userDao) {
-		this.userDao = userDao;
-	}
-	
-	@RequestMapping(value = "/login", method = {RequestMethod.GET, RequestMethod.POST})
+	private UserDAO userDao;
+
+	@RequestMapping(value = "/login", method = { RequestMethod.GET, RequestMethod.POST })
 	public String login(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-	String email = (String) req.getParameter("email");
-	String password = (String) req.getParameter("password");		
-	String action = (String) req.getSession().getAttribute("action");
-	Cart cart = (Cart) req.getSession().getAttribute("cart"); 
-	
-	UserBean user = null;
-	
-	try {
-		user = userDao.findByCred(email,password);
-		
+		String email = (String) req.getParameter("email");
+		String password = (String) req.getParameter("password");
+		String action = (String) req.getSession().getAttribute("action");
+		Cart cart = (Cart) req.getSession().getAttribute("cart");
+
+		UserBean user = null;
+
+		try {
+			user = userDao.findByCred(email, password);
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	
-	if(user != null){
-		
-		HttpSession session = req.getSession(false);
-		if(session != null){
-			session.invalidate();
-		}
-	
-		HttpSession currentSession = req.getSession();
-		currentSession.setAttribute("user", user);
-		currentSession.setAttribute("tipo", user.getTipo());
-		currentSession.setAttribute("cart", cart);
 
-		if(action != null && action.equalsIgnoreCase("checkout"))
-			return "redirect:checkout.jsp";
-		else if(user.getTipo().equalsIgnoreCase("admin"))
-					return "redirect:ProductViewAdmin.jsp";
-			else 
+		if (user != null) {
+
+			HttpSession session = req.getSession(false);
+			if (session != null) {
+				session.invalidate();
+			}
+
+			HttpSession currentSession = req.getSession();
+			currentSession.setAttribute("user", user);
+			currentSession.setAttribute("tipo", user.getTipo());
+			currentSession.setAttribute("cart", cart);
+			/*
+			 * Migrazione dell'attributo action per preservare il flusso
+			 */
+			currentSession.setAttribute("action", action);
+
+			if (action != null && action.equalsIgnoreCase("checkout"))
+				return "redirect:checkout.jsp";
+			else if (user.getTipo().equalsIgnoreCase("admin"))
+				return "redirect:ProductViewAdmin.jsp";
+			else
 				return "redirect:ProductView.jsp";
 
-		}
-	else {
-		return "redirect:loginForm.jsp";		
+		} else {
+			return "redirect:loginForm.jsp";
 		}
 	}
 }

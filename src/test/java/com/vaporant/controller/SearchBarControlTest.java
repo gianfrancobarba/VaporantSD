@@ -50,18 +50,29 @@ class SearchBarControlTest {
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
 
         when(resultSet.getMetaData()).thenReturn(metaData);
-        when(metaData.getColumnCount()).thenReturn(2);
+        when(metaData.getColumnCount()).thenReturn(7);
         when(metaData.getColumnName(1)).thenReturn("ID");
         when(metaData.getColumnName(2)).thenReturn("nome");
+        when(metaData.getColumnName(3)).thenReturn("descrizione");
+        when(metaData.getColumnName(4)).thenReturn("quantita");
+        when(metaData.getColumnName(5)).thenReturn("prezzoAttuale");
+        when(metaData.getColumnName(6)).thenReturn("tipo");
+        when(metaData.getColumnName(7)).thenReturn("colore");
 
         when(resultSet.next()).thenReturn(true).thenReturn(false);
         when(resultSet.getObject(1)).thenReturn(1);
         when(resultSet.getObject(2)).thenReturn("Product 1");
+        when(resultSet.getObject(3)).thenReturn("Description");
+        when(resultSet.getObject(4)).thenReturn(10);
+        when(resultSet.getObject(5)).thenReturn(19.99);
+        when(resultSet.getObject(6)).thenReturn("Svapo");
+        when(resultSet.getObject(7)).thenReturn("Argento");
 
         mockMvc.perform(get("/SearchBar")
                 .param("nome", "Product"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{\"ID\":1,\"nome\":\"Product 1\"}]"));
+                .andExpect(content().json(
+                        "[{\"ID\":1,\"nome\":\"Product 1\",\"descrizione\":\"Description\",\"quantita\":10,\"prezzoAttuale\":19.99,\"tipo\":\"Svapo\",\"colore\":\"Argento\"}]"));
     }
 
     @Test
