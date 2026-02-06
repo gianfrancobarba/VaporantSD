@@ -93,10 +93,17 @@ class CartControlTest {
     void testUpdateQuantity() throws Exception {
         ProductBean product = new ProductBean();
         product.setCode(1);
+        product.setPrice(10.0f);
+        product.setQuantity(1); // Initial quantity in cart
         when(productModel.doRetrieveByKey(1)).thenReturn(product);
 
         Cart cart = new Cart();
-        cart.addProduct(product);
+        // Add product with initial quantity = 1
+        ProductBean cartProduct = new ProductBean();
+        cartProduct.setCode(1);
+        cartProduct.setPrice(10.0f);
+        cartProduct.setQuantity(1);
+        cart.addProduct(cartProduct);
 
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("cart", cart);
@@ -109,6 +116,14 @@ class CartControlTest {
                 .param("quantita", "5"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("CartView.jsp"));
+
+        // Verify Session State - quantity and price updated
+        // Cart.aggiorna() updates product quantity and recalculates total
+        Cart updatedCart = (Cart) session.getAttribute("cart");
+        assertEquals(1, updatedCart.getProducts().size(), "Cart should still have 1 product");
+        assertEquals(5, updatedCart.getProducts().get(0).getQuantity(), "Quantity should be updated to 5");
+        // Total = (10.0 * 5) = 50.0
+        assertEquals(50.0, updatedCart.getPrezzoTotale(), 0.01, "Total price should be 5 x 10.0 = 50");
     }
 
     @Test
@@ -197,5 +212,88 @@ class CartControlTest {
         assertEquals(expectedTotal, cart.getPrezzoTotale(), 0.01,
                 "Totale deve essere somma di tutti i prodotti: " + productCount + " prodotti x 10.00 = "
                         + expectedTotal);
+    }
+
+    @ParameterizedTest(name = "Update quantity to {0}")
+    @ValueSource(ints = { 1, 2, 5, 10 })
+    @DisplayName("Cart - Update quantity con boundary values - verifica calcolo prezzo")
+    void testUpdateQuantityBoundaries(int newQuantity) throws Exception {
+        ProductBean product = new ProductBean();
+        product.setCode(1);
+        product.setPrice(10.0f);
+        product.setQuantity(20); // Large stock available
+        when(productModel.doRetrieveByKey(1)).thenReturn(product);
+
+        // Setup cart with initial product (quantity=3, price=10)
+        Cart cart = new Cart();
+        ProductBean cartProduct = new ProductBean();
+        cartProduct.setCode(1);
+        cartProduct.setPrice(10.0f);
+        cartProduct.setQuantity(3); // Initial quantity
+        cart.getProducts().add(cartProduct);
+        cart.setPrezzoTotale(30.0); // Initial total = 3 * 10
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("cart", cart);
+        session.setAttribute("user", new UserBean());
+
+        mockMvc.perform(post("/cart")
+                .session(session)
+                .param("action", "aggiorna")
+                .param("id", "1")
+                .param("quantita", String.valueOf(newQuantity)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("CartView.jsp"));
+
+        Cart updatedCart = (Cart) session.getAttribute("cart");
+
+        // Cart.aggiorna() always updates quantity regardless of value
+        // It recalculates: newTotal = oldTotal - (oldQty * price) + (newQty * price)
+        // = 30 - (3 * 10) + (newQuantity * 10)
+        // = 30 - 30 + (newQuantity * 10)
+        // = newQuantity * 10
+        assertEquals(1, updatedCart.getProducts().size(), "Cart should have 1 product");
+        assertEquals(newQuantity, updatedCart.getProducts().get(0).getQuantity(),
+                "Quantity should be updated to " + newQuantity);
+
+        double expectedTotal = newQuantity * 10.0;
+        assertEquals(expectedTotal, updatedCart.getPrezzoTotale(), 0.01,
+                "Total should be " + newQuantity + " x 10.0 = " + expectedTotal);
+    }
+
+    @Test
+    @DisplayName("Cart - Delete product con indice boundary (primo prodotto)")
+    void testDeleteFirstProduct() throws Exception {
+        ProductBean product1 = new ProductBean();
+        product1.setCode(1);
+        product1.setPrice(10.0f);
+        ProductBean product2 = new ProductBean();
+        product2.setCode(2);
+        product2.setPrice(20.0f);
+
+        when(productModel.doRetrieveByKey(1)).thenReturn(product1);
+
+        Cart cart = new Cart();
+        cart.addProduct(product1);
+        cart.addProduct(product2);
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("cart", cart);
+        session.setAttribute("user", new UserBean());
+
+        mockMvc.perform(post("/cart")
+                .session(session)
+                .param("action", "deleteC")
+                .param("id", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("CartView.jsp"));
+
+        Cart updatedCart = (Cart) session.getAttribute("cart");
+        assertEquals(1, updatedCart.getProducts().size(),
+                "Cart should have 1 product after deleting first");
+        assertEquals(2, updatedCart.getProducts().get(0).getCode(),
+                "Remaining product should be product2");
+        assertEquals(20.0, updatedCart.getPrezzoTotale(), 0.01,
+                "Total price should be updated to 20.0");
     }
 }

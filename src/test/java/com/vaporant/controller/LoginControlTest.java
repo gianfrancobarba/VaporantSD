@@ -1,5 +1,8 @@
 package com.vaporant.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -46,12 +49,28 @@ class LoginControlTest {
 
         when(userDao.findByCred(email, "password")).thenReturn(user);
 
+        MockHttpSession session = new MockHttpSession();
+
         // Act & Assert
-        mockMvc.perform(post("/login")
+        var result = mockMvc.perform(post("/login")
+                .session(session)
                 .param("email", email)
                 .param("password", "password"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(expectedUrl));
+                .andExpect(redirectedUrl(expectedUrl))
+                .andReturn();
+
+        // Verify Session State (kill VoidMethodCallMutator)
+        // LoginControl invalidates old session and creates new one
+        // Must access the NEW session from result, not the passed session
+        var newSession = result.getRequest().getSession();
+        UserBean sessionUser = (UserBean) newSession.getAttribute("user");
+        assertNotNull(sessionUser, "User should be in session after successful login");
+        assertEquals(email, sessionUser.getEmail(), "Email should match");
+        assertEquals(userType, sessionUser.getTipo(), "User type should match");
+
+        String sessionTipo = (String) newSession.getAttribute("tipo");
+        assertEquals(userType, sessionTipo, "Tipo attribute should be set in session");
     }
 
     @Test
@@ -65,14 +84,26 @@ class LoginControlTest {
 
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("action", "checkout");
-        session.setAttribute("cart", new Cart());
+        Cart initialCart = new Cart();
+        session.setAttribute("cart", initialCart);
 
-        mockMvc.perform(post("/login")
+        var result = mockMvc.perform(post("/login")
                 .session(session)
                 .param("email", "test@test.com")
                 .param("password", "password"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("checkout.jsp"));
+                .andExpect(redirectedUrl("checkout.jsp"))
+                .andReturn();
+
+        // Verify Session State - action preserved across session invalidation
+        // LoginControl preserves action/cart by copying to new session
+        var newSession = result.getRequest().getSession();
+        assertNotNull(newSession, "Session should exist after login");
+        String actionAfterLogin = (String) newSession.getAttribute("action");
+        assertEquals("checkout", actionAfterLogin, "Action should be preserved after login");
+
+        Cart cartAfterLogin = (Cart) newSession.getAttribute("cart");
+        assertNotNull(cartAfterLogin, "Cart should be preserved after login");
     }
 
     @Test
@@ -80,11 +111,18 @@ class LoginControlTest {
     void testLoginFailure() throws Exception {
         when(userDao.findByCred(anyString(), anyString())).thenReturn(null);
 
+        MockHttpSession session = new MockHttpSession();
+
         mockMvc.perform(post("/login")
+                .session(session)
                 .param("email", "wrong")
                 .param("password", "wrong"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("loginForm.jsp"));
+
+        // Verify Session State - no user in session after login failure
+        UserBean sessionUser = (UserBean) session.getAttribute("user");
+        assertNull(sessionUser, "User should NOT be in session after login failure");
     }
 
     @Test

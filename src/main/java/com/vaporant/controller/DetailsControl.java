@@ -34,13 +34,17 @@ public class DetailsControl {
 		String action = request.getParameter("action");
 
 		try {
-			if (action != null && action.equalsIgnoreCase("read")) {
-				int id = Integer.parseInt(request.getParameter("id"));
-				request.removeAttribute("product");
-				request.getSession().setAttribute("product", model.doRetrieveByKey(id));
+			if (action != null) {
+				if (action.equalsIgnoreCase("read")) {
+					int id = Integer.parseInt(request.getParameter("id"));
+					request.removeAttribute("product");
+					request.getSession().setAttribute("product", model.doRetrieveByKey(id));
+				}
 			}
+		} catch (NumberFormatException e) {
+			logger.error("Invalid ID format: {}", e.getMessage());
 		} catch (SQLException e) {
-			logger.error("Error retrieving product details: {}", e.getMessage(), e);
+			logger.error("Database error in details: {}", e.getMessage(), e);
 		}
 
 		return "redirect:DetailsView.jsp";

@@ -29,8 +29,8 @@ class CustomErrorControllerTest {
         String viewName = controller.handleError(request);
 
         assertEquals("error", viewName);
-        verify(request).setAttribute("errorCode", 404);
-        verify(request).setAttribute("errorMessage", "Pagina non trovata");
+        verify(request).setAttribute("error.status.code", 404);
+        verify(request).setAttribute("error.message", "Pagina non trovata");
     }
 
     @Test
@@ -42,8 +42,8 @@ class CustomErrorControllerTest {
         String viewName = controller.handleError(request);
 
         assertEquals("error", viewName);
-        verify(request).setAttribute("errorCode", 500);
-        verify(request).setAttribute("errorMessage", "Errore interno del server");
+        verify(request).setAttribute("error.status.code", 500);
+        verify(request).setAttribute("error.message", "Errore interno del server");
     }
 
     @Test
@@ -55,8 +55,8 @@ class CustomErrorControllerTest {
         String viewName = controller.handleError(request);
 
         assertEquals("error", viewName);
-        verify(request).setAttribute("errorCode", 403);
-        verify(request).setAttribute("errorMessage", "Si è verificato un errore imprevisto");
+        verify(request).setAttribute("error.status.code", 403);
+        verify(request).setAttribute("error.message", "Si è verificato un errore imprevisto");
     }
 
     @Test

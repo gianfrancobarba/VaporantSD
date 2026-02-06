@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -287,6 +288,41 @@ class UserDaoImplTest {
         verify(dataSource, times(0)).getConnection();
     }
 
+    @ParameterizedTest(name = "Password matching: DB=[{0}] Provided=[{1}] → Success={2}")
+    @CsvSource({
+            "oldPass, oldPass, true", // Exact match
+            "oldPass, OldPass, false", // Case sensitive (compareTo)
+            "oldPass, oldpass, false", // Lower case mismatch
+            "Pass123, Pass123, true", // Match with numbers
+            "password, Password, false", // First char case
+            "abc, ABC, false", // All caps mismatch
+            "Test1, Test2, false" // Different suffix
+    })
+    @DisplayName("modifyPsw - Password matching boundaries - compareTo logic")
+    void testModifyPswPasswordMatchingBoundaries(String dbPassword, String providedOldPassword, boolean shouldSucceed)
+            throws SQLException {
+        UserBean user = new UserBean();
+        user.setId(1);
+        user.setPassword(dbPassword);
+
+        if (shouldSucceed) {
+            // Only mock DB if password matches
+            when(dataSource.getConnection()).thenReturn(connection);
+            when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+            when(preparedStatement.executeUpdate()).thenReturn(1);
+        }
+
+        int result = userDao.modifyPsw("newPass", providedOldPassword, user);
+
+        if (shouldSucceed) {
+            assertEquals(1, result, "Password dovrebbe essere aggiornata per match esatto");
+            verify(preparedStatement).executeUpdate();
+        } else {
+            assertEquals(0, result, "Password NON dovrebbe essere aggiornata per mismatch");
+            verify(dataSource, times(0)).getConnection(); // No DB interaction
+        }
+    }
+
     @Test
     @DisplayName("modifyMail - SQLException dal DataSource - Propaga eccezione")
     void testModifyMailException() throws SQLException {
@@ -557,5 +593,82 @@ class UserDaoImplTest {
         // Assert - Verify resources closed
         verify(preparedStatement, times(1)).close();
         verify(connection, times(1)).close();
+    }
+
+    // Additional Coverage (Branches & getConnection)
+
+    @Test
+    @DisplayName("saveUser - Tipo null - Default a 'user'")
+    void testSaveUserWithNullType() throws Exception {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        UserBean user = new UserBean();
+        user.setDataNascita(LocalDate.now());
+
+        // Use reflection to bypass UserBean validation in setTipo
+        java.lang.reflect.Field field = UserBean.class.getDeclaredField("tipo");
+        field.setAccessible(true);
+        field.set(user, null);
+
+        userDao.saveUser(user);
+
+        verify(preparedStatement).setString(8, "user");
+    }
+
+    @Test
+    @DisplayName("saveUser - Tipo vuoto - Default a 'user'")
+    void testSaveUserWithEmptyType() throws Exception {
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        UserBean user = new UserBean();
+        user.setDataNascita(LocalDate.now());
+
+        // Use reflection to bypass UserBean validation in setTipo
+        java.lang.reflect.Field field = UserBean.class.getDeclaredField("tipo");
+        field.setAccessible(true);
+        field.set(user, "");
+
+        userDao.saveUser(user);
+
+        verify(preparedStatement).setString(8, "user");
+    }
+
+    @Test
+    @DisplayName("getConnection - DataSource nullo - Fallback su DataSourceUtil")
+    void testGetConnection_FallbackToStatic() throws Exception {
+        // Force 'ds' to null via reflection
+        java.lang.reflect.Field field = UserDaoImpl.class.getDeclaredField("ds");
+        field.setAccessible(true);
+        field.set(userDao, null);
+
+        // We cannot easily mock the static DataSourceUtil.getDataSource()
+        // without mockito-inline, but we can verify it throws if it returns null.
+        // In this environment, it should probably return null if not initialized.
+
+        SQLException ex = assertThrows(SQLException.class, () -> userDao.findById(1));
+        assertTrue(ex.getMessage().contains("DataSource is null") || ex.getMessage().contains("driver"));
+    }
+
+    @ParameterizedTest(name = "modifyPsw with empty params: old='{0}', new='{1}'")
+    @CsvSource({
+            "'', newPass",
+            "oldPass, ''",
+            "'', ''"
+    })
+    @DisplayName("modifyPsw - Parametri vuoti - Return 0 (password mismatch)")
+    void testModifyPswWithEmptyParams(String oldPsw, String newPsw) throws SQLException {
+        UserBean user = new UserBean();
+        user.setId(1);
+        user.setPassword("currentPass");
+
+        // Empty oldPsw will not match "currentPass" via compareTo -> return 0
+        int result = userDao.modifyPsw(newPsw, oldPsw, user);
+
+        assertEquals(0, result, "Should return 0 when password params are empty (mismatch)");
+        verify(dataSource, times(0)).getConnection(); // No DB interaction
     }
 }

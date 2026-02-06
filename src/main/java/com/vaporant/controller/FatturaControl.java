@@ -20,6 +20,6 @@ public class FatturaControl {
         if (session.getAttribute("order") == null || session.getAttribute("user") == null) {
             return "redirect:loginForm.jsp";
         }
-        return "fattura"; // Resolves to fattura.jsp
+        return "redirect:fattura.jsp"; // Resolves to redirecting to the JSP page
     }
 }

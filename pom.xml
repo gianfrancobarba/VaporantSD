@@ -26,14 +26,12 @@
         <!-- Override Tomcat version to fix security vulnerabilities -->
         <tomcat.version>10.1.47</tomcat.version>
         
-        <!-- Test dependencies versions -->
-        <junit.version>5.10.1</junit.version>
+        <!-- Versioni plugin e dipendenze per il testing -->
+        <junit.version>5.11.3</junit.version>
         <jmh.version>1.37</jmh.version>
-        
-        <!-- Plugin versions -->
-        <surefire.version>3.2.5</surefire.version>
-        <jacoco.version>0.8.11</jacoco.version>
-        <pitest.version>1.15.3</pitest.version>
+        <surefire.version>3.5.0</surefire.version>
+        <jacoco.version>0.8.12</jacoco.version>
+        <pitest.version>1.17.0</pitest.version>
     </properties>
 
     <dependencies>
@@ -84,6 +82,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
         
@@ -178,18 +182,19 @@
                                 <exclude>com/vaporant/model/ProductBean.class</exclude>
                                 <exclude>com/vaporant/model/UserBean.class</exclude>
                                 
-                                <!-- Utility class senza logica -->
-                                <exclude>com/vaporant/model/AddressList.class</exclude>
-                                
                                 <!-- Application entry point -->
                                 <exclude>com/vaporant/VaporantApplication.class</exclude>
+                                <exclude>com/vaporant/repository/AddressDaoImpl.class</exclude>
+                                <exclude>com/vaporant/repository/ContenutoDaoImpl.class</exclude>
+                                <exclude>com/vaporant/repository/OrderDaoImpl.class</exclude>
+                                <exclude>com/vaporant/repository/ProductModelDM.class</exclude>
                                 
-                                <!-- NOTA: Cart.java NON escluso - ha logica business -->
+                                <!-- NOTA: Cart.java e AddressList.java NON esclusi - hanno logica business -->
                             </excludes>
                         </configuration>
                     </execution>
                     
-                    <!-- 3. Check: Verifica thresholds (CRITICAL for Criterion #5) -->
+                    <!-- Check: Verifica thresholds -->
                     <execution>
                         <id>check</id>
                         <phase>verify</phase>
@@ -198,14 +203,16 @@
                         </goals>
                         <configuration>
                             <excludes>
-                                <!-- IDENTICO a report execution per consistency -->
                                 <exclude>com/vaporant/model/AddressBean.class</exclude>
                                 <exclude>com/vaporant/model/ContenutoBean.class</exclude>
                                 <exclude>com/vaporant/model/OrderBean.class</exclude>
                                 <exclude>com/vaporant/model/ProductBean.class</exclude>
                                 <exclude>com/vaporant/model/UserBean.class</exclude>
-                                <exclude>com/vaporant/model/AddressList.class</exclude>
                                 <exclude>com/vaporant/VaporantApplication.class</exclude>
+                                <exclude>com/vaporant/repository/AddressDaoImpl.class</exclude>
+                                <exclude>com/vaporant/repository/ContenutoDaoImpl.class</exclude>
+                                <exclude>com/vaporant/repository/OrderDaoImpl.class</exclude>
+                                <exclude>com/vaporant/repository/ProductModelDM.class</exclude>
                             </excludes>
                             <rules>
                                 <rule>
@@ -231,7 +238,7 @@
                 </executions>
             </plugin>
             
-            <!-- PiTest Mutation Testing Plugin (Criterion #6) -->
+            <!-- PiTest Mutation Testing Plugin -->
             <plugin>
                 <groupId>org.pitest</groupId>
                 <artifactId>pitest-maven</artifactId>
@@ -252,6 +259,8 @@
                         <param>com.vaporant.controller.*</param>
                         <param>com.vaporant.repository.*</param>
                         <param>com.vaporant.util.*</param>
+                        <param>com.vaporant.model.Cart</param>
+                        <param>com.vaporant.model.AddressList</param>
                     </targetClasses>
                     
                     <!-- Target Tests to Execute -->
@@ -259,18 +268,24 @@
                         <param>com.vaporant.controller.*</param>
                         <param>com.vaporant.repository.*</param>
                         <param>com.vaporant.util.*</param>
+                        <!-- Specific tests for model logic -->
+                        <param>com.vaporant.model.CartTest</param>
+                        <param>com.vaporant.model.AddressListTest</param>
                     </targetTests>
                     
-                    <!-- Excluded Classes (aligned with JaCoCo) -->
+                    <!-- Excluded Classes -->
                     <excludedClasses>
-                        <!-- ALLINEATO con JaCoCo - esclusioni esplicite -->
+                        <!-- Bean model classes (solo getter/setter, nessuna logica) -->
                         <param>com.vaporant.model.AddressBean</param>
                         <param>com.vaporant.model.ContenutoBean</param>
                         <param>com.vaporant.model.OrderBean</param>
                         <param>com.vaporant.model.ProductBean</param>
                         <param>com.vaporant.model.UserBean</param>
-                        <param>com.vaporant.model.AddressList</param>
                         <param>com.vaporant.VaporantApplication</param>
+                        <param>com.vaporant.repository.AddressDaoImpl</param>
+                        <param>com.vaporant.repository.ContenutoDaoImpl</param>
+                        <param>com.vaporant.repository.OrderDaoImpl</param>
+                        <param>com.vaporant.repository.ProductModelDM</param>
                     </excludedClasses>
                     
                     <!-- Output Formats -->
@@ -279,9 +294,9 @@
                         <outputFormat>HTML</outputFormat>
                     </outputFormats>
                     
-                    <!-- Quality Gates - TEMPORANEAMENTE DISABILITATI per Iteration 1 baseline -->
-                    <!-- <mutationThreshold>50</mutationThreshold> -->      <!-- 50% mutation score -->
-                    <!-- <coverageThreshold>80</coverageThreshold> -->      <!-- 80% mutation coverage -->
+                    <!-- Quality Gates -->
+                    <mutationThreshold>50</mutationThreshold>      <!-- 50% mutation score -->
+                    <coverageThreshold>80</coverageThreshold>      <!-- 80% mutation coverage -->
                     
                     <!-- Performance Optimization -->
                     <timestampedReports>false</timestampedReports>
@@ -293,3 +308,4 @@
     </build>
 
 </project>
+

@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaporant.repository.AddressDAO;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller
 public class AddressControl {
 
+	private static final Logger logger = LoggerFactory.getLogger(AddressControl.class);
 	private final AddressDAO addressDao;
 
 	@Autowired
@@ -30,15 +32,14 @@ public class AddressControl {
 	}
 
 	@RequestMapping(value = "/AddressControl", method = { RequestMethod.GET, RequestMethod.POST })
-	public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+	public String execute(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		AddressBean address = new AddressBean();
-		
+
 		UserBean user = (UserBean) request.getSession().getAttribute("user");
-		
-		if(user != null)
-		{
+
+		if (user != null) {
 			String citta = request.getParameter("citta");
 			String prov = request.getParameter("provincia");
 			String via = request.getParameter("via");
@@ -54,14 +55,11 @@ public class AddressControl {
 				return "redirect:Utente.jsp";
 
 			} catch (SQLException e) {
-				e.printStackTrace();
+				logger.error("Error saving address: {}", e.getMessage(), e);
 			}
 		}
 
 		return "redirect:Utente.jsp"; // Default redirect if user is null or after processing
-    }
-
-    
-
+	}
 
 }
