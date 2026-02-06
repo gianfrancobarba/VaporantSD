@@ -2,7 +2,6 @@ package com.vaporant.repository;
 
 import com.vaporant.model.*;
 import org.springframework.stereotype.Repository;
-import org.springframework.beans.factory.annotation.Autowired;
 import javax.sql.DataSource;
 
 import java.sql.Connection;

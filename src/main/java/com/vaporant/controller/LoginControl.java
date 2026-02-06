@@ -16,14 +16,19 @@ import jakarta.servlet.http.HttpSession;
 import com.vaporant.model.Cart;
 import com.vaporant.model.UserBean;
 import com.vaporant.repository.UserDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller
 public class LoginControl {
 
+	private static final Logger logger = LoggerFactory.getLogger(LoginControl.class);
 	private final UserDAO userDao;
-	
+
 	@Autowired
-	private UserDAO userDao;
+	public LoginControl(UserDAO userDao) {
+		this.userDao = userDao;
+	}
 
 	@RequestMapping(value = "/login", method = { RequestMethod.GET, RequestMethod.POST })
 	public String login(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -39,7 +44,7 @@ public class LoginControl {
 			user = userDao.findByCred(email, password);
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("Database error during login: {}", e.getMessage(), e);
 		}
 
 		if (user != null) {

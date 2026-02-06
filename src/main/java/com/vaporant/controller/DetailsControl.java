@@ -22,6 +22,11 @@ public class DetailsControl {
 	private static final Logger logger = LoggerFactory.getLogger(DetailsControl.class);
 	private final ProductModel model;
 
+	@Autowired
+	public DetailsControl(ProductModel model) {
+		this.model = model;
+	}
+
 	@RequestMapping(value = "/details", method = { RequestMethod.GET, RequestMethod.POST })
 	public String execute(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -37,9 +42,9 @@ public class DetailsControl {
 				}
 			}
 		} catch (NumberFormatException e) {
-			System.out.println("error: Invalid ID format - " + e.getMessage());
+			logger.error("Invalid ID format: {}", e.getMessage());
 		} catch (SQLException e) {
-			System.out.println("error:" + e.getMessage());
+			logger.error("Database error in details: {}", e.getMessage(), e);
 		}
 
 		return "redirect:DetailsView.jsp";

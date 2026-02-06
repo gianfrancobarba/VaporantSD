@@ -19,13 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Controller
 public class ProductControl {
 
-	private static final Logger logger = LoggerFactory.getLogger(ProductControl.class);
-	private final ProductModel model;
+    private static final Logger logger = LoggerFactory.getLogger(ProductControl.class);
+    private final ProductModel model;
 
-	@Autowired
-	public ProductControl(ProductModel model) {
-		this.model = model;
-	}
+    @Autowired
+    public ProductControl(ProductModel model) {
+        this.model = model;
+    }
 
     @RequestMapping(value = "/product", method = { RequestMethod.GET, RequestMethod.POST })
     public String execute(HttpServletRequest request, HttpServletResponse response)
@@ -43,7 +43,7 @@ public class ProductControl {
                             int id = Integer.parseInt(idParam);
                             model.doDelete(id);
                         } catch (NumberFormatException e) {
-                            System.out.println("Invalid ID format: " + idParam);
+                            logger.warn("Invalid ID format: {}", idParam);
                         }
                     }
                 } else if (action.equalsIgnoreCase("insert")) {
@@ -64,15 +64,15 @@ public class ProductControl {
                             bean.setQuantityStorage(quantity);
                             model.doSave(bean);
                         } catch (NumberFormatException e) {
-                            System.out.println("Invalid number format in product insert");
+                            logger.warn("Invalid number format in product insert");
                         }
                     }
                 }
             }
 
         } catch (SQLException e) {
-                logger.error("Error in product operation: {}", e.getMessage(), e);
-          }
+            logger.error("Error in product operation: {}", e.getMessage(), e);
+        }
 
         String sort = request.getParameter("sort");
 

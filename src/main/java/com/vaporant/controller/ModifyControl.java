@@ -17,9 +17,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaporant.repository.UserDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller
 public class ModifyControl {
+
+    private static final Logger logger = LoggerFactory.getLogger(ModifyControl.class);
+    private static final String contentType = "application/json";
 
     @Autowired
     private UserDAO need;
@@ -50,7 +55,7 @@ public class ModifyControl {
                     out.print("{ \"email\": \"" + user.getEmail() + "\" }");
                     out.flush();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    logger.error("Error modifying email: {}", e.getMessage(), e);
                 }
                 break;
             case "modificaTelefono":
@@ -66,7 +71,7 @@ public class ModifyControl {
                     out.print("{ \"numTelefono\": \"" + user.getNumTelefono() + "\" }");
                     out.flush();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    logger.error("Error modifying phone: {}", e.getMessage(), e);
                 }
                 break;
             case "modificaPassword":
@@ -94,7 +99,7 @@ public class ModifyControl {
                         out.print(jsonResponse);
                     }
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    logger.error("Error modifying password: {}", e.getMessage(), e);
                 }
                 break;
             default:

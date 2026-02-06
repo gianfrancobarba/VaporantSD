@@ -17,10 +17,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaporant.repository.UserDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller
 public class SignControl {
 
+	private static final Logger logger = LoggerFactory.getLogger(SignControl.class);
 	private UserDAO userDao;
 
 	@Autowired
@@ -54,7 +57,7 @@ public class SignControl {
 		try {
 			result = userDao.saveUser(user);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("Error saving user: {}", e.getMessage(), e);
 		}
 
 		if (result > 0)
@@ -64,7 +67,7 @@ public class SignControl {
 	}
 
 	/**
-	 * Validates email format using regex pattern (RFC 5322 simplified)
+	 * Validates email format using regex pattern
 	 * 
 	 * @param email Email address to validate
 	 * @return true if email is valid, false otherwise
@@ -73,7 +76,7 @@ public class SignControl {
 		if (email == null || email.trim().isEmpty()) {
 			return false;
 		}
-		// Regex email validation (RFC 5322 semplificato)
+		// Regex email validation
 		// Pattern: local-part@domain.tld
 		String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 		return email.matches(emailRegex);

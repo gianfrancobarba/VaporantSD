@@ -4,9 +4,11 @@ import com.vaporant.repository.AddressScript;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.util.List;
-import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AddressList {
+    private static final Logger logger = LoggerFactory.getLogger(AddressList.class);
     /* @ spec_public non_null @ */ private ArrayList<AddressScript> listaIndirizzi;
     /* @ spec_public non_null @ */ private ArrayList<AddressBean> addresses;
 

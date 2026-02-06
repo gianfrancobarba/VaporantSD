@@ -74,7 +74,7 @@ public class OrderControl {
 		try {
 			orderDao.saveOrder(order);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("Error saving order: {}", e.getMessage(), e);
 		}
 
 		int idOrdine = -1;
@@ -82,7 +82,7 @@ public class OrderControl {
 		try {
 			idOrdine = orderDao.getIdfromDB();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("Error retrieving order ID: {}", e.getMessage(), e);
 		}
 
 		int i = 0;
@@ -91,7 +91,6 @@ public class OrderControl {
 				contDao.saveContenuto(
 						new ContenutoBean(idOrdine, prod.getCode(), prod.getQuantity(), 22, prod.getPrice()));
 				logger.debug("Added product {} to order: {}", i++, prod.getName());
-				productDao.updateQuantityStorage(prod, prod.getQuantityStorage() - prod.getQuantity());
 
 				// Decrement stock in storage
 				int newQuantity = prod.getQuantityStorage() - prod.getQuantity();
@@ -99,7 +98,7 @@ public class OrderControl {
 
 				logger.debug("Saved content for product {} - {}", i++, prod.toString());
 			} catch (SQLException e) {
-				e.printStackTrace();
+				logger.error("Error saving order content: {}", e.getMessage(), e);
 			}
 		}
 
