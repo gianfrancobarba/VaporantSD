@@ -15,8 +15,12 @@ import javax.sql.DataSource;
 public class ContenutoDaoImpl implements ContenutoDAO {
     private static final String TABLE = "contenuto";
 
-    @Autowired
     private DataSource ds;
+
+    @Autowired
+    public ContenutoDaoImpl(DataSource ds) {
+        this.ds = ds;
+    }
 
     private Connection getConnection() throws SQLException {
         if (ds != null) {

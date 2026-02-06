@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class CustomErrorController implements ErrorController {
+    private static final String ERROR_STATUS_CODE = "error.status.code";
+    private static final String ERROR_MESSAGE = "error.message";
 
     @RequestMapping("/error")
     public String handleError(HttpServletRequest request) {
@@ -15,16 +17,16 @@ public class CustomErrorController implements ErrorController {
         
         if (status != null) {
             Integer statusCode = Integer.valueOf(status.toString());
-            request.setAttribute("errorCode", statusCode);
+            request.setAttribute(ERROR_STATUS_CODE, statusCode);
             
             if(statusCode == 404) {
-                request.setAttribute("errorMessage", "Pagina non trovata");
+                request.setAttribute(ERROR_MESSAGE, "Pagina non trovata");
             }
             else if(statusCode == 500) {
-                request.setAttribute("errorMessage", "Errore interno del server");
+                request.setAttribute(ERROR_MESSAGE, "Errore interno del server");
             }
             else {
-                request.setAttribute("errorMessage", "Si è verificato un errore imprevisto");
+                request.setAttribute(ERROR_MESSAGE, "Si è verificato un errore imprevisto");
             }
         }
         return "error";

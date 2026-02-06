@@ -22,14 +22,15 @@ import com.vaporant.repository.AddressDAO;
 @Controller
 public class AddressControl {
 
+	private final AddressDAO addressDao;
 
 	@Autowired
-	private AddressDAO addressDao;
+	public AddressControl(AddressDAO addressDao) {
+		this.addressDao = addressDao;
+	}
 
-
-    
-	@RequestMapping(value = "/AddressControl", method = {RequestMethod.GET, RequestMethod.POST})
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	@RequestMapping(value = "/AddressControl", method = { RequestMethod.GET, RequestMethod.POST })
+	public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 
 		AddressBean address = new AddressBean();

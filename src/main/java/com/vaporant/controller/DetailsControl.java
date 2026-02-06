@@ -7,6 +7,8 @@ import jakarta.servlet.ServletException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,8 +19,8 @@ import com.vaporant.repository.ProductModel;
 @Controller
 public class DetailsControl {
 
-	@Autowired
-	private ProductModel model;
+	private static final Logger logger = LoggerFactory.getLogger(DetailsControl.class);
+	private final ProductModel model;
 
 	@RequestMapping(value = "/details", method = { RequestMethod.GET, RequestMethod.POST })
 	public String execute(HttpServletRequest request, HttpServletResponse response)

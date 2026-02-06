@@ -4,6 +4,7 @@ import com.vaporant.repository.AddressScript;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.util.List;
+import javax.sql.DataSource;
 
 public class AddressList {
     /* @ spec_public non_null @ */ private ArrayList<AddressScript> listaIndirizzi;
@@ -38,7 +39,7 @@ public class AddressList {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Errore durante il caricamento degli indirizzi dell'utente", e);
         }
     }
 

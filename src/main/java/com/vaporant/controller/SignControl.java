@@ -21,12 +21,12 @@ import com.vaporant.repository.UserDAO;
 @Controller
 public class SignControl {
 
-	public SignControl() {
-		super();
-	}
+	private UserDAO userDao;
 
 	@Autowired
-	private UserDAO userDao;
+	public SignControl(UserDAO userDao) {
+		this.userDao = userDao;
+	}
 
 	@RequestMapping(value = "/SignControl", method = { RequestMethod.GET, RequestMethod.POST })
 	public String execute(HttpServletRequest request, HttpServletResponse response)

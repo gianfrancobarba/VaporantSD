@@ -20,6 +20,8 @@ import com.vaporant.repository.UserDAO;
 @Controller
 public class LoginControl {
 
+	private final UserDAO userDao;
+	
 	@Autowired
 	private UserDAO userDao;
 

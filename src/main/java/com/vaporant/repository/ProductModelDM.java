@@ -19,7 +19,6 @@ public class ProductModelDM implements ProductModel {
 
 	private static final String TABLE_NAME = "prodotto";
 
-	@Autowired
 	private DataSource ds;
 
 	private Connection getConnection() throws SQLException {

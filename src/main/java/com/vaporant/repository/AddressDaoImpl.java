@@ -16,8 +16,23 @@ public class AddressDaoImpl implements AddressDAO {
 
 	private static final String TABLE = "indirizzo";
 
-	@Autowired
+	// SQL fragments
+	private static final String WHERE_ID = " WHERE ID = ?";
+	private static final String SELECT_FROM = "SELECT * FROM ";
+
+	// Column names
+	private static final String COL_NUM_CIVICO = "numCivico";
+	private static final String COL_CITTA = "citta";
+	private static final String COL_PROVINCIA = "provincia";
+	private static final String COL_ID_UTENTE = "ID_Utente";
+	private static final String COL_STATO = "stato";
+
 	private DataSource ds;
+
+	@Autowired
+	public AddressDaoImpl(DataSource ds) {
+		this.ds = ds;
+	}
 
 	private Connection getConnection() throws SQLException {
 		if (ds != null) {
@@ -73,7 +88,7 @@ public class AddressDaoImpl implements AddressDAO {
 		PreparedStatement preparedStatement = null;
 		int result = 0;
 
-		String deleteSQL = "DELETE FROM " + TABLE + " WHERE ID = ?";
+		String deleteSQL = "DELETE FROM " + TABLE + WHERE_ID;
 
 		try {
 			connection = getConnection();
@@ -100,7 +115,7 @@ public class AddressDaoImpl implements AddressDAO {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 
-		String selectSQL = "SELECT * FROM " + TABLE + " WHERE CAP = ? AND via = ? AND numCivico = ?";
+		String selectSQL = SELECT_FROM + TABLE + " WHERE CAP = ? AND via = ? AND " + COL_NUM_CIVICO + " = ?";
 		AddressBean address = null;
 
 		try {
@@ -120,12 +135,12 @@ public class AddressDaoImpl implements AddressDAO {
 			while (rs.next()) {
 				address.setId(rs.getInt("ID"));
 				address.setVia(rs.getString("via"));
-				address.setNumCivico(rs.getString("numCivico"));
-				address.setCitta(rs.getString("citta"));
+				address.setNumCivico(rs.getString(COL_NUM_CIVICO));
+				address.setCitta(rs.getString(COL_CITTA));
 				address.setCap(rs.getString("CAP"));
-				address.setProvincia(rs.getString("provincia"));
-				address.setId_utente(rs.getInt("ID_Utente"));
-				address.setStato(rs.getString("stato"));
+				address.setProvincia(rs.getString(COL_PROVINCIA));
+				address.setId_utente(rs.getInt(COL_ID_UTENTE));
+				address.setStato(rs.getString(COL_STATO));
 			}
 
 		} finally {
@@ -148,7 +163,7 @@ public class AddressDaoImpl implements AddressDAO {
 		PreparedStatement preparedStatement = null;
 		ArrayList<AddressBean> addresses = new ArrayList<AddressBean>();
 
-		String selectSQL = "SELECT * FROM " + TABLE + " WHERE ID = ?";
+		String selectSQL = SELECT_FROM + TABLE + WHERE_ID;
 
 		try {
 			connection = getConnection();
@@ -161,12 +176,12 @@ public class AddressDaoImpl implements AddressDAO {
 				AddressBean address = new AddressBean();
 				address.setId(rs.getInt("ID"));
 				address.setVia(rs.getString("via"));
-				address.setNumCivico(rs.getString("numCivico"));
-				address.setCitta(rs.getString("citta"));
+				address.setNumCivico(rs.getString(COL_NUM_CIVICO));
+				address.setCitta(rs.getString(COL_CITTA));
 				address.setCap(rs.getString("CAP"));
-				address.setProvincia(rs.getString("provincia"));
-				address.setId_utente(rs.getInt("ID_Utente"));
-				address.setStato(rs.getString("stato"));
+				address.setProvincia(rs.getString(COL_PROVINCIA));
+				address.setId_utente(rs.getInt(COL_ID_UTENTE));
+				address.setStato(rs.getString(COL_STATO));
 				addresses.add(address);
 			}
 
@@ -190,7 +205,7 @@ public class AddressDaoImpl implements AddressDAO {
 		PreparedStatement preparedStatement = null;
 		AddressBean address = null;
 
-		String selectSQL = "SELECT * FROM " + TABLE + " WHERE ID = ?";
+		String selectSQL = SELECT_FROM + TABLE + WHERE_ID;
 
 		try {
 			connection = getConnection();
@@ -206,12 +221,12 @@ public class AddressDaoImpl implements AddressDAO {
 			while (rs.next()) {
 				address.setId(rs.getInt("ID"));
 				address.setVia(rs.getString("via"));
-				address.setNumCivico(rs.getString("numCivico"));
-				address.setCitta(rs.getString("citta"));
+				address.setNumCivico(rs.getString(COL_NUM_CIVICO));
+				address.setCitta(rs.getString(COL_CITTA));
 				address.setCap(rs.getString("CAP"));
-				address.setProvincia(rs.getString("provincia"));
-				address.setId_utente(rs.getInt("ID_Utente"));
-				address.setStato(rs.getString("stato"));
+				address.setProvincia(rs.getString(COL_PROVINCIA));
+				address.setId_utente(rs.getInt(COL_ID_UTENTE));
+				address.setStato(rs.getString(COL_STATO));
 			}
 
 		} finally {

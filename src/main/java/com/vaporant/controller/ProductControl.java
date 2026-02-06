@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import com.vaporant.repository.ProductModel;
 import com.vaporant.model.ProductBean;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,8 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Controller
 public class ProductControl {
 
-    @Autowired
-    private ProductModel model;
+	private static final Logger logger = LoggerFactory.getLogger(ProductControl.class);
+	private final ProductModel model;
+
+	@Autowired
+	public ProductControl(ProductModel model) {
+		this.model = model;
+	}
 
     @RequestMapping(value = "/product", method = { RequestMethod.GET, RequestMethod.POST })
     public String execute(HttpServletRequest request, HttpServletResponse response)
@@ -64,8 +71,8 @@ public class ProductControl {
             }
 
         } catch (SQLException e) {
-            System.out.println("Error:" + e.getMessage());
-        }
+                logger.error("Error in product operation: {}", e.getMessage(), e);
+          }
 
         String sort = request.getParameter("sort");
 
@@ -75,7 +82,7 @@ public class ProductControl {
             request.getSession().setAttribute("products", model.doRetrieveAll(sort));
 
         } catch (SQLException e) {
-            System.out.println("Error:" + e.getMessage());
+            logger.error("Error retrieving products: {}", e.getMessage(), e);
         }
 
         String tipo = (String) request.getSession().getAttribute("tipo");

@@ -52,7 +52,7 @@ public class OrderControl {
 		}
 
 		int idUtente = user.getId();
-		logger.debug("Processing order for user ID: {}", idUtente);
+		logger.info("Creating order for user ID: {}", user.getId());
 
 		String payment = req.getParameter("payment");
 		String addressParam = req.getParameter("addressDropdown");
@@ -90,6 +90,8 @@ public class OrderControl {
 			try {
 				contDao.saveContenuto(
 						new ContenutoBean(idOrdine, prod.getCode(), prod.getQuantity(), 22, prod.getPrice()));
+				logger.debug("Added product {} to order: {}", i++, prod.getName());
+				productDao.updateQuantityStorage(prod, prod.getQuantityStorage() - prod.getQuantity());
 
 				// Decrement stock in storage
 				int newQuantity = prod.getQuantityStorage() - prod.getQuantity();

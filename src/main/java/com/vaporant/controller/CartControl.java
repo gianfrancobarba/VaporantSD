@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import com.vaporant.model.Cart;
 import com.vaporant.model.ProductBean;
 import com.vaporant.model.UserBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,8 +21,13 @@ import com.vaporant.repository.ProductModel;
 @Controller
 public class CartControl {
 
+	private static final Logger logger = LoggerFactory.getLogger(CartControl.class);
+	private final ProductModel model;
+
 	@Autowired
-	private ProductModel model;
+	public CartControl(ProductModel model) {
+		this.model = model;
+	}
 
 	@RequestMapping(value = "/cart", method = {RequestMethod.GET, RequestMethod.POST})
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -68,7 +75,7 @@ public class CartControl {
 							}
 			}
 		} catch (SQLException e) {
-			System.out.println("Error:" + e.getMessage());
+			logger.error("Error in cart operation: {}", e.getMessage(), e);
 		}
 		
 
