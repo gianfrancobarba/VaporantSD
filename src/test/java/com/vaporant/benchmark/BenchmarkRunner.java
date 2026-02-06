@@ -31,12 +31,20 @@ public class BenchmarkRunner {
             opt = new OptionsBuilder()
                     .include(args[0])
                     .forks(0) // CRITICAL: No forking - run in same JVM (required for Maven exec)
+                    .jvmArgs("-Djmh.ignoreLock=true") // Bypass lock file check
+                    // Save results to files for analysis
+                    .resultFormat(org.openjdk.jmh.results.format.ResultFormatType.JSON)
+                    .result("benchmark-results.json")
                     .build();
         } else {
             // Run all benchmarks in package
             opt = new OptionsBuilder()
                     .include("com.vaporant.benchmark")
                     .forks(0) // CRITICAL: No forking - run in same JVM (required for Maven exec)
+                    .jvmArgs("-Djmh.ignoreLock=true") // Bypass lock file check
+                    // Save results to files for analysis
+                    .resultFormat(org.openjdk.jmh.results.format.ResultFormatType.JSON)
+                    .result("benchmark-results.json")
                     .build();
         }
 

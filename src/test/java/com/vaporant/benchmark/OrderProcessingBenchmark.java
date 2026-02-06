@@ -89,7 +89,17 @@ public class OrderProcessingBenchmark {
         // Initialize DAOs
         orderDao = new OrderDaoImpl(dataSource);
         contenutoDao = new ContenutoDaoImpl(dataSource);
-        productDao = new ProductModelDM(dataSource);
+
+        // ProductModelDM no longer has @Autowired constructor after merge
+        // Use reflection to set the private 'ds' field
+        productDao = new ProductModelDM();
+        try {
+            java.lang.reflect.Field dsField = ProductModelDM.class.getDeclaredField("ds");
+            dsField.setAccessible(true);
+            dsField.set(productDao, dataSource);
+        } catch (Exception e) {
+            throw new SQLException("Failed to set DataSource on ProductModelDM", e);
+        }
 
         // Load available products from DB
         availableProducts = new ArrayList<>(productDao.doRetrieveAll(null));
