@@ -26,11 +26,17 @@ public class UserDaoImpl implements UserDAO {
 
 	private Connection getConnection() throws SQLException {
 		if (ds != null) {
-			return ds.getConnection();
+			Connection conn = ds.getConnection();
+			if (conn != null) {
+				return conn;
+			}
 		}
 		DataSource staticDs = com.vaporant.util.DataSourceUtil.getDataSource();
 		if (staticDs != null) {
-			return staticDs.getConnection();
+			Connection conn = staticDs.getConnection();
+			if (conn != null) {
+				return conn;
+			}
 		}
 		throw new SQLException("DataSource is null");
 	}
