@@ -12,10 +12,10 @@ INSERT INTO indirizzo VALUES(4, 4, 'Italia', 'Ravello', 'Via Sulla Montagna', '4
 INSERT INTO indirizzo VALUES(5, 4, 'Italia', 'Ravello', 'Via Sul Mare', '4B',  '84011', 'SA');
 
 -- Prodotti di esempio
-INSERT INTO prodotto VALUES (1,"noisy creek 2", "box semimeccanica", 12, 29.99, 'Svapo', 'Argento');
-INSERT INTO prodotto VALUES (2,"kiwi", "pod entry level", 25, 79.99, 'Svapo', 'Rosa');
-INSERT INTO prodotto VALUES (3,"voopoo drag 2", "box completa", 5, 49.99, 'Svapo', 'Nero');
-INSERT INTO prodotto VALUES (4,"smok nord", "pod", 22, 69.99, 'Svapo', 'Nero');
+INSERT INTO prodotto VALUES (1,'noisy creek 2', 'box semimeccanica', 12, 29.99, 'Svapo', 'Argento');
+INSERT INTO prodotto VALUES (2,'kiwi', 'pod entry level', 25, 79.99, 'Svapo', 'Rosa');
+INSERT INTO prodotto VALUES (3,'voopoo drag 2', 'box completa', 5, 49.99, 'Svapo', 'Nero');
+INSERT INTO prodotto VALUES (4,'smok nord', 'pod', 22, 69.99, 'Svapo', 'Nero');
 
 -- Ordini di esempio
 INSERT INTO ordine VALUES (1,4,4,36.58,'2023-05-08', 'PayPal'); -- calcolato con iva 22

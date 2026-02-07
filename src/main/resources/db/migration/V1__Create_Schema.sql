@@ -42,7 +42,7 @@ CREATE TABLE ordine(
     ID_Indirizzo INT NOT NULL,
     prezzoTot FLOAT NOT NULL CHECK(prezzoTot >= 0.1),
     dataAcquisto DATE NOT NULL,
-    metodoPagamento VARCHAR(50) CHECK(metodoPagamento = "PayPal" OR metodoPagamento = "Carta di credito/debito"),
+    metodoPagamento VARCHAR(50) CHECK(metodoPagamento = 'PayPal' OR metodoPagamento = 'Carta di credito/debito'),
     FOREIGN KEY(ID_Indirizzo) REFERENCES indirizzo(ID),
     FOREIGN KEY(ID_Utente) REFERENCES utente(ID)
 );
@@ -53,7 +53,7 @@ CREATE TABLE contenuto(
     ID_Prodotto INT NOT NULL,
     quantita INT NOT NULL CHECK(quantita >= 1),
     prezzoAcquisto FLOAT NOT NULL CHECK(prezzoAcquisto >= 0.1),
-    ivaAcquisto INT NOT NULL CHECK(ivaAcquisto >= 0) DEFAULT 22,
+    ivaAcquisto INT NOT NULL DEFAULT 22 CHECK(ivaAcquisto >= 0),
     PRIMARY KEY(ID_Ordine, ID_Prodotto),
     FOREIGN KEY(ID_Prodotto) REFERENCES prodotto(ID),
     FOREIGN KEY(ID_Ordine) REFERENCES ordine(ID_Ordine)
