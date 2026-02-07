@@ -6,38 +6,9 @@ public class AddressBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	/* @ spec_public @ */ private int id, id_utente;
-	/* @ spec_public @ */ private String stato, citta, via, numCivico, cap, provincia;
+	private int id, id_utente;
+	private String stato, citta, via, numCivico, cap, provincia;
 
-	/*
-	 * @
-	 * 
-	 * @ public invariant stato != null;
-	 * 
-	 * @ public invariant citta != null;
-	 * 
-	 * @ public invariant via != null;
-	 * 
-	 * @ public invariant numCivico != null;
-	 * 
-	 * @ public invariant cap != null && cap.length() == 5;
-	 * 
-	 * @ public invariant provincia != null;
-	 * 
-	 * @
-	 */
-
-	/*
-	 * @
-	 * 
-	 * @ public normal_behavior
-	 * 
-	 * @ ensures stato != null && citta != null && via != null && numCivico != null;
-	 * 
-	 * @ ensures cap != null && cap.equals("00000") && provincia != null;
-	 * 
-	 * @
-	 */
 	public AddressBean() {
 		this.stato = "";
 		this.citta = "";
@@ -67,15 +38,6 @@ public class AddressBean implements Serializable {
 		return stato;
 	}
 
-	/*
-	 * @
-	 * 
-	 * @ requires stato != null;
-	 * 
-	 * @ ensures this.stato == stato;
-	 * 
-	 * @
-	 */
 	public void setStato(String stato) {
 		this.stato = stato;
 	}
@@ -84,15 +46,6 @@ public class AddressBean implements Serializable {
 		return citta;
 	}
 
-	/*
-	 * @
-	 * 
-	 * @ requires citta != null;
-	 * 
-	 * @ ensures this.citta == citta;
-	 * 
-	 * @
-	 */
 	public void setCitta(String citta) {
 		this.citta = citta;
 	}
@@ -101,15 +54,6 @@ public class AddressBean implements Serializable {
 		return via;
 	}
 
-	/*
-	 * @
-	 * 
-	 * @ requires via != null;
-	 * 
-	 * @ ensures this.via == via;
-	 * 
-	 * @
-	 */
 	public void setVia(String via) {
 		this.via = via;
 	}
@@ -118,15 +62,6 @@ public class AddressBean implements Serializable {
 		return numCivico;
 	}
 
-	/*
-	 * @
-	 * 
-	 * @ requires numCivico != null;
-	 * 
-	 * @ ensures this.numCivico == numCivico;
-	 * 
-	 * @
-	 */
 	public void setNumCivico(String numCivico) {
 		this.numCivico = numCivico;
 	}
@@ -135,15 +70,6 @@ public class AddressBean implements Serializable {
 		return cap;
 	}
 
-	/*
-	 * @
-	 * 
-	 * @ requires cap != null && cap.length() == 5;
-	 * 
-	 * @ ensures this.cap == cap;
-	 * 
-	 * @
-	 */
 	public void setCap(String cap) {
 		this.cap = cap;
 	}
@@ -152,20 +78,10 @@ public class AddressBean implements Serializable {
 		return provincia;
 	}
 
-	/*
-	 * @
-	 * 
-	 * @ requires provincia != null;
-	 * 
-	 * @ ensures this.provincia == provincia;
-	 * 
-	 * @
-	 */
 	public void setProvincia(String provincia) {
 		this.provincia = provincia;
 	}
 
-	/* @ skipesc @ */
 	public String toString() {
 
 		String s = "";

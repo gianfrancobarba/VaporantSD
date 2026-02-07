@@ -22,7 +22,7 @@
 <body>
 	<nav>
 		<div class = "logo">
-			<a href = "product"><img src="media/logo.png" class = "logosite" alt = "?"></a>
+			<a href = "product"><img src="media/logo.png" class = "logosite" alt = "Vaporant Logo"></a>
 		</div>
 		<%if(session.getAttribute("user") != null){ %>
 			<div class = "links">
@@ -42,7 +42,7 @@
 		<div class = "search">
 			<div class = "kek">
 				<form id="searchForm" class = "fm">
-					<input type = "text" id="searchInput" class = "border" placeholder="Cerca">
+					<input type = "text" id="searchInput" class = "border" placeholder="Cerca" aria-label="Cerca prodotti">
 				</form>
 			</div>
 		</div>

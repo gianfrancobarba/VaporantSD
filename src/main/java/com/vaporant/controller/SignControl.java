@@ -1,10 +1,7 @@
 package com.vaporant.controller;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
-
-import jakarta.servlet.ServletException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,8 +29,7 @@ public class SignControl {
 	}
 
 	@RequestMapping(value = "/SignControl", method = { RequestMethod.GET, RequestMethod.POST })
-	public String execute(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public String execute(HttpServletRequest request, HttpServletResponse response) {
 
 		UserBean user = new UserBean();
 

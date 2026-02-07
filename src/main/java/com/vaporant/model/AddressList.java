@@ -9,20 +9,8 @@ import org.slf4j.LoggerFactory;
 
 public class AddressList {
     private static final Logger logger = LoggerFactory.getLogger(AddressList.class);
-    /* @ spec_public non_null @ */ private ArrayList<AddressScript> listaIndirizzi;
-    /* @ spec_public non_null @ */ private ArrayList<AddressBean> addresses;
-
-    /*
-     * @
-     * 
-     * @ public invariant listaIndirizzi != null;
-     * 
-     * @ public invariant addresses != null;
-     * 
-     * @ public invariant listaIndirizzi.size() == addresses.size();
-     * 
-     * @
-     */
+    private ArrayList<AddressScript> listaIndirizzi;
+    private ArrayList<AddressBean> addresses;
 
     public AddressList() {
         this.listaIndirizzi = new ArrayList<>();
@@ -53,7 +41,6 @@ public class AddressList {
         return addresses;
     }
 
-    /* @ skipesc @ */
     public String getJson() {
         try {
             // Using reflection to avoid Gson import visibility issues with OpenJML
@@ -66,31 +53,21 @@ public class AddressList {
         }
     }
 
-    /* @ skipesc @ */
     public void setListaIndirizzi(ArrayList<AddressScript> listaIndirizzi) {
         this.listaIndirizzi = listaIndirizzi;
     }
 
-    /* @ skipesc @ */
     public void add(AddressBean address) {
         this.listaIndirizzi.add(new AddressScript(address));
         this.addresses.add(address);
     }
 
-    /* @ skipesc @ */
     public void remove(int index) {
         this.listaIndirizzi.remove(index);
         this.addresses.remove(index);
     }
 
-    /*
-     * @ public normal_behavior
-     * 
-     * @ ensures \result != null ==> listaIndirizzi.contains(\result);
-     * 
-     * @
-     */
-    public /* @ nullable @ */ AddressScript get(int index) {
+    public AddressScript get(int index) {
         if (index >= 0 && index < this.listaIndirizzi.size()) {
             return this.listaIndirizzi.get(index);
         }

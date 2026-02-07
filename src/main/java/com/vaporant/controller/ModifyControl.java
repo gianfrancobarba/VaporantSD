@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-import jakarta.servlet.ServletException;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -31,7 +29,7 @@ public class ModifyControl {
 
     @RequestMapping(value = "/modify", method = { RequestMethod.GET, RequestMethod.POST })
 
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String action = request.getParameter("action");
         UserBean user = (UserBean) request.getSession().getAttribute("user");

@@ -1,9 +1,6 @@
 package com.vaporant.controller;
 
-import java.io.IOException;
 import java.sql.SQLException;
-
-import jakarta.servlet.ServletException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,8 +29,7 @@ public class AddressControl {
 	}
 
 	@RequestMapping(value = "/AddressControl", method = { RequestMethod.GET, RequestMethod.POST })
-	public String execute(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public String execute(HttpServletRequest request, HttpServletResponse response) {
 
 		AddressBean address = new AddressBean();
 

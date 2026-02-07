@@ -1,10 +1,8 @@
- <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8" import="java.util.*,com.vaporant.model.ProductBean,com.vaporant.model.Cart, com.vaporant.model.UserBean"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
+	import="java.util.*,com.vaporant.model.ProductBean,com.vaporant.model.Cart, com.vaporant.model.UserBean" %>
 
-<%
-	request.getSession().setAttribute("tipo", "guest");
-
-	Collection<?> products = (Collection<?>) session.getAttribute("products");
+	<% request.getSession().setAttribute("tipo", "guest" ); Collection<?> products = (Collection
+		<?>) session.getAttribute("products");
 	if(products == null) {
 		response.sendRedirect("./product");	
 		return;
@@ -44,41 +42,40 @@
 		<%
 			if (products != null && products.size() != 0) {
 				Iterator<?> it = products.iterator();
-				while (it.hasNext()) {
-					ProductBean bean = (ProductBean) it.next();
+		while (it.hasNext()) {
+		ProductBean bean = (ProductBean) it.next();
 		%>
 
-					<li class="splide__slide">
-						<a href = "details?action=read&id=<%=bean.getCode()%>">
-						<img src="media/img<%=bean.getCode()%>.jpg" alt="">
-						</a>
-						<div class = "name">
-							<%=bean.getName()%>
-						</div>
-					</li>
-		<% } 
-			} else {
-		%>
-		<h1>Non ci sono prodotti disponibili!</h1>
-		<% } %>
-					</ul>
-  				</div>
-			</section>
-		</div>
-		<br>
-		<script>
-		document.addEventListener( 'DOMContentLoaded', function () {
-			  new Splide( '#image-carousel', {
-					perPage    : 4,
-					type: "loop",
-					breakpoints: {
-						640: {
-							perPage: 1,
-						},
-					},
-			  } ).mount();
-			} );
-		</script>
-	<jsp:include page="Footer.jsp" />
-</body>
-</html>
+		<li class="splide__slide">
+			<a href="details?action=read&id=<%=bean.getCode()%>">
+				<img src="media/img<%=bean.getCode()%>.jpg" alt="<%=bean.getName()%>">
+			</a>
+			<div class="name">
+				<%=bean.getName()%>
+			</div>
+		</li>
+		<% } } else { %>
+			<h2>Non ci sono prodotti disponibili!</h2>
+			<% } %>
+				</ul>
+				</div>
+				</section>
+				</div>
+				<br>
+				<script>
+					document.addEventListener('DOMContentLoaded', function () {
+						new Splide('#image-carousel', {
+							perPage: 4,
+							type: "loop",
+							breakpoints: {
+								640: {
+									perPage: 1,
+								},
+							},
+						}).mount();
+					});
+				</script>
+				<jsp:include page="Footer.jsp" />
+				</body>
+
+				</html>

@@ -1,8 +1,5 @@
 package com.vaporant.controller;
 
-
-import jakarta.servlet.ServletException;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
@@ -24,30 +21,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Controller
 public class SearchBarControl {
 
-	private static final Logger logger = LoggerFactory.getLogger(SearchBarControl.class);
-	private static final String TABLE_NAME = "prodotto";
-	
-	private final DataSource ds;
+    private static final Logger logger = LoggerFactory.getLogger(SearchBarControl.class);
+    private static final String TABLE_NAME = "prodotto";
 
-	@Autowired
-	public SearchBarControl(DataSource ds) {
-		this.ds = ds;
-	}
+    private final DataSource ds;
 
+    @Autowired
+    public SearchBarControl(DataSource ds) {
+        this.ds = ds;
+    }
 
-	@RequestMapping(value = "/SearchBar", method = {RequestMethod.GET, RequestMethod.POST})
-    public void execute(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    @RequestMapping(value = "/SearchBar", method = { RequestMethod.GET, RequestMethod.POST })
+    public void execute(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         String nome = req.getParameter("nome");
 
         String query = "SELECT * FROM " + TABLE_NAME + " WHERE nome LIKE ?";
-        try (Connection connection = ds.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = ds.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, "%" + nome + "%");
             ResultSet resultSet = preparedStatement.executeQuery();
 
             // Lista da far passare in json
             List<Map<String, Object>> results = new ArrayList<>();
-            // Per prendere nomi delle colonne e oggetti delle colonne per ogni rigo della tabella
+            // Per prendere nomi delle colonne e oggetti delle colonne per ogni rigo della
+            // tabella
             ResultSetMetaData metaData = resultSet.getMetaData();
             int colonne = metaData.getColumnCount();
 
@@ -58,7 +56,7 @@ public class SearchBarControl {
                 for (int i = 1; i <= colonne; i++) {
                     String nomeColonna = metaData.getColumnName(i);
                     Object value = resultSet.getObject(i);
-                    oggetto.put(nomeColonna,value);
+                    oggetto.put(nomeColonna, value);
                 }
                 results.add(oggetto);
             }
@@ -70,9 +68,8 @@ public class SearchBarControl {
             resp.getWriter().write(lista);
 
         } catch (SQLException e) {
-        	logger.error("Error in search operation: {}", e.getMessage(), e);
+            logger.error("Error in search operation: {}", e.getMessage(), e);
         }
     }
-
 
 }

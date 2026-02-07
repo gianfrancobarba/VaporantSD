@@ -128,6 +128,7 @@
                                         </div>
 
                                         <table class="invoice-table">
+                                            <caption>Dettagli prodotti acquistati</caption>
                                             <thead>
                                                 <tr>
                                                     <th>Prodotto</th>
