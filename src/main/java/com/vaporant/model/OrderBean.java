@@ -1,8 +1,11 @@
 package com.vaporant.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class OrderBean {
+public class OrderBean implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	/* @ spec_public @ */ private int id_ordine, id_utente, id_indirizzo;
 	/* @ spec_public @ */ private double prezzoTot;

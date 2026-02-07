@@ -35,61 +35,68 @@ public class ProductControl {
 
         try {
             if (action != null) {
-
                 if (action.equalsIgnoreCase("delete")) {
-                    String idParam = request.getParameter("id");
-                    if (idParam != null) {
-                        try {
-                            int id = Integer.parseInt(idParam);
-                            model.doDelete(id);
-                        } catch (NumberFormatException e) {
-                            logger.warn("Invalid ID format: {}", idParam);
-                        }
-                    }
+                    handleDelete(request);
                 } else if (action.equalsIgnoreCase("insert")) {
-                    String name = request.getParameter("name");
-                    String description = request.getParameter("description");
-                    String priceParam = request.getParameter("price");
-                    String quantityParam = request.getParameter("quantity");
-
-                    if (name != null && priceParam != null && quantityParam != null) {
-                        try {
-                            int price = Integer.parseInt(priceParam);
-                            int quantity = Integer.parseInt(quantityParam);
-
-                            ProductBean bean = new ProductBean();
-                            bean.setName(name);
-                            bean.setDescription(description);
-                            bean.setPrice(price);
-                            bean.setQuantityStorage(quantity);
-                            model.doSave(bean);
-                        } catch (NumberFormatException e) {
-                            logger.warn("Invalid number format in product insert");
-                        }
-                    }
+                    handleInsert(request);
                 }
             }
-
         } catch (SQLException e) {
             logger.error("Error in product operation: {}", e.getMessage(), e);
         }
 
-        String sort = request.getParameter("sort");
-
-        try {
-
-            request.getSession().removeAttribute("products");
-            request.getSession().setAttribute("products", model.doRetrieveAll(sort));
-
-        } catch (SQLException e) {
-            logger.error("Error retrieving products: {}", e.getMessage(), e);
-        }
+        refreshProducts(request);
 
         String tipo = (String) request.getSession().getAttribute("tipo");
         if (tipo != null && tipo.equals("admin"))
             return "redirect:ProductViewAdmin.jsp";
         else
             return "redirect:ProductView.jsp";
+    }
+
+    private void handleDelete(HttpServletRequest request) throws SQLException {
+        String idParam = request.getParameter("id");
+        if (idParam != null) {
+            try {
+                int id = Integer.parseInt(idParam);
+                model.doDelete(id);
+            } catch (NumberFormatException e) {
+                logger.warn("Invalid ID format: {}", idParam);
+            }
+        }
+    }
+
+    private void handleInsert(HttpServletRequest request) throws SQLException {
+        String name = request.getParameter("name");
+        String description = request.getParameter("description");
+        String priceParam = request.getParameter("price");
+        String quantityParam = request.getParameter("quantity");
+
+        if (name != null && priceParam != null && quantityParam != null) {
+            try {
+                int price = Integer.parseInt(priceParam);
+                int quantity = Integer.parseInt(quantityParam);
+
+                ProductBean bean = new ProductBean();
+                bean.setName(name);
+                bean.setDescription(description);
+                bean.setPrice(price);
+                bean.setQuantityStorage(quantity);
+                model.doSave(bean);
+            } catch (NumberFormatException e) {
+                logger.warn("Invalid number format in product insert");
+            }
+        }
+    }
+
+    private void refreshProducts(HttpServletRequest request) {
+        String sort = request.getParameter("sort");
+        try {
+            request.getSession().removeAttribute("products");
+            request.getSession().setAttribute("products", model.doRetrieveAll(sort));
+        } catch (SQLException e) {
+            logger.error("Error retrieving products: {}", e.getMessage(), e);
+        }
     }
 
 }

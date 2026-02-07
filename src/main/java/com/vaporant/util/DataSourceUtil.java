@@ -11,18 +11,22 @@ import javax.sql.DataSource;
 @Component
 public class DataSourceUtil implements ApplicationContextAware {
 
-    private static DataSourceUtil instance;
-    private ApplicationContext context;
+    private static ApplicationContext context;
 
     @Override
     public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
-        this.context = applicationContext;
-        instance = this;
+        setContext(applicationContext);
+    }
+
+    // SonarQube: S2696 - Verify this is intentional for static access to Spring
+    // Context
+    private static synchronized void setContext(ApplicationContext applicationContext) {
+        DataSourceUtil.context = applicationContext;
     }
 
     public static DataSource getDataSource() {
-        if (instance != null && instance.context != null) {
-            return instance.context.getBean(DataSource.class);
+        if (context != null) {
+            return context.getBean(DataSource.class);
         }
         return null;
     }
