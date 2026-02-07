@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
+import jakarta.servlet.ServletException;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -37,7 +39,7 @@ public class OrderControl {
 	private com.vaporant.repository.ProductModel productDao;
 
 	@RequestMapping(value = "/Ordine", method = { RequestMethod.GET, RequestMethod.POST })
-	public String execute(HttpServletRequest req, HttpServletResponse res) throws IOException {
+	public String execute(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
 		HttpSession session = req.getSession();
 
@@ -108,4 +110,4 @@ public class OrderControl {
 
 	}
 
-}
+};

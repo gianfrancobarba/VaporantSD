@@ -28,7 +28,7 @@
                     <span class="BorderLeftRight"></span>
 
                     <!-- Titolo della tabella -->
-                    <h1><a href="product"><img src="media/logo.png" class="logosite" alt="Vaporant Logo">Accedi</a></h1>
+                    <h1><a href="product"><img src="media/logo.png" class="logosite" alt="?">Accedi</a></h1>
 
                     <label for="email">Email</label><br>
                     <input type="email" id="email" name="email" autocomplete="off"><br>

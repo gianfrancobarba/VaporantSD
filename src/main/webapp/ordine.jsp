@@ -28,8 +28,6 @@
 					<div class="resoconto">
 						<% for(ProductBean beancart : listaProdotti) { %>
 							<table>
-								<caption>Dettagli ordine per <%=beancart.getName()%>
-								</caption>
 								<thead>
 									<tr>
 										<th>Prodotto</th>

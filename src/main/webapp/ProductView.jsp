@@ -48,14 +48,14 @@
 
 		<li class="splide__slide">
 			<a href="details?action=read&id=<%=bean.getCode()%>">
-				<img src="media/img<%=bean.getCode()%>.jpg" alt="<%=bean.getName()%>">
+				<img src="media/img<%=bean.getCode()%>.jpg" alt="">
 			</a>
 			<div class="name">
 				<%=bean.getName()%>
 			</div>
 		</li>
 		<% } } else { %>
-			<h2>Non ci sono prodotti disponibili!</h2>
+			<h1>Non ci sono prodotti disponibili!</h1>
 			<% } %>
 				</ul>
 				</div>

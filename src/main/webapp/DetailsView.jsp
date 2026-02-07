@@ -15,7 +15,7 @@
 
       <main class="product-container">
         <div class="left-column">
-          <img src="media/img<%=product.getCode()%>.jpg" alt="<%=product.getName()%>">
+          <img src="media/img<%=product.getCode()%>.jpg" alt="">
         </div>
 
         <div class="right-column">

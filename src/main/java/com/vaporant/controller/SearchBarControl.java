@@ -1,5 +1,7 @@
 package com.vaporant.controller;
 
+import jakarta.servlet.ServletException;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
@@ -32,7 +34,7 @@ public class SearchBarControl {
     }
 
     @RequestMapping(value = "/SearchBar", method = { RequestMethod.GET, RequestMethod.POST })
-    public void execute(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void execute(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String nome = req.getParameter("nome");
 

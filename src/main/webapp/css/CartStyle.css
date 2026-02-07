@@ -135,7 +135,7 @@ i {
 }
 
 .right-bar button:hover {
-  background-color: #2a847b;
+  background-color: #76bfb6;
 }
 
 .right-bar form {
@@ -153,7 +153,7 @@ input[type="number"] {
 }
 
 .btn {
-  background-color: #218838;
+  background-color: #13aa52;
   border: 1px solid #13aa52;
   border-radius: 4px;
   box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px 0;

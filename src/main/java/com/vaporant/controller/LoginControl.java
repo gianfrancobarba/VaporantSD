@@ -1,5 +1,6 @@
 package com.vaporant.controller;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import org.springframework.stereotype.Controller;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -29,10 +31,10 @@ public class LoginControl {
 	}
 
 	@RequestMapping(value = "/login", method = { RequestMethod.GET, RequestMethod.POST })
-	public String login(HttpServletRequest req, HttpServletResponse resp) {
+	public String login(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		String email = req.getParameter("email");
-		String password = req.getParameter("password");
+		String email = (String) req.getParameter("email");
+		String password = (String) req.getParameter("password");
 		String action = (String) req.getSession().getAttribute("action");
 		Cart cart = (Cart) req.getSession().getAttribute("cart");
 

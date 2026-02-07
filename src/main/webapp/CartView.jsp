@@ -13,8 +13,7 @@
 				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 				<link href="css/CartStyle.css" rel="stylesheet" type="text/css">
 				<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-					rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
-					crossorigin="anonymous">
+					rel="stylesheet" type="text/css">
 				<title>Vaporant Cart</title>
 			</head>
 
@@ -30,7 +29,7 @@
 									%>
 
 									<div class="box">
-										<img src="media/img<%=beancart.getCode()%>.jpg" alt="<%=beancart.getName()%>">
+										<img src="media/img<%=beancart.getCode()%>.jpg" alt="?">
 										<div class="content">
 											<h3>
 												<%=beancart.getName()%>
@@ -40,7 +39,7 @@
 												class="none">
 												Quantità: <input type="number" name="quantita"
 													value="<%=beancart.getQuantity()%>" required min="1"
-													max="<%=beancart.getQuantityStorage() %>" aria-label="Quantità">
+													max="<%=beancart.getQuantityStorage() %>">
 												<button type="submit" class="btn">Aggiorna</button>
 											</form>
 											<p class="btn-area">

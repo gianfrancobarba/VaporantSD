@@ -21,7 +21,6 @@
             <jsp:include page="Header.jsp" />
             <h1>checkout</h1>
             <table>
-                <caption>Riepilogo prodotti carrello</caption>
                 <thead>
                     <tr>
                         <th>Prodotto</th>
@@ -43,8 +42,7 @@
                                         class="update">
                                         <input type="number" id="quantita" name="quantita"
                                             value="<%= beancart.getQuantity() %>" required min="1"
-                                            max="<%= beancart.getQuantityStorage() %>"
-                                            aria-label="Quantità per <%= beancart.getName() %>">
+                                            max="<%= beancart.getQuantityStorage() %>">
                                         <button class="checkout-btn" type="submit">Aggiorna</button>
                                     </form>
                                 </td>

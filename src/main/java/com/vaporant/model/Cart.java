@@ -8,27 +8,57 @@ public class Cart implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private final ArrayList<ProductBean> products;
-	private double prezzoTotale = 0;
+	/* @ spec_public @ */ private final ArrayList<ProductBean> products;
+	/* @ spec_public @ */ private double prezzoTotale = 0;
+
+	/*
+	 * @
+	 * 
+	 * @ public invariant prezzoTotale >= 0;
+	 * 
+	 * @ public invariant products != null;
+	 * 
+	 * @
+	 */
 
 	public Cart() {
 		products = new ArrayList<>();
 	}
 
+	/* @ skipesc @ */
 	public double getPrezzoTotale() {
 		return Math.round(prezzoTotale * 100.0) / 100.0;
 	}
 
+	/*
+	 * @
+	 * 
+	 * @ requires prezzoTotale >= 0;
+	 * 
+	 * @ assignable this.prezzoTotale;
+	 * 
+	 * @ ensures this.prezzoTotale == prezzoTotale;
+	 * 
+	 * @
+	 */
 	public void setPrezzoTotale(double prezzoTotale) {
 		this.prezzoTotale = prezzoTotale;
 	}
 
+	/*
+	 * @
+	 * 
+	 * @ ensures \result != null;
+	 * 
+	 * @
+	 */
 	public List<ProductBean> getProducts() {
 		return products;
 	}
 
+	/* @ skipesc @ */
 	public void addProduct(ProductBean product) {
-		ProductBean prod = containsProduct(product);
+		/* @ nullable @ */ ProductBean prod = containsProduct(product);
 
 		if (prod != null) {
 			if (prod.getQuantity() < prod.getQuantityStorage()) {
@@ -40,6 +70,7 @@ public class Cart implements Serializable {
 		}
 	}
 
+	/* @ skipesc @ */
 	public void deleteProduct(ProductBean product) {
 		for (int i = 0; i < products.size(); i++) {
 			ProductBean prod = products.get(i);
@@ -52,7 +83,17 @@ public class Cart implements Serializable {
 		}
 	}
 
-	public ProductBean containsProduct(ProductBean product) {
+	/*
+	 * @
+	 * 
+	 * @ public model nullable ProductBean containsProductModel(ProductBean
+	 * product);
+	 * 
+	 * @
+	 */
+
+	/* @ skipesc @ */
+	public /* @ nullable @ */ ProductBean containsProduct(ProductBean product) {
 		for (ProductBean pb : products) {
 			if (pb != null && pb.getCode() == product.getCode()) {
 				return pb;
@@ -61,6 +102,7 @@ public class Cart implements Serializable {
 		return null;
 	}
 
+	/* @ skipesc @ */
 	public void aggiorna(ProductBean product, int quantita) {
 		int index;
 		for (index = 0; index < products.size(); index++) {

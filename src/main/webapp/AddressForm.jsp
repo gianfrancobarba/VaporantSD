@@ -19,28 +19,24 @@
 					<h2>Registra il tuo indirizzo di spedizione</h2>
 					<form action="AddressControl" method="POST" class="address-form">
 						<div class="input-container">
-							<input id="citta" class="input" type="text" name="citta" placeholder="Citta" required
-								aria-label="Città">
+							<input id="citta" class="input" type="text" name="citta" placeholder="Citta" required>
 						</div>
 						<div class="input-container">
 							<input id="provincia" class="input" type="text" name="provincia" placeholder="Provincia"
-								required aria-label="Provincia">
+								required>
 						</div>
 						<div class="input-container">
-							<input id="cap" class="input" type="text" name="cap" placeholder="Cap" required
-								aria-label="CAP">
+							<input id="cap" class="input" type="text" name="cap" placeholder="Cap" required>
 						</div>
 						<div class="input-container">
-							<input id="via" class="input" type="text" name="via" placeholder="Via" required
-								aria-label="Via">
+							<input id="via" class="input" type="text" name="via" placeholder="Via" required>
 						</div>
 						<div class="input-container">
 							<input id="numero_civico" class="input" type="text" name="numero_civico"
-								placeholder="Numero Civico" required aria-label="Numero Civico">
+								placeholder="Numero Civico" required>
 						</div>
 						<div class="input-container">
-							<input id="stato" class="input" type="text" name="stato" placeholder="Stato" required
-								aria-label="Stato">
+							<input id="stato" class="input" type="text" name="stato" placeholder="Stato" required>
 						</div>
 						<input type="submit" value="Aggiungi" class="submit-button">
 						<!-- <button onclick="aggiungiIndirizzo()" class="btn">AGGIUNGI INDIRIZZO</button> -->

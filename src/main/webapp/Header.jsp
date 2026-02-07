@@ -12,7 +12,7 @@
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
-          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+          type="text/css">
         <style>
           .search-item {
             cursor: pointer;
@@ -23,7 +23,7 @@
       <body>
         <nav>
           <div class="logo">
-            <a href="product"><img src="media/logo.png" class="logosite" alt="Vaporant Logo"></a>
+            <a href="product"><img src="media/logo.png" class="logosite" alt="?"></a>
           </div>
           <%if(session.getAttribute("user") !=null){ %>
             <div class="links">
@@ -43,8 +43,7 @@
                 <div class="search">
                   <div class="kek">
                     <form id="searchForm" class="fm">
-                      <input type="text" id="searchInput" class="border" placeholder="Cerca"
-                        aria-label="Cerca prodotti">
+                      <input type="text" id="searchInput" class="border" placeholder="Cerca">
                     </form>
                   </div>
                 </div>

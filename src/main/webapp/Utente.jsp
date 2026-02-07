@@ -233,7 +233,6 @@
                                                    <div class="address">
                                                       <h2>INDIRIZZI</h2>
                                                       <table>
-                                                         <caption>Elenco indirizzi di spedizione</caption>
                                                          <thead>
                                                             <tr>
                                                                <th>Indirizzo</th>
@@ -267,7 +266,6 @@
                                                       <div class="orders">
                                                          <h2>ORDINI EFFETTUATI</h2>
                                                          <table>
-                                                            <caption>Storico ordini effettuati</caption>
                                                             <thead>
                                                                <tr>
                                                                   <th>ID Ordine</th>

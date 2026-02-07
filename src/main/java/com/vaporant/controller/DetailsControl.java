@@ -1,6 +1,9 @@
 package com.vaporant.controller;
 
+import java.io.IOException;
 import java.sql.SQLException;
+
+import jakarta.servlet.ServletException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,7 +28,8 @@ public class DetailsControl {
 	}
 
 	@RequestMapping(value = "/details", method = { RequestMethod.GET, RequestMethod.POST })
-	public String execute(HttpServletRequest request, HttpServletResponse response) {
+	public String execute(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		String action = request.getParameter("action");
 
