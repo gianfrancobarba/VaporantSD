@@ -12,6 +12,8 @@ import java.sql.SQLException;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Arrays;
 
 @Repository
 public class ProductModelDM implements ProductModel {
@@ -135,7 +137,12 @@ public class ProductModelDM implements ProductModel {
 		String selectSQL = "SELECT * FROM " + ProductModelDM.TABLE_NAME;
 
 		if (order != null && !order.equals("")) {
-			selectSQL += " ORDER BY " + order;
+			// Whitelist allowed columns to prevent SQL Injection
+			List<String> allowedColumns = Arrays.asList("nome", "descrizione", "prezzoAttuale", "quantita", "tipo",
+					"colore", "ID");
+			if (allowedColumns.contains(order)) {
+				selectSQL += " ORDER BY " + order;
+			}
 		}
 
 		try (Connection connection = getConnection();

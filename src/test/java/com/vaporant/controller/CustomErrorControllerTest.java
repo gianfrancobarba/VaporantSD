@@ -26,7 +26,7 @@ class CustomErrorControllerTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)).thenReturn(404);
 
-        String viewName = controller.handleError(request);
+        String viewName = controller.handleErrorGet(request);
 
         assertEquals("error", viewName);
         verify(request).setAttribute("error.status.code", 404);
@@ -39,7 +39,7 @@ class CustomErrorControllerTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)).thenReturn(500);
 
-        String viewName = controller.handleError(request);
+        String viewName = controller.handleErrorGet(request);
 
         assertEquals("error", viewName);
         verify(request).setAttribute("error.status.code", 500);
@@ -52,7 +52,7 @@ class CustomErrorControllerTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)).thenReturn(403);
 
-        String viewName = controller.handleError(request);
+        String viewName = controller.handleErrorGet(request);
 
         assertEquals("error", viewName);
         verify(request).setAttribute("error.status.code", 403);
@@ -65,9 +65,22 @@ class CustomErrorControllerTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)).thenReturn(null);
 
-        String viewName = controller.handleError(request);
+        String viewName = controller.handleErrorGet(request);
 
         assertEquals("error", viewName);
         // Should not set attributes
+    }
+
+    @Test
+    @DisplayName("Error POST - HTTP 500 - Mostra pagina errore 'Errore interno del server'")
+    void testHandleErrorPost() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)).thenReturn(500);
+
+        String viewName = controller.handleErrorPost(request);
+
+        assertEquals("error", viewName);
+        verify(request).setAttribute("error.status.code", 500);
+        verify(request).setAttribute("error.message", "Errore interno del server");
     }
 }
