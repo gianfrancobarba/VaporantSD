@@ -114,7 +114,7 @@ public class OrderDaoImpl implements OrderDAO {
 
 			ResultSet rs = preparedStatement.executeQuery();
 			if (!rs.isBeforeFirst())
-				return null;
+				return new OrderBean();
 
 			ordine = new OrderBean();
 

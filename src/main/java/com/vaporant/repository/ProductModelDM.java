@@ -197,8 +197,6 @@ public class ProductModelDM implements ProductModel {
 			preparedStatement.setInt(2, prod.getCode());
 			preparedStatement.executeUpdate();
 
-			// connection.commit();
-
 		} finally {
 			try {
 				if (preparedStatement != null)

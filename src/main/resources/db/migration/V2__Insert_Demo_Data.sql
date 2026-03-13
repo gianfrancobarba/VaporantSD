@@ -3,6 +3,7 @@ SET @ruolo_user = 'user';
 SET @paese_italia = 'Italia';
 SET @categoria_svapo = 'Svapo';
 SET @metodo_paypal = 'PayPal';
+SET @data = '2023-05-08';
 
 -- Utenti di default (3 admin, 1 user)
 INSERT INTO utente VALUES(1,'Gianfranco','Barba', '2002-02-15', 'BRBGFR02B15A508B', '3290026234', 'g.barba14@studenti.unisa.it', 'ABC123.', @ruolo_admin);
@@ -24,9 +25,9 @@ INSERT INTO prodotto VALUES (3,'voopoo drag 2', 'box completa', 5, 49.99, @categ
 INSERT INTO prodotto VALUES (4,'smok nord', 'pod', 22, 69.99, @categoria_svapo, 'Nero');
 
 -- Ordini di esempio
-INSERT INTO ordine VALUES (1,4,4,36.58,'2023-05-08', @metodo_paypal); -- calcolato con iva 22
-INSERT INTO ordine VALUES (2,4,5,7.58,'2023-05-08', @metodo_paypal); -- calcolato con iva 22
-INSERT INTO ordine VALUES (3,4,4,73.17,'2023-05-08', @metodo_paypal); -- calcolato con iva 22
+INSERT INTO ordine VALUES (1,4,4,36.58,@data, @metodo_paypal); -- calcolato con iva 22
+INSERT INTO ordine VALUES (2,4,5,7.58,@data, @metodo_paypal); -- calcolato con iva 22
+INSERT INTO ordine VALUES (3,4,4,73.17,@data, @metodo_paypal); -- calcolato con iva 22
 
 -- Contenuto ordini di esempio
 INSERT INTO contenuto VALUES(1,1,1,29.99,22);
