@@ -10,7 +10,7 @@
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Login Page</title>
             <link rel="preconnect" href="https://fonts.gstatic.com">
-            <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
+            <link rel="stylesheet" href="css/google-fonts.css" type="text/css">
             <link rel="stylesheet" href="css/loginFormStyle.css">
             <style>
                 .error-message {

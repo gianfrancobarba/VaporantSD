@@ -8,13 +8,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class FatturaControl {
 
-    @RequestMapping(value = "/fattura", method = { RequestMethod.GET, RequestMethod.POST })
+    @GetMapping("/fattura")
     public String showFattura(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         HttpSession session = req.getSession();
         if (session.getAttribute("order") == null || session.getAttribute("user") == null) {

@@ -13,8 +13,6 @@ import java.sql.SQLException;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Arrays;
 
 @Repository
 public class ProductModelDM implements ProductModel {
@@ -151,11 +149,28 @@ public class ProductModelDM implements ProductModel {
 		String selectSQL = "SELECT * FROM " + ProductModelDM.TABLE_NAME;
 
 		if (order != null && !order.equals("")) {
-			// Whitelist allowed columns to prevent SQL Injection
-			List<String> allowedColumns = Arrays.asList(COL_NOME, COL_DESCRIZIONE, COL_PREZZO_ATTUALE, COL_QUANTITA, COL_TIPO,
-					COL_COLORE, COL_ID);
-			if (allowedColumns.contains(order)) {
-				selectSQL += " ORDER BY " + order;
+			switch (order) {
+				case COL_NOME:
+					selectSQL += " ORDER BY " + COL_NOME;
+					break;
+				case COL_DESCRIZIONE:
+					selectSQL += " ORDER BY " + COL_DESCRIZIONE;
+					break;
+				case COL_PREZZO_ATTUALE:
+					selectSQL += " ORDER BY " + COL_PREZZO_ATTUALE;
+					break;
+				case COL_QUANTITA:
+					selectSQL += " ORDER BY " + COL_QUANTITA;
+					break;
+				case COL_TIPO:
+					selectSQL += " ORDER BY " + COL_TIPO;
+					break;
+				case COL_COLORE:
+					selectSQL += " ORDER BY " + COL_COLORE;
+					break;
+				case COL_ID:
+					selectSQL += " ORDER BY " + COL_ID;
+					break;
 			}
 		}
 

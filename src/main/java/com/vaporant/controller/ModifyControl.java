@@ -12,8 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import com.vaporant.model.UserBean;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaporant.repository.UserDAO;
@@ -33,9 +32,7 @@ public class ModifyControl {
         this.need = need;
     }
 
-    @RequestMapping(value = "/modify", method = { RequestMethod.GET, RequestMethod.POST })
-
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @PostMapping("/modify")    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         String action = request.getParameter("action");
         UserBean user = (UserBean) request.getSession().getAttribute("user");

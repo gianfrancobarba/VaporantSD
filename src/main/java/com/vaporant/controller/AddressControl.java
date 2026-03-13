@@ -12,8 +12,7 @@ import com.vaporant.model.UserBean;
 
 import com.vaporant.model.AddressBean;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaporant.repository.AddressDAO;
@@ -31,7 +30,7 @@ public class AddressControl {
 		this.addressDao = addressDao;
 	}
 
-	@RequestMapping(value = "/AddressControl", method = { RequestMethod.GET, RequestMethod.POST })
+	@PostMapping("/AddressControl")
 	public String execute(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 

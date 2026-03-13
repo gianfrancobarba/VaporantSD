@@ -4,8 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import jakarta.servlet.ServletException;
@@ -30,7 +29,7 @@ public class LoginControl {
 		this.userDao = userDao;
 	}
 
-	@RequestMapping(value = "/login", method = { RequestMethod.GET, RequestMethod.POST })
+	@PostMapping("/login")
 	public String login(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		String email = (String) req.getParameter("email");

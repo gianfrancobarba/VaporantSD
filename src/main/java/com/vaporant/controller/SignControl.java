@@ -12,8 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import com.vaporant.model.UserBean;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaporant.repository.UserDAO;
@@ -31,7 +30,7 @@ public class SignControl {
 		this.userDao = userDao;
 	}
 
-	@RequestMapping(value = "/SignControl", method = { RequestMethod.GET, RequestMethod.POST })
+	@PostMapping("/SignControl")
 	public String execute(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 

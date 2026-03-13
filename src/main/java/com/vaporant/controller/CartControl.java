@@ -12,8 +12,8 @@ import com.vaporant.model.UserBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaporant.repository.ProductModel;
@@ -29,8 +29,17 @@ public class CartControl {
 		this.model = model;
 	}
 
-	@RequestMapping(value = "/cart", method = { RequestMethod.GET, RequestMethod.POST })
-	public String execute(HttpServletRequest request, HttpServletResponse response)
+	@GetMapping("/cart")
+	public String executeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		return processRequest(request, response);
+	}
+
+	@PostMapping("/cart")
+	public String executePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		return processRequest(request, response);
+	}
+
+	private String processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		Cart cart = (Cart) request.getSession().getAttribute("cart");

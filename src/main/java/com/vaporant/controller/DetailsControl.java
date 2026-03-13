@@ -10,8 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaporant.repository.ProductModel;
@@ -27,7 +26,7 @@ public class DetailsControl {
 		this.model = model;
 	}
 
-	@RequestMapping(value = "/details", method = { RequestMethod.GET, RequestMethod.POST })
+	@GetMapping("/details")
 	public String execute(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 

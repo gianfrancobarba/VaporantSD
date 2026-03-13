@@ -19,8 +19,7 @@ import com.vaporant.model.ContenutoBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaporant.repository.ContenutoDAO;
@@ -42,7 +41,7 @@ public class OrderControl {
 		this.productDao = productDao;
 	}
 
-	@RequestMapping(value = "/Ordine", method = { RequestMethod.GET, RequestMethod.POST })
+	@PostMapping("/Ordine")
 	public String execute(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
 		HttpSession session = req.getSession();
