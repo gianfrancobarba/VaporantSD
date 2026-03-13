@@ -17,7 +17,7 @@
             <span class="BorderTopBottom"></span>
             <span class="BorderLeftRight"></span>
 
-            <h3><a href="product"><img src="media/logo.png" class="logosite">Registrati</a></h3>
+            <h3><a href="product"><img src="media/logo.png" class="logosite" alt="Logo Vaporant">Registrati</a></h3>
 
             <!-- Sezione Informazioni Personali -->
             <div class="form-section">
