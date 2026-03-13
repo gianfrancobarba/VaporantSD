@@ -55,3 +55,6 @@ DOCKER_GUIDE.md
 /docs
 
 target/
+
+# Local Environment Variables
+.env
