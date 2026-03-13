@@ -31,12 +31,16 @@ public class OrderControl {
 
 	private static final Logger logger = LoggerFactory.getLogger(OrderControl.class);
 
+	private final OrderDAO orderDao;
+	private final ContenutoDAO contDao;
+	private final com.vaporant.repository.ProductModel productDao;
+
 	@Autowired
-	private OrderDAO orderDao;
-	@Autowired
-	private ContenutoDAO contDao;
-	@Autowired
-	private com.vaporant.repository.ProductModel productDao;
+	public OrderControl(OrderDAO orderDao, ContenutoDAO contDao, com.vaporant.repository.ProductModel productDao) {
+		this.orderDao = orderDao;
+		this.contDao = contDao;
+		this.productDao = productDao;
+	}
 
 	@RequestMapping(value = "/Ordine", method = { RequestMethod.GET, RequestMethod.POST })
 	public String execute(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {

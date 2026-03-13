@@ -2,6 +2,7 @@ package com.vaporant.repository;
 
 import com.vaporant.model.*;
 import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
 import javax.sql.DataSource;
 
 import java.sql.Connection;
@@ -20,7 +21,12 @@ public class ProductModelDM implements ProductModel {
 
 	private static final String TABLE_NAME = "prodotto";
 
-	private DataSource ds;
+	private final DataSource ds;
+
+	@Autowired
+	public ProductModelDM(DataSource ds) {
+		this.ds = ds;
+	}
 
 	private Connection getConnection() throws SQLException {
 		if (ds != null) {

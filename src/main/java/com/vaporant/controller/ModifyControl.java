@@ -26,8 +26,12 @@ public class ModifyControl {
     private static final Logger logger = LoggerFactory.getLogger(ModifyControl.class);
     private static final String contentType = "application/json";
 
+    private final UserDAO need;
+
     @Autowired
-    private UserDAO need;
+    public ModifyControl(UserDAO need) {
+        this.need = need;
+    }
 
     @RequestMapping(value = "/modify", method = { RequestMethod.GET, RequestMethod.POST })
 

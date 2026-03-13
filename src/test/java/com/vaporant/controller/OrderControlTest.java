@@ -24,16 +24,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.vaporant.model.AddressBean;
 import com.vaporant.model.Cart;
 import com.vaporant.model.ContenutoBean;
 import com.vaporant.model.ProductBean;
 import com.vaporant.model.UserBean;
-import com.vaporant.repository.AddressDAO;
 import com.vaporant.repository.ContenutoDAO;
 import com.vaporant.repository.OrderDAO;
-import com.vaporant.repository.ProductModel;
-import com.vaporant.repository.UserDAO;
 
 @WebMvcTest(OrderControl.class)
 class OrderControlTest {
@@ -46,11 +42,7 @@ class OrderControlTest {
         @MockBean
         private ContenutoDAO contDao;
         @MockBean
-        private UserDAO userDao;
-        @MockBean
-        private AddressDAO addressDao;
-        @MockBean
-        private ProductModel productDao;
+        private com.vaporant.repository.ProductModel productDao;
 
         @Test
         @DisplayName("Order - Flow checkout completo salva ordine e contenuti")
@@ -59,10 +51,7 @@ class OrderControlTest {
                 UserBean user = createTestUser();
                 Cart cart = createTestCart();
 
-                AddressBean addressMock = org.mockito.Mockito.mock(AddressBean.class);
-                when(addressMock.toStringScript()).thenReturn("Via Roma, 10");
-
-                when(addressDao.findAddressByID(anyInt())).thenReturn(addressMock);
+                // Address behavior is no longer verified here as OrderControl just parses the ID
                 when(orderDao.getIdfromDB()).thenReturn(1);
 
                 MockHttpSession session = new MockHttpSession();

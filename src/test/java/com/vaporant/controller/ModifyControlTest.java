@@ -56,15 +56,7 @@ class ModifyControlTest {
 
     @BeforeEach
     void setUp() {
-        modifyControl = new ModifyControl();
-        // Use reflection to inject the mocked UserDAO
-        try {
-            java.lang.reflect.Field field = ModifyControl.class.getDeclaredField("need");
-            field.setAccessible(true);
-            field.set(modifyControl, userDao);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        modifyControl = new ModifyControl(userDao);
 
         mockRequest = mock(HttpServletRequest.class);
         mockResponse = mock(HttpServletResponse.class);

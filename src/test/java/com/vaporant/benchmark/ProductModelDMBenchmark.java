@@ -70,16 +70,8 @@ public class ProductModelDMBenchmark {
         H2TestDatabaseUtil.initializeSchema(dataSource);
         H2TestDatabaseUtil.populateTestData(dataSource, datasetSize);
 
-        // ProductModelDM no longer has @Autowired constructor after merge
-        // Use reflection to set the private 'ds' field
-        productDao = new ProductModelDM();
-        try {
-            java.lang.reflect.Field dsField = ProductModelDM.class.getDeclaredField("ds");
-            dsField.setAccessible(true);
-            dsField.set(productDao, dataSource);
-        } catch (Exception e) {
-            throw new SQLException("Failed to set DataSource on ProductModelDM", e);
-        }
+        // ProductModelDM now accepts the DataSource via constructor
+        productDao = new ProductModelDM(dataSource);
 
         // Get a test product for benchmarks that need one
         Collection<ProductBean> products = productDao.doRetrieveAll(null);
