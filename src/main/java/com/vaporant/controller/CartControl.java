@@ -30,16 +30,16 @@ public class CartControl {
 	}
 
 	@GetMapping("/cart")
-	public String executeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		return processRequest(request, response);
+	public String executeGet(HttpServletRequest request) throws ServletException, IOException {
+		return processRequest(request);
 	}
 
 	@PostMapping("/cart")
-	public String executePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		return processRequest(request, response);
+	public String executePost(HttpServletRequest request) throws ServletException, IOException {
+		return processRequest(request);
 	}
 
-	private String processRequest(HttpServletRequest request, HttpServletResponse response)
+	private String processRequest(HttpServletRequest request)
 			throws ServletException, IOException {
 
 		Cart cart = (Cart) request.getSession().getAttribute("cart");

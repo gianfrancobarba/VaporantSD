@@ -5,7 +5,6 @@ import java.sql.SQLException;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import com.vaporant.repository.ProductModel;
 import com.vaporant.model.ProductBean;
 
@@ -28,16 +27,16 @@ public class ProductControl {
     }
 
     @GetMapping("/product")
-    public String executeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        return processRequest(request, response);
+    public String executeGet(HttpServletRequest request) throws ServletException, IOException {
+        return processRequest(request);
     }
 
     @PostMapping("/product")
-    public String executePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        return processRequest(request, response);
+    public String executePost(HttpServletRequest request) throws ServletException, IOException {
+        return processRequest(request);
     }
 
-    private String processRequest(HttpServletRequest request, HttpServletResponse response)
+    private String processRequest(HttpServletRequest request)
             throws ServletException, IOException {
 
         String action = request.getParameter("action");

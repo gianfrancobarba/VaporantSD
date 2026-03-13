@@ -149,27 +149,31 @@ public class ProductModelDM implements ProductModel {
 		String selectSQL = "SELECT * FROM " + ProductModelDM.TABLE_NAME;
 
 		if (order != null && !order.equals("")) {
+			String orderBy = " ORDER BY ";
 			switch (order) {
 				case COL_NOME:
-					selectSQL += " ORDER BY " + COL_NOME;
+					selectSQL +=  orderBy + COL_NOME;
 					break;
 				case COL_DESCRIZIONE:
-					selectSQL += " ORDER BY " + COL_DESCRIZIONE;
+					selectSQL +=  orderBy + COL_DESCRIZIONE;
 					break;
 				case COL_PREZZO_ATTUALE:
-					selectSQL += " ORDER BY " + COL_PREZZO_ATTUALE;
+					selectSQL +=  orderBy + COL_PREZZO_ATTUALE;
 					break;
 				case COL_QUANTITA:
-					selectSQL += " ORDER BY " + COL_QUANTITA;
+					selectSQL +=  orderBy + COL_QUANTITA;
 					break;
 				case COL_TIPO:
-					selectSQL += " ORDER BY " + COL_TIPO;
+					selectSQL +=  orderBy + COL_TIPO;
 					break;
 				case COL_COLORE:
-					selectSQL += " ORDER BY " + COL_COLORE;
+					selectSQL +=  orderBy + COL_COLORE;
 					break;
 				case COL_ID:
-					selectSQL += " ORDER BY " + COL_ID;
+					selectSQL +=  orderBy + COL_ID;
+					break;
+				default:
+					selectSQL +=  orderBy + COL_ID;
 					break;
 			}
 		}

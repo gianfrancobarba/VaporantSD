@@ -2,7 +2,7 @@ package com.vaporant.controller;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -68,7 +68,7 @@ class SearchBarControlTest {
         when(resultSet.getObject(6)).thenReturn("Svapo");
         when(resultSet.getObject(7)).thenReturn("Argento");
 
-        mockMvc.perform(get("/SearchBar")
+        mockMvc.perform(post("/SearchBar")
                 .param("nome", "Product"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(
@@ -80,7 +80,7 @@ class SearchBarControlTest {
     void testSearchException() throws Exception {
         when(dataSource.getConnection()).thenThrow(new SQLException("DB Error"));
 
-        mockMvc.perform(get("/SearchBar")
+        mockMvc.perform(post("/SearchBar")
                 .param("nome", "Product"))
                 .andExpect(status().isOk()); // Catches exception and does nothing
     }
