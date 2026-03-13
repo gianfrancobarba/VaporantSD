@@ -58,7 +58,7 @@ body {
 
 .cart-btn {
   display: inline-block;
-  background-color: #7dc855;
+  background-color: #2e7d32;
   border-radius: 6px;
   font-size: 16px;
   color: #ffffff;
@@ -68,7 +68,7 @@ body {
 }
 
 .cart-btn:hover {
-  background-color: #64af3d;
+  background-color: #1b5e20;
 }
 
 @media (max-width: 940px) {

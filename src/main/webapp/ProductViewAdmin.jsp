@@ -41,7 +41,9 @@
 	
 		<div id="heroSection">
   			<div class="heroVideoContainer">
-    			<video src="media/herovideo.mp4" autoplay loop playsinline muted></video>
+    			<video src="media/herovideo.mp4" autoplay loop playsinline muted>
+					<track kind="captions" src="media/captions.vtt" srclang="it" label="Italiano" default>
+				</video>
   			</div>
   			<div class="heroText">
     			<h1>IL PIACERE DELLO SVAPO</h1>

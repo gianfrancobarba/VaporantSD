@@ -20,43 +20,21 @@ class CustomErrorControllerTest {
     @InjectMocks
     private CustomErrorController controller;
 
-    @Test
-    @DisplayName("Error - HTTP 404 - Mostra pagina errore 'Pagina non trovata'")
-    void testHandleError404() {
+    @org.junit.jupiter.params.ParameterizedTest(name = "Error - HTTP {0} - Mostra pagina errore ''{1}''")
+    @org.junit.jupiter.params.provider.CsvSource({
+        "404, Pagina non trovata",
+        "500, Errore interno del server",
+        "403, Si è verificato un errore imprevisto"
+    })
+    void testHandleErrorParameterized(int statusCode, String expectedMessage) {
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)).thenReturn(404);
+        when(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)).thenReturn(statusCode);
 
         String viewName = controller.handleErrorGet(request);
 
         assertEquals("error", viewName);
-        verify(request).setAttribute("error.status.code", 404);
-        verify(request).setAttribute("error.message", "Pagina non trovata");
-    }
-
-    @Test
-    @DisplayName("Error - HTTP 500 - Mostra pagina errore 'Errore interno del server'")
-    void testHandleError500() {
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)).thenReturn(500);
-
-        String viewName = controller.handleErrorGet(request);
-
-        assertEquals("error", viewName);
-        verify(request).setAttribute("error.status.code", 500);
-        verify(request).setAttribute("error.message", "Errore interno del server");
-    }
-
-    @Test
-    @DisplayName("Error - HTTP 403 - Mostra pagina errore generico")
-    void testHandleErrorOther() {
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)).thenReturn(403);
-
-        String viewName = controller.handleErrorGet(request);
-
-        assertEquals("error", viewName);
-        verify(request).setAttribute("error.status.code", 403);
-        verify(request).setAttribute("error.message", "Si è verificato un errore imprevisto");
+        verify(request).setAttribute("error.status.code", statusCode);
+        verify(request).setAttribute("error.message", expectedMessage);
     }
 
     @Test

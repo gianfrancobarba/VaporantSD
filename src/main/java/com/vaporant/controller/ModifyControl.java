@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 public class ModifyControl {
 
     private static final Logger logger = LoggerFactory.getLogger(ModifyControl.class);
-    private static final String contentType = "application/json";
+    private static final String CONTENT_TYPE = "application/json";
 
     private final UserDAO need;
 
@@ -54,7 +54,7 @@ public class ModifyControl {
                     /* Sincronizzazione sessione dopo modifica email */
                     request.getSession().setAttribute("user", user);
                     response.setStatus(HttpServletResponse.SC_OK);
-                    response.setContentType(contentType);
+                    response.setContentType(CONTENT_TYPE);
                     PrintWriter out = response.getWriter();
                     out.print("{ \"email\": \"" + user.getEmail() + "\" }");
                     out.flush();
@@ -70,7 +70,7 @@ public class ModifyControl {
                     /* Sincronizzazione sessione dopo modifica telefono */
                     request.getSession().setAttribute("user", user);
                     response.setStatus(HttpServletResponse.SC_OK);
-                    response.setContentType(contentType);
+                    response.setContentType(CONTENT_TYPE);
                     PrintWriter out = response.getWriter();
                     out.print("{ \"numTelefono\": \"" + user.getNumTelefono() + "\" }");
                     out.flush();
@@ -95,7 +95,7 @@ public class ModifyControl {
                     String jsonResponse = "{\"success\": " + success + "}";
 
                     // Impostazione dei corretti header della risposta JSON
-                    response.setContentType(contentType);
+                    response.setContentType(CONTENT_TYPE);
                     response.setCharacterEncoding("UTF-8");
 
                     // Scrittura del JSON come risposta

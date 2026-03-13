@@ -21,6 +21,14 @@ public class ProductModelDM implements ProductModel {
 
 	private static final String TABLE_NAME = "prodotto";
 
+	private static final String COL_ID = "ID";
+	private static final String COL_NOME = "nome";
+	private static final String COL_DESCRIZIONE = "descrizione";
+	private static final String COL_PREZZO_ATTUALE = "prezzoAttuale";
+	private static final String COL_QUANTITA = "quantita";
+	private static final String COL_TIPO = "tipo";
+	private static final String COL_COLORE = "colore";
+
 	private final DataSource ds;
 
 	@Autowired
@@ -86,13 +94,13 @@ public class ProductModelDM implements ProductModel {
 			ResultSet rs = preparedStatement.executeQuery();
 
 			while (rs.next()) {
-				bean.setCode(rs.getInt("ID"));
-				bean.setName(rs.getString("nome"));
-				bean.setDescription(rs.getString("descrizione"));
-				bean.setPrice(rs.getFloat("prezzoAttuale"));
-				bean.setQuantityStorage(rs.getInt("quantita"));
-				bean.setTipo(rs.getString("tipo"));
-				bean.setColore(rs.getString("colore"));
+				bean.setCode(rs.getInt(COL_ID));
+				bean.setName(rs.getString(COL_NOME));
+				bean.setDescription(rs.getString(COL_DESCRIZIONE));
+				bean.setPrice(rs.getFloat(COL_PREZZO_ATTUALE));
+				bean.setQuantityStorage(rs.getInt(COL_QUANTITA));
+				bean.setTipo(rs.getString(COL_TIPO));
+				bean.setColore(rs.getString(COL_COLORE));
 			}
 
 		} finally {
@@ -144,8 +152,8 @@ public class ProductModelDM implements ProductModel {
 
 		if (order != null && !order.equals("")) {
 			// Whitelist allowed columns to prevent SQL Injection
-			List<String> allowedColumns = Arrays.asList("nome", "descrizione", "prezzoAttuale", "quantita", "tipo",
-					"colore", "ID");
+			List<String> allowedColumns = Arrays.asList(COL_NOME, COL_DESCRIZIONE, COL_PREZZO_ATTUALE, COL_QUANTITA, COL_TIPO,
+					COL_COLORE, COL_ID);
 			if (allowedColumns.contains(order)) {
 				selectSQL += " ORDER BY " + order;
 			}
@@ -159,13 +167,13 @@ public class ProductModelDM implements ProductModel {
 			while (rs.next()) {
 				ProductBean bean = new ProductBean();
 
-				bean.setCode(rs.getInt("ID"));
-				bean.setName(rs.getString("nome"));
-				bean.setDescription(rs.getString("descrizione"));
-				bean.setPrice(rs.getFloat("prezzoAttuale"));
-				bean.setQuantityStorage(rs.getInt("quantita"));
-				bean.setTipo(rs.getString("tipo"));
-				bean.setColore(rs.getString("colore"));
+				bean.setCode(rs.getInt(COL_ID));
+				bean.setName(rs.getString(COL_NOME));
+				bean.setDescription(rs.getString(COL_DESCRIZIONE));
+				bean.setPrice(rs.getFloat(COL_PREZZO_ATTUALE));
+				bean.setQuantityStorage(rs.getInt(COL_QUANTITA));
+				bean.setTipo(rs.getString(COL_TIPO));
+				bean.setColore(rs.getString(COL_COLORE));
 
 				products.add(bean);
 			}

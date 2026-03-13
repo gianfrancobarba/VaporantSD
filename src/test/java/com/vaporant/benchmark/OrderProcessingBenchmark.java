@@ -162,40 +162,6 @@ public class OrderProcessingBenchmark {
         return orderId;
     }
 
-    /**
-     * Benchmark: Save order + contents (no product update)
-     * Measures order + content saving overhead
-     */
-    @Benchmark
-    public int benchmarkSaveOrderWithContents() throws SQLException {
-        // Create order
-        OrderBean order = new OrderBean();
-        order.setId_utente(4);
-        order.setId_indirizzo(4);
-        order.setPrezzoTot(calculateTotalPrice());
-        order.setDataAcquisto(LocalDate.now());
-        order.setMetodoPagamento("PayPal");
-
-        orderDao.saveOrder(order);
-        int orderId = orderDao.getIdfromDB();
-        order.setId_ordine(orderId);
-
-        // Save contents only
-        for (int i = 0; i < numProductsInOrder && i < availableProducts.size(); i++) {
-            ProductBean product = availableProducts.get(i);
-
-            ContenutoBean contenuto = new ContenutoBean();
-            contenuto.setId_ordine(orderId);
-            contenuto.setId_prodotto(product.getCode());
-            contenuto.setQuantita(1);
-            contenuto.setPrezzoAcquisto(product.getPrice());
-            contenuto.setIvaAcquisto(22);
-
-            contenutoDao.saveContenuto(contenuto);
-        }
-
-        return orderId;
-    }
 
     /**
      * Helper: Calculate total price for order

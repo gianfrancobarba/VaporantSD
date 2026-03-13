@@ -94,13 +94,19 @@ public class OrderControl {
 			try {
 				contDao.saveContenuto(
 						new ContenutoBean(idOrdine, prod.getCode(), prod.getQuantity(), 22, prod.getPrice()));
-				logger.debug("Added product {} to order: {}", i++, prod.getName());
+				if (logger.isDebugEnabled()) {
+					logger.debug("Added product {} to order: {}", i, prod.getName());
+				}
+				i++;
 
 				// Decrement stock in storage
 				int newQuantity = prod.getQuantityStorage() - prod.getQuantity();
 				productDao.updateQuantityStorage(prod, newQuantity);
 
-				logger.debug("Saved content for product {} - {}", i++, prod.toString());
+				if (logger.isDebugEnabled()) {
+					logger.debug("Saved content for product {} - {}", i, prod);
+				}
+				i++;
 			} catch (SQLException e) {
 				logger.error("Error saving order content: {}", e.getMessage(), e);
 			}

@@ -218,7 +218,7 @@
                                                          onclick="submitPhone()">CONFERMA</button>
                                                    </div>
                                                    <br>
-                                                   <label id="passwordLabel"><span>Password:</span></label>
+                                                   <label id="passwordLabel" for="oldPasswordInput"><span>Password:</span></label>
                                                    <button id="editPasswordButton" class="btn"
                                                       onclick="showPasswordInputs()">MODIFICA</button>
                                                    <input type="text" id="oldPasswordInput" class="hidden"

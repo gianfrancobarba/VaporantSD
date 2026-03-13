@@ -11,15 +11,7 @@ public class Cart implements Serializable {
 	/* @ spec_public @ */ private final ArrayList<ProductBean> products;
 	/* @ spec_public @ */ private double prezzoTotale = 0;
 
-	/*
-	 * @
-	 * 
-	 * @ public invariant prezzoTotale >= 0;
-	 * 
-	 * @ public invariant products != null;
-	 * 
-	 * @
-	 */
+
 
 	public Cart() {
 		products = new ArrayList<>();
@@ -30,28 +22,12 @@ public class Cart implements Serializable {
 		return Math.round(prezzoTotale * 100.0) / 100.0;
 	}
 
-	/*
-	 * @
-	 * 
-	 * @ requires prezzoTotale >= 0;
-	 * 
-	 * @ assignable this.prezzoTotale;
-	 * 
-	 * @ ensures this.prezzoTotale == prezzoTotale;
-	 * 
-	 * @
-	 */
+
 	public void setPrezzoTotale(double prezzoTotale) {
 		this.prezzoTotale = prezzoTotale;
 	}
 
-	/*
-	 * @
-	 * 
-	 * @ ensures \result != null;
-	 * 
-	 * @
-	 */
+
 	public List<ProductBean> getProducts() {
 		return products;
 	}
@@ -83,14 +59,7 @@ public class Cart implements Serializable {
 		}
 	}
 
-	/*
-	 * @
-	 * 
-	 * @ public model nullable ProductBean containsProductModel(ProductBean
-	 * product);
-	 * 
-	 * @
-	 */
+
 
 	/* @ skipesc @ */
 	public /* @ nullable @ */ ProductBean containsProduct(ProductBean product) {

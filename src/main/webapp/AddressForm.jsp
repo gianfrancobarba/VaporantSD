@@ -35,11 +35,8 @@
 							<input id="numero_civico" class="input" type="text" name="numero_civico"
 								placeholder="Numero Civico" required>
 						</div>
-						<div class="input-container">
-							<input id="stato" class="input" type="text" name="stato" placeholder="Stato" required>
 						</div>
 						<input type="submit" value="Aggiungi" class="submit-button">
-						<!-- <button onclick="aggiungiIndirizzo()" class="btn">AGGIUNGI INDIRIZZO</button> -->
 					</form>
 				</section>
 			</main>

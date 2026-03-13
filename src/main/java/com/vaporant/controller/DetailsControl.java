@@ -34,12 +34,10 @@ public class DetailsControl {
 		String action = request.getParameter("action");
 
 		try {
-			if (action != null) {
-				if (action.equalsIgnoreCase("read")) {
-					int id = Integer.parseInt(request.getParameter("id"));
-					request.removeAttribute("product");
-					request.getSession().setAttribute("product", model.doRetrieveByKey(id));
-				}
+			if ("read".equalsIgnoreCase(action)) {
+				int id = Integer.parseInt(request.getParameter("id"));
+				request.removeAttribute("product");
+				request.getSession().setAttribute("product", model.doRetrieveByKey(id));
 			}
 		} catch (NumberFormatException e) {
 			logger.error("Invalid ID format: {}", e.getMessage());
