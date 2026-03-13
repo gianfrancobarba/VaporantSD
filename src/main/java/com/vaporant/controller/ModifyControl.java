@@ -32,7 +32,7 @@ public class ModifyControl {
         this.need = need;
     }
 
-    @PostMapping("/modify")    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @PostMapping("/modify")    public void execute(HttpServletRequest request, HttpServletResponse response) throws  IOException {
 
         String action = request.getParameter("action");
         UserBean user = (UserBean) request.getSession().getAttribute("user");

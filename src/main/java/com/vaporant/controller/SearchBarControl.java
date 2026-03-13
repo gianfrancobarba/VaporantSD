@@ -33,7 +33,7 @@ public class SearchBarControl {
     }
 
     @PostMapping("/SearchBar")
-    public void execute(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void execute(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         String nome = req.getParameter("nome");
 

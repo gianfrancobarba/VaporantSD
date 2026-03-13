@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class LogoutControl {
 
 	@GetMapping("/logout")
-	public String execute(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public String execute(HttpServletRequest req, HttpServletResponse resp) {
 
 		req.getSession().invalidate();
 		HttpSession currentSession = req.getSession();

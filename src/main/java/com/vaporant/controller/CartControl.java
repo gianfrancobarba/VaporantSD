@@ -5,7 +5,6 @@ import java.sql.SQLException;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import com.vaporant.model.Cart;
 import com.vaporant.model.ProductBean;
 import com.vaporant.model.UserBean;
@@ -39,8 +38,7 @@ public class CartControl {
 		return processRequest(request);
 	}
 
-	private String processRequest(HttpServletRequest request)
-			throws ServletException, IOException {
+	private String processRequest(HttpServletRequest request) {
 
 		Cart cart = (Cart) request.getSession().getAttribute("cart");
 		if (cart == null) {
@@ -50,7 +48,7 @@ public class CartControl {
 
 		String action = request.getParameter("action");
 		UserBean user = (UserBean) request.getSession().getAttribute("user");
-		Boolean checkout = false;
+		boolean checkout = false;
 
 		try {
 			if (action != null) {
