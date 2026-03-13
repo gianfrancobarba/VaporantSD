@@ -21,7 +21,7 @@ services:
       # Persistenza dati database
       - mysql-data:/var/lib/mysql
       # Script di inizializzazione (eseguito solo al primo avvio)
-      - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      # Inizializzazione gestita da Flyway nell'applicazione
     
     networks:
       - vaporant-network

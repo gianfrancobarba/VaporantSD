@@ -1,0 +1,2 @@
+-- File di inizializzazione vuoto per rendere MySQL felice al primo avvio.
+-- La popolazione del database verrà gestita automaticamente da Flyway.
