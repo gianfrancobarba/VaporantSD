@@ -25,6 +25,8 @@
         <java.version>17</java.version>
         <!-- Override Tomcat version to fix security vulnerabilities -->
         <tomcat.version>10.1.52</tomcat.version>
+        <!-- Override Jackson BOM to fix Snyk vulnerability in jackson-core -->
+        <jackson-bom.version>2.18.2</jackson-bom.version>
         
         <!-- Versioni plugin e dipendenze per il testing -->
         <junit.version>5.11.3</junit.version>
