@@ -1,4 +1,4 @@
-﻿package com.vaporant.controller;
+package com.vaporant.controller;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;

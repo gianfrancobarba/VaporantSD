@@ -1,4 +1,4 @@
-﻿package com.vaporant.model;
+package com.vaporant.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

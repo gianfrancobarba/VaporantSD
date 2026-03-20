@@ -1,4 +1,4 @@
-﻿package com.vaporant.benchmark;
+package com.vaporant.benchmark;
 
 import com.vaporant.model.Cart;
 import com.vaporant.model.ProductBean;

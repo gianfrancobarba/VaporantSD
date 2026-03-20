@@ -1,4 +1,4 @@
-﻿package com.vaporant.controller;
+package com.vaporant.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;

@@ -1,4 +1,4 @@
-﻿package com.vaporant.benchmark;
+package com.vaporant.benchmark;
 
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;

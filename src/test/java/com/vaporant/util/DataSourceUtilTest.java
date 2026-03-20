@@ -1,4 +1,4 @@
-﻿package com.vaporant.util;
+package com.vaporant.util;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;

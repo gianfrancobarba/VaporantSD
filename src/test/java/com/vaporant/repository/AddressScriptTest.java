@@ -1,4 +1,4 @@
-﻿package com.vaporant.repository;
+package com.vaporant.repository;
 
 import com.vaporant.model.AddressBean;
 import org.junit.jupiter.api.Test;
