@@ -1,4 +1,4 @@
-package com.vaporant.model;
+﻿package com.vaporant.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

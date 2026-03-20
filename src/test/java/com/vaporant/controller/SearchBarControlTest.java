@@ -1,4 +1,4 @@
-package com.vaporant.controller;
+﻿package com.vaporant.controller;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -18,7 +18,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(SearchBarControl.class)
@@ -27,19 +27,19 @@ class SearchBarControlTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private DataSource dataSource;
 
-    @MockBean
+    @MockitoBean
     private Connection connection;
 
-    @MockBean
+    @MockitoBean
     private PreparedStatement preparedStatement;
 
-    @MockBean
+    @MockitoBean
     private ResultSet resultSet;
 
-    @MockBean
+    @MockitoBean
     private ResultSetMetaData metaData;
 
     @Test

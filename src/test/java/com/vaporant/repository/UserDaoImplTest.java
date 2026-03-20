@@ -1,4 +1,4 @@
-package com.vaporant.repository;
+﻿package com.vaporant.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -288,7 +288,7 @@ class UserDaoImplTest {
         verify(dataSource, times(0)).getConnection();
     }
 
-    @ParameterizedTest(name = "Password matching: DB=[{0}] Provided=[{1}] → Success={2}")
+    @ParameterizedTest(name = "Password matching: DB=[{0}] Provided=[{1}] â†’ Success={2}")
     @CsvSource({
             "oldPass, oldPass, true", // Exact match
             "oldPass, OldPass, false", // Case sensitive (compareTo)

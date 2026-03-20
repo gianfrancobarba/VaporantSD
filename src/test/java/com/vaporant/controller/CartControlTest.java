@@ -1,4 +1,4 @@
-package com.vaporant.controller;
+﻿package com.vaporant.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -16,7 +16,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -31,7 +31,7 @@ class CartControlTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private ProductModel productModel;
 
     @Test
@@ -89,7 +89,7 @@ class CartControlTest {
     }
 
     @Test
-    @DisplayName("Cart - Aggiornamento quantità prodotto - Redirect a CartView")
+    @DisplayName("Cart - Aggiornamento quantitÃ  prodotto - Redirect a CartView")
     void testUpdateQuantity() throws Exception {
         ProductBean product = new ProductBean();
         product.setCode(1);
@@ -127,7 +127,7 @@ class CartControlTest {
     }
 
     @Test
-    @DisplayName("Cart - Aggiornamento quantità e checkout - Redirect diretto a checkout")
+    @DisplayName("Cart - Aggiornamento quantitÃ  e checkout - Redirect diretto a checkout")
     void testUpdateQuantityAndCheckout() throws Exception {
         ProductBean product = new ProductBean();
         product.setCode(1);
@@ -192,7 +192,7 @@ class CartControlTest {
 
     @ParameterizedTest(name = "Cart con {0} prodotti calcola totale correttamente")
     @ValueSource(ints = { 1, 5, 10, 20 })
-    @DisplayName("Cart - Calcolo prezzo totale con diverse quantità prodotti")
+    @DisplayName("Cart - Calcolo prezzo totale con diverse quantitÃ  prodotti")
     void testCartTotalWithMultipleProducts(int productCount) {
         // Arrange
         Cart cart = new Cart();

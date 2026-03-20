@@ -1,4 +1,4 @@
-package com.vaporant.controller;
+﻿package com.vaporant.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;

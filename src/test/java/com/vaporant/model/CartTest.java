@@ -1,4 +1,4 @@
-package com.vaporant.model;
+﻿package com.vaporant.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +32,7 @@ class CartTest {
     }
 
     @Test
-    @DisplayName("addProduct - Prodotto esistente incrementa quantità")
+    @DisplayName("addProduct - Prodotto esistente incrementa quantitÃ ")
     void addProduct_existingProduct_incrementsQuantity() {
         // Arrange
         cart.addProduct(testProduct);
@@ -42,12 +42,12 @@ class CartTest {
 
         // Assert
         assertEquals(1, cart.getProducts().size(), "Cart dovrebbe ancora contenere 1 prodotto");
-        assertEquals(2, cart.getProducts().get(0).getQuantity(), "Quantità dovrebbe essere 2");
+        assertEquals(2, cart.getProducts().get(0).getQuantity(), "QuantitÃ  dovrebbe essere 2");
         assertEquals(20.0, cart.getPrezzoTotale(), 0.01, "Prezzo totale dovrebbe essere 20.0");
     }
 
     @Test
-    @DisplayName("addProduct - Quantità = stock (boundary) NON incrementa")
+    @DisplayName("addProduct - QuantitÃ  = stock (boundary) NON incrementa")
     void addProduct_quantityEqualsStock_doesNotIncrement() {
         // Arrange - product with limited stock
         ProductBean limitedProduct = createProduct(2, "Limited", 5.0f, 1);
@@ -58,13 +58,13 @@ class CartTest {
 
         // Assert - quantity should not increase when qty == stock
         assertEquals(1, cart.getProducts().get(0).getQuantity(),
-                "Quantità non dovrebbe incrementare quando qty == stock");
+                "QuantitÃ  non dovrebbe incrementare quando qty == stock");
         assertEquals(5.0, cart.getPrezzoTotale(), 0.01,
                 "Prezzo non dovrebbe cambiare");
     }
 
     @Test
-    @DisplayName("addProduct - Quantità > stock NON incrementa")
+    @DisplayName("addProduct - QuantitÃ  > stock NON incrementa")
     void addProduct_quantityExceedsStock_doesNotIncrement() {
         // Arrange - force quantity > stock
         ProductBean product = createProduct(3, "Overstocked", 8.0f, 2);
@@ -78,7 +78,7 @@ class CartTest {
 
         // Assert
         assertEquals(3, cart.getProducts().get(0).getQuantity(),
-                "Quantità non dovrebbe incrementare quando qty > stock");
+                "QuantitÃ  non dovrebbe incrementare quando qty > stock");
         assertEquals(priceBefore, cart.getPrezzoTotale(), 0.01);
     }
 
@@ -113,7 +113,7 @@ class CartTest {
     // ========== GROUP 3: aggiorna() Tests ==========
 
     @Test
-    @DisplayName("aggiorna - Incrementa quantità e ricalcola prezzo")
+    @DisplayName("aggiorna - Incrementa quantitÃ  e ricalcola prezzo")
     void aggiorna_increasesQuantity_recalculatesPrice() {
         // Arrange
         cart.addProduct(testProduct); // qty=1, price=10
@@ -122,12 +122,12 @@ class CartTest {
         cart.aggiorna(testProduct, 5);
 
         // Assert
-        assertEquals(5, cart.getProducts().get(0).getQuantity(), "Quantità dovrebbe essere 5");
+        assertEquals(5, cart.getProducts().get(0).getQuantity(), "QuantitÃ  dovrebbe essere 5");
         assertEquals(50.0, cart.getPrezzoTotale(), 0.01, "Prezzo dovrebbe essere 50.0 (10*5)");
     }
 
     @Test
-    @DisplayName("aggiorna - Decrementa quantità e ricalcola prezzo")
+    @DisplayName("aggiorna - Decrementa quantitÃ  e ricalcola prezzo")
     void aggiorna_decreasesQuantity_recalculatesPrice() {
         // Arrange
         cart.addProduct(testProduct);
@@ -137,12 +137,12 @@ class CartTest {
         cart.aggiorna(testProduct, 2);
 
         // Assert
-        assertEquals(2, cart.getProducts().get(0).getQuantity(), "Quantità dovrebbe essere 2");
+        assertEquals(2, cart.getProducts().get(0).getQuantity(), "QuantitÃ  dovrebbe essere 2");
         assertEquals(20.0, cart.getPrezzoTotale(), 0.01, "Prezzo dovrebbe essere 20.0 (10*2)");
     }
 
     @Test
-    @DisplayName("aggiorna - Quantità a zero azzera prezzo")
+    @DisplayName("aggiorna - QuantitÃ  a zero azzera prezzo")
     void aggiorna_setsQuantityToZero_recalculatesPrice() {
         // Arrange
         cart.addProduct(testProduct);
@@ -152,7 +152,7 @@ class CartTest {
         cart.aggiorna(testProduct, 0);
 
         // Assert
-        assertEquals(0, cart.getProducts().get(0).getQuantity(), "Quantità dovrebbe essere 0");
+        assertEquals(0, cart.getProducts().get(0).getQuantity(), "QuantitÃ  dovrebbe essere 0");
         assertEquals(0.0, cart.getPrezzoTotale(), 0.01, "Prezzo dovrebbe essere 0.0");
     }
 
@@ -197,7 +197,7 @@ class CartTest {
         // Act
         double total = cart.getPrezzoTotale();
 
-        // Assert - rounding to 2 decimals: 10.555 → 10.56
+        // Assert - rounding to 2 decimals: 10.555 â†’ 10.56
         assertEquals(10.56, total, 0.01,
                 "Prezzo dovrebbe essere arrotondato a 10.56 (da 10.555)");
     }
@@ -212,7 +212,7 @@ class CartTest {
     }
 
     @Test
-    @DisplayName("aggiorna - Quantità negativa (edge case modello) azzera prezzo")
+    @DisplayName("aggiorna - QuantitÃ  negativa (edge case modello) azzera prezzo")
     void aggiorna_negativeQuantity_recalculatesPrice() {
         cart.addProduct(testProduct);
         cart.aggiorna(testProduct, -1);

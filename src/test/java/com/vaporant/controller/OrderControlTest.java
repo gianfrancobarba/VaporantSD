@@ -1,4 +1,4 @@
-package com.vaporant.controller;
+﻿package com.vaporant.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -20,7 +20,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -37,11 +37,11 @@ class OrderControlTest {
         @Autowired
         private MockMvc mockMvc;
 
-        @MockBean
+        @MockitoBean
         private OrderDAO orderDao;
-        @MockBean
+        @MockitoBean
         private ContenutoDAO contDao;
-        @MockBean
+        @MockitoBean
         private com.vaporant.repository.ProductModel productDao;
 
         @Test
@@ -78,13 +78,13 @@ class OrderControlTest {
                 verify(contDao, times(cart.getProducts().size())).saveContenuto(any(ContenutoBean.class));
 
                 // === Verify EXACT quantity calculations ===
-                // Product 1: storage=100, ordered=2 → remaining = 100 - 2 = 98
+                // Product 1: storage=100, ordered=2 â†’ remaining = 100 - 2 = 98
                 verify(productDao).updateQuantityStorage(
                                 argThat(p -> p.getCode() == 1),
                                 eq(98) // EXACT VALUE: 100 - 2 = 98
                 );
 
-                // Product 2: storage=50, ordered=1 → remaining = 50 - 1 = 49
+                // Product 2: storage=50, ordered=1 â†’ remaining = 50 - 1 = 49
                 verify(productDao).updateQuantityStorage(
                                 argThat(p -> p.getCode() == 2),
                                 eq(49) // EXACT VALUE: 50 - 1 = 49

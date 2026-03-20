@@ -1,4 +1,4 @@
-package com.vaporant.benchmark;
+﻿package com.vaporant.benchmark;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
