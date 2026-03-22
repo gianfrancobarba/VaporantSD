@@ -8,59 +8,43 @@ public class Cart implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	/* @ spec_public @ */ private final ArrayList<ProductBean> products;
-	/* @ spec_public @ */ private double prezzoTotale = 0;
+	/*@ spec_public @*/ private final ArrayList<ProductBean> products;
+	/*@ spec_public @*/ private double prezzoTotale = 0;
 
-	/*
-	 * @
-	 * 
-	 * @ public invariant prezzoTotale >= 0;
-	 * 
-	 * @ public invariant products != null;
-	 * 
-	 * @
-	 */
+	/*@
+	  @ public invariant prezzoTotale >= 0;
+	  @ public invariant products != null;
+	  @*/
 
 	public Cart() {
 		products = new ArrayList<>();
 	}
 
-	/* @ skipesc @ */
+	/*@ skipesc @*/
 	public double getPrezzoTotale() {
 		return Math.round(prezzoTotale * 100.0) / 100.0;
 	}
 
-	/*
-	 * @
-	 * 
-	 * @ requires prezzoTotale >= 0;
-	 * 
-	 * @ assignable this.prezzoTotale;
-	 * 
-	 * @ ensures this.prezzoTotale == prezzoTotale;
-	 * 
-	 * @
-	 */
+	/*@
+	  @ requires prezzoTotale >= 0;
+	  @ assignable this.prezzoTotale;
+	  @ ensures this.prezzoTotale == prezzoTotale;
+	  @*/
 	public void setPrezzoTotale(double prezzoTotale) {
 		this.prezzoTotale = prezzoTotale;
 	}
 
-	/*
-	 * @
-	 * 
-	 * @ ensures \result != null;
-	 * 
-	 * @ ensures \result.size() == products.size();
-	 * 
-	 * @
-	 */
+	/*@
+	  @ ensures \result != null;
+	  @ ensures \result.size() == products.size();
+	  @*/
 	public List<ProductBean> getProducts() {
 		return products;
 	}
 
-	/* @ skipesc @ */
+	/*@ skipesc @*/
 	public void addProduct(ProductBean product) {
-		/* @ nullable @ */ ProductBean prod = containsProduct(product);
+		/*@ nullable @*/ ProductBean prod = containsProduct(product);
 
 		if (prod != null) {
 			if (prod.getQuantity() < prod.getQuantityStorage()) {
@@ -72,7 +56,7 @@ public class Cart implements Serializable {
 		}
 	}
 
-	/* @ skipesc @ */
+	/*@ skipesc @*/
 	public void deleteProduct(ProductBean product) {
 		for (int i = 0; i < products.size(); i++) {
 			ProductBean prod = products.get(i);
@@ -85,17 +69,12 @@ public class Cart implements Serializable {
 		}
 	}
 
-	/*
-	 * @
-	 * 
-	 * @ public model nullable ProductBean containsProductModel(ProductBean
-	 * product);
-	 * 
-	 * @
-	 */
+	/*@
+	  @ public model nullable ProductBean containsProductModel(ProductBean product);
+	  @*/
 
-	/* @ skipesc @ */
-	public /* @ nullable @ */ ProductBean containsProduct(ProductBean product) {
+	/*@ skipesc @*/
+	public /*@ nullable @*/ ProductBean containsProduct(ProductBean product) {
 		for (ProductBean pb : products) {
 			if (pb != null && pb.getCode() == product.getCode()) {
 				return pb;
@@ -104,7 +83,7 @@ public class Cart implements Serializable {
 		return null;
 	}
 
-	/* @ skipesc @ */
+	/*@ skipesc @*/
 	public void aggiorna(ProductBean product, int quantita) {
 		int index;
 		for (index = 0; index < products.size(); index++) {

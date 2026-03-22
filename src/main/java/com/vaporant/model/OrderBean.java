@@ -6,49 +6,33 @@ import java.time.LocalDate;
 public class OrderBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	/* @ spec_public @ */ private int id_ordine, id_utente, id_indirizzo;
-	/* @ spec_public @ */ private double prezzoTot;
-	/* @ spec_public @ */ private java.time.LocalDate dataAcquisto;
-	/* @ spec_public @ */ private String metodoPagamento;
+	/*@ spec_public @*/ private int id_ordine, id_utente, id_indirizzo;
+	/*@ spec_public @*/ private double prezzoTot;
+	/*@ spec_public @*/ private java.time.LocalDate dataAcquisto;
+	/*@ spec_public @*/ private String metodoPagamento;
 
-	/*
-	 * @
-	 * 
-	 * @ public invariant prezzoTot >= 0;
-	 * 
-	 * @ public invariant dataAcquisto != null;
-	 * 
-	 * @
-	 */
+	/*@
+	  @ public invariant prezzoTot >= 0;
+	  @ public invariant dataAcquisto != null;
+	  @*/
 
-	/* @ skipesc @ */
+	/*@ skipesc @*/
 	public OrderBean() {
 		this.dataAcquisto = java.time.LocalDate.now();
 		this.metodoPagamento = "Not Specified";
 	}
 
-	/*
-	 * @
-	 * 
-	 * @ requires pTot >= 0;
-	 * 
-	 * @ requires dataAcq != null;
-	 * 
-	 * @ requires payment != null;
-	 * 
-	 * @ ensures id_utente == idUtente;
-	 * 
-	 * @ ensures id_indirizzo == idIndirizzo;
-	 * 
-	 * @ ensures prezzoTot == pTot;
-	 * 
-	 * @ ensures dataAcquisto == dataAcq;
-	 * 
-	 * @ ensures metodoPagamento == payment;
-	 * 
-	 * @
-	 */
-	/* @ skipesc @ */
+	/*@
+	  @ requires pTot >= 0;
+	  @ requires dataAcq != null;
+	  @ requires payment != null;
+	  @ ensures id_utente == idUtente;
+	  @ ensures id_indirizzo == idIndirizzo;
+	  @ ensures prezzoTot == pTot;
+	  @ ensures dataAcquisto == dataAcq;
+	  @ ensures metodoPagamento == payment;
+	  @*/
+	/*@ skipesc @*/
 	public OrderBean(int idUtente, int idIndirizzo, double pTot, java.time.LocalDate dataAcq, String payment) {
 		this.id_utente = idUtente;
 		this.id_indirizzo = idIndirizzo;
@@ -86,15 +70,10 @@ public class OrderBean implements Serializable {
 		return prezzoTot;
 	}
 
-	/*
-	 * @
-	 * 
-	 * @ requires prezzoTot >= 0;
-	 * 
-	 * @ ensures this.prezzoTot == prezzoTot;
-	 * 
-	 * @
-	 */
+	/*@
+	  @ requires prezzoTot >= 0;
+	  @ ensures this.prezzoTot == prezzoTot;
+	  @*/
 	public void setPrezzoTot(double prezzoTot) {
 		this.prezzoTot = prezzoTot;
 	}
@@ -103,17 +82,11 @@ public class OrderBean implements Serializable {
 		return dataAcquisto;
 	}
 
-	/*
-	 * @
-	 * 
-	 * @ requires dataAcquisto != null;
-	 * 
-	 * @ requires dataAcquisto.isBefore(java.time.LocalDate.now().plusDays(1));
-	 * 
-	 * @ ensures this.dataAcquisto == dataAcquisto;
-	 * 
-	 * @
-	 */
+	/*@
+	  @ requires dataAcquisto != null;
+	  @ requires dataAcquisto.isBefore(java.time.LocalDate.now().plusDays(1));
+	  @ ensures this.dataAcquisto == dataAcquisto;
+	  @*/
 	public void setDataAcquisto(LocalDate dataAcquisto) {
 		this.dataAcquisto = dataAcquisto;
 	}
@@ -122,20 +95,15 @@ public class OrderBean implements Serializable {
 		return metodoPagamento;
 	}
 
-	/*
-	 * @
-	 * 
-	 * @ requires metodoPagamento != null;
-	 * 
-	 * @ ensures this.metodoPagamento == metodoPagamento;
-	 * 
-	 * @
-	 */
+	/*@
+	  @ requires metodoPagamento != null;
+	  @ ensures this.metodoPagamento == metodoPagamento;
+	  @*/
 	public void setMetodoPagamento(String metodoPagamento) {
 		this.metodoPagamento = metodoPagamento;
 	}
 
-	/* @ skipesc @ */
+	/*@ skipesc @*/
 	public String toString() {
 
 		String s = "";

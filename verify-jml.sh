@@ -2,8 +2,10 @@
 
 cd "$(dirname "$0")"
 
-# Classpath: classi compilate da Maven
-CP="target/classes"
+# Classpath: classi compilate + tutte le dipendenze Maven
+echo "Risoluzione classpath Maven..."
+DEPS=$(mvn -q dependency:build-classpath -DincludeScope=compile -Dmdep.outputFile=/tmp/jml_cp.txt && cat /tmp/jml_cp.txt)
+CP="target/classes:${DEPS}"
 
 # Definizione dei file da verificare
 FILES=(
