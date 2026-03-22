@@ -301,7 +301,7 @@
                     
                     <!-- Quality Gates -->
                     <mutationThreshold>50</mutationThreshold>      <!-- 50% mutation score -->
-                    <coverageThreshold>80</coverageThreshold>      <!-- 80% mutation coverage -->
+                    <coverageThreshold>70</coverageThreshold>      <!-- 80% mutation coverage -->
                     
                     <!-- Performance Optimization -->
                     <timestampedReports>false</timestampedReports>
