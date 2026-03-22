@@ -12,8 +12,17 @@ public class AddressList {
     /* @ spec_public non_null @ */ private ArrayList<AddressScript> listaIndirizzi;
     /* @ spec_public non_null @ */ private ArrayList<AddressBean> addresses;
 
-
-
+    /*
+     * @
+     * 
+     * @ public invariant listaIndirizzi != null;
+     * 
+     * @ public invariant addresses != null;
+     * 
+     * @ public invariant listaIndirizzi.size() == addresses.size();
+     * 
+     * @
+     */
     public AddressList() {
         this.listaIndirizzi = new ArrayList<>();
         this.addresses = new ArrayList<>();
@@ -72,7 +81,6 @@ public class AddressList {
         this.listaIndirizzi.remove(index);
         this.addresses.remove(index);
     }
-
 
     public /* @ nullable @ */ AddressScript get(int index) {
         if (index >= 0 && index < this.listaIndirizzi.size()) {

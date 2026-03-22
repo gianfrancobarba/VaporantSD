@@ -14,6 +14,17 @@ public class ProductBean implements Serializable {
 	/* @ spec_public @ */ String tipo;
 	/* @ spec_public @ */ String colore;
 
+	/*
+	 * @
+	 * 
+	 * @ public invariant price >= 0;
+	 * 
+	 * @ public invariant quantity >= 0;
+	 * 
+	 * @ public invariant quantityStorage >= 0;
+	 * 
+	 * @
+	 */
 
 	public ProductBean() {
 		this.setQuantity(1);
@@ -24,7 +35,15 @@ public class ProductBean implements Serializable {
 		return id;
 	}
 
-
+	/*
+	 * @
+	 * 
+	 * @ requires code >= 0;
+	 * 
+	 * @ ensures this.id == code;
+	 * 
+	 * @
+	 */
 	public void setCode(int code) {
 		this.id = code;
 	}
@@ -34,7 +53,15 @@ public class ProductBean implements Serializable {
 		return name;
 	}
 
-
+	/*
+	 * @
+	 * 
+	 * @ requires name != null;
+	 * 
+	 * @ ensures this.name == name;
+	 * 
+	 * @
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -44,7 +71,15 @@ public class ProductBean implements Serializable {
 		return description;
 	}
 
-
+	/*
+	 * @
+	 * 
+	 * @ requires description != null;
+	 * 
+	 * @ ensures this.description == description;
+	 * 
+	 * @
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -54,7 +89,15 @@ public class ProductBean implements Serializable {
 		return price;
 	}
 
-
+	/*
+	 * @
+	 * 
+	 * @ requires price >= 0;
+	 * 
+	 * @ ensures this.price == price;
+	 * 
+	 * @
+	 */
 	public void setPrice(float price) {
 		this.price = price;
 	}
@@ -64,7 +107,15 @@ public class ProductBean implements Serializable {
 		return quantity;
 	}
 
-
+	/*
+	 * @
+	 * 
+	 * @ requires quantity >= 0;
+	 * 
+	 * @ ensures this.quantity == quantity;
+	 * 
+	 * @
+	 */
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
@@ -74,7 +125,15 @@ public class ProductBean implements Serializable {
 		return quantityStorage;
 	}
 
-
+	/*
+	 * @
+	 * 
+	 * @ requires quantityS >= 0;
+	 * 
+	 * @ ensures this.quantityStorage == quantityS;
+	 * 
+	 * @
+	 */
 	public void setQuantityStorage(int quantityS) {
 		this.quantityStorage = quantityS;
 	}
@@ -83,7 +142,6 @@ public class ProductBean implements Serializable {
 	public String getTipo() {
 		return tipo;
 	}
-
 
 	public void setTipo(String tipo) {
 		if (tipo != null && tipo.length() > 20) {
@@ -96,7 +154,6 @@ public class ProductBean implements Serializable {
 	public String getColore() {
 		return colore;
 	}
-
 
 	public void setColore(String colore) {
 		if (colore != null && colore.length() > 20) {
